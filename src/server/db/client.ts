@@ -1,0 +1,32 @@
+import "server-only";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema";
+
+// Prevent multiple connections in development (Next.js hot reload)
+declare global {
+  // eslint-disable-next-line no-var
+  var __pgClient: postgres.Sql | undefined;
+}
+
+function createClient() {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error("DATABASE_URL environment variable is not set");
+  }
+
+  return postgres(connectionString, {
+    prepare: false, // Required for Supabase transaction pooler
+    max: 10,
+  });
+}
+
+const pgClient = globalThis.__pgClient ?? createClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.__pgClient = pgClient;
+}
+
+export const db = drizzle(pgClient, { schema });
+
+export type DB = typeof db;

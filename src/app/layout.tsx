@@ -1,0 +1,27 @@
+import type { Metadata } from "next";
+import { Toaster } from "sonner";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: {
+    default: "SelfTour",
+    template: "%s | SelfTour",
+  },
+  description: "Self-guided home tours powered by smart locks and AI",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        {children}
+        <Toaster richColors position="top-right" />
+      </body>
+    </html>
+  );
+}
