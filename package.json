@@ -24,6 +24,7 @@
     "resend": "^4.0.0",
     "@anthropic-ai/sdk": "^0.32.0",
     "stripe": "^17.0.0",
+    "@stripe/stripe-js": "^4.0.0",
     "inngest": "^3.22.0",
     "@trpc/server": "^11.0.0",
     "@trpc/client": "^11.0.0",
