@@ -1,5 +1,5 @@
 import "server-only";
-import Seam from "seam";
+import { Seam } from "seam";
 
 declare global {
   // eslint-disable-next-line no-var
