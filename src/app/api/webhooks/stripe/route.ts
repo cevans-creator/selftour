@@ -4,11 +4,14 @@ import { db } from "@/server/db/client";
 import { organizations, visitors } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-02-24.acacia",
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY ?? "placeholder", {
+    apiVersion: "2025-02-24.acacia",
+  });
+}
 
 export async function POST(req: NextRequest) {
+  const stripe = getStripe();
   const rawBody = await req.text();
   const signature = req.headers.get("stripe-signature");
 
