@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../router";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { tours, properties, visitors, organizations } from "@/server/db/schema";
-import { eq, and, gte, lte, or, desc } from "drizzle-orm";
+import { eq, and, gte, lte, or, desc, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { inngest } from "@/server/inngest/client";
 import { buildAccessUrl, normalizePhone } from "@/lib/utils";
@@ -151,18 +151,7 @@ export const toursRouter = createTRPCRouter({
         .where(
           and(
             eq(tours.propertyId, property.id),
-            or(
-              // New tour starts during existing tour
-              and(
-                gte(tours.scheduledAt, scheduledAt),
-                lte(tours.scheduledAt, endsAt)
-              ),
-              // Existing tour starts during new tour
-              and(
-                gte(scheduledAt, tours.scheduledAt),
-                lte(scheduledAt, tours.endsAt)
-              )
-            )
+            sql`${tours.scheduledAt} < ${endsAt.toISOString()} AND ${tours.endsAt} > ${scheduledAt.toISOString()}`
           )
         )
         .limit(1);

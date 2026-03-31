@@ -1,10 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    // Enable React 19 + Server Components features
-    serverComponentsExternalPackages: ["postgres"],
-  },
+  serverExternalPackages: ["postgres"],
   images: {
     remotePatterns: [
       {

@@ -6,7 +6,7 @@ import {
   visitors,
   organizations,
 } from "@/server/db/schema";
-import { eq, and, or, gte, lte } from "drizzle-orm";
+import { eq, and, or, gte, lte, sql } from "drizzle-orm";
 import { inngest } from "@/server/inngest/client";
 import { addMinutes } from "date-fns";
 import { buildAccessUrl, normalizePhone } from "@/lib/utils";
@@ -77,10 +77,7 @@ export async function POST(req: NextRequest) {
       .where(
         and(
           eq(tours.propertyId, property.id),
-          or(
-            and(gte(tours.scheduledAt, bufferStart), lte(tours.scheduledAt, bufferEnd)),
-            and(gte(bufferStart, tours.scheduledAt), lte(bufferStart, tours.endsAt))
-          )
+          sql`${tours.scheduledAt} < ${bufferEnd.toISOString()} AND ${tours.endsAt} > ${bufferStart.toISOString()}`
         )
       )
       .limit(1);

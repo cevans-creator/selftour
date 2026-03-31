@@ -1,5 +1,5 @@
 import "server-only";
-import { seam } from "./client";
+import { getSeamClient } from "./client";
 import { BANNED_ACCESS_CODES } from "@/lib/constants";
 import type { SeamDevice } from "@/types";
 
@@ -15,13 +15,12 @@ export async function createTourAccessCode(
   startsAt: Date,
   endsAt: Date
 ): Promise<string> {
-  const result = await seam.accessCodes.create({
+  const result = await getSeamClient().accessCodes.create({
     device_id: deviceId,
     name: `Tour ${startsAt.toISOString()}`,
     code,
     starts_at: startsAt.toISOString(),
     ends_at: endsAt.toISOString(),
-    type: "time_bound",
   });
 
   return result.access_code_id;
@@ -32,7 +31,7 @@ export async function createTourAccessCode(
  */
 export async function deleteTourAccessCode(accessCodeId: string): Promise<void> {
   try {
-    await seam.accessCodes.delete({ access_code_id: accessCodeId });
+    await getSeamClient().accessCodes.delete({ access_code_id: accessCodeId });
   } catch (err) {
     // If already deleted or not found, treat as success
     const message = err instanceof Error ? err.message : String(err);
@@ -47,7 +46,7 @@ export async function deleteTourAccessCode(accessCodeId: string): Promise<void> 
 export async function getLockStatus(
   deviceId: string
 ): Promise<{ locked: boolean; battery: number | null; online: boolean }> {
-  const device = await seam.devices.get({ device_id: deviceId });
+  const device = await getSeamClient().devices.get({ device_id: deviceId });
 
   const locked =
     (device.properties as Record<string, unknown>).locked === true;
@@ -61,17 +60,17 @@ export async function getLockStatus(
 }
 
 export async function lockDoor(deviceId: string): Promise<void> {
-  await seam.locks.lockDoor({ device_id: deviceId });
+  await getSeamClient().locks.lockDoor({ device_id: deviceId });
 }
 
 export async function unlockDoor(deviceId: string): Promise<void> {
-  await seam.locks.unlockDoor({ device_id: deviceId });
+  await getSeamClient().locks.unlockDoor({ device_id: deviceId });
 }
 
 // ─── Device listing ───────────────────────────────────────────────────────────
 
 export async function listDevices(): Promise<SeamDevice[]> {
-  const devices = await seam.devices.list({
+  const devices = await getSeamClient().devices.list({
     device_type: "schlage_lock",
   });
 

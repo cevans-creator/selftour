@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
 import { visitors, tours, orgMembers, organizations } from "@/server/db/schema";
 import { eq, desc, count } from "drizzle-orm";
@@ -18,17 +17,7 @@ import {
 import { ShieldCheck, ShieldAlert, ShieldOff } from "lucide-react";
 
 export default async function VisitorsPage() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return cookieStore.getAll(); },
-        setAll(s) { try { s.forEach(({ name, value, options }) => cookieStore.set(name, value, options)); } catch {} },
-      },
-    }
-  );
+  const supabase = await createSupabaseServerClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");

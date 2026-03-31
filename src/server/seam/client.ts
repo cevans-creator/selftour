@@ -6,16 +6,15 @@ declare global {
   var __seamClient: Seam | undefined;
 }
 
-function createSeamClient() {
+export function getSeamClient(): Seam {
+  if (globalThis.__seamClient) return globalThis.__seamClient;
   const apiKey = process.env.SEAM_API_KEY;
   if (!apiKey) {
     throw new Error("SEAM_API_KEY environment variable is not set");
   }
-  return new Seam({ apiKey });
-}
-
-export const seam = globalThis.__seamClient ?? createSeamClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__seamClient = seam;
+  const client = new Seam({ apiKey });
+  if (process.env.NODE_ENV !== "production") {
+    globalThis.__seamClient = client;
+  }
+  return client;
 }

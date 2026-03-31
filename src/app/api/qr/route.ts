@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
       errorCorrectionLevel: "H",
     });
 
-    return new NextResponse(qrBuffer, {
+    return new NextResponse(new Uint8Array(qrBuffer), {
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition": `attachment; filename="qr-code.png"`,

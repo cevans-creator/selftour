@@ -398,14 +398,12 @@ async function getTourWithDetails(tourId: string) {
 
 async function logTourEvent(
   tourId: string,
-  eventType: Parameters<typeof db.insert>[0] extends typeof tourEvents
-    ? never
-    : string,
+  eventType: typeof tourEvents.$inferInsert["eventType"],
   payload?: Record<string, unknown>
 ) {
   await db.insert(tourEvents).values({
     tourId,
-    eventType: eventType as Parameters<typeof tourEvents._.columns.eventType._>[0],
+    eventType,
     payload,
   });
 }

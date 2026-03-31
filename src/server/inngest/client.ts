@@ -3,8 +3,6 @@ import { Inngest } from "inngest";
 export const inngest = new Inngest({
   id: "selftour",
   name: "SelfTour",
-  // Event schema for type safety
-  schemas: {},
 });
 
 // ─── Event type definitions ───────────────────────────────────────────────────

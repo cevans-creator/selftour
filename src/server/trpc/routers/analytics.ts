@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../router";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { tours, visitors, properties } from "@/server/db/schema";
 import { eq, and, gte, lte, count, sql } from "drizzle-orm";
 import { startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
