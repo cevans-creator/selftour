@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db/client";
 import { organizations, orgMembers } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { resend, EMAIL_FROM } from "@/server/email/client";
+import { getResendClient, EMAIL_FROM } from "@/server/email/client";
 import { WelcomeBuilderEmail } from "@/server/email/templates/welcome-builder";
 import React from "react";
 
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     // Send welcome email (best effort)
     const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
     try {
-      await resend.emails.send({
+      await getResendClient().emails.send({
         from: EMAIL_FROM,
         to: body.userId, // In production, pass email separately
         subject: `Welcome to SelfTour, ${firstName}!`,

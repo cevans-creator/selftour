@@ -3,7 +3,7 @@ import { db } from "@/server/db/client";
 import { properties, organizations } from "@/server/db/schema";
 import { eq, isNotNull } from "drizzle-orm";
 import { getLockStatus } from "@/server/seam/locks";
-import { resend, EMAIL_FROM } from "@/server/email/client";
+import { getResendClient, EMAIL_FROM } from "@/server/email/client";
 
 /**
  * Periodic health check that polls all connected Seam devices
@@ -129,7 +129,7 @@ export const hubHealthCheck = inngest.createFunction(
             })
             .join("\n");
 
-          await resend.emails.send({
+          await getResendClient().emails.send({
             from: EMAIL_FROM,
             to: EMAIL_FROM, // In production this would be the org's admin email
             subject: `[SelfTour Alert] ${orgIssues.length} lock issue${orgIssues.length !== 1 ? "s" : ""} detected`,

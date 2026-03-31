@@ -1,11 +1,11 @@
 import "server-only";
-import { twilioClient, TWILIO_FROM } from "./client";
+import { getTwilioClient, TWILIO_FROM } from "./client";
 import { interpolateTemplate } from "@/lib/utils";
 
 // ─── Core send function ────────────────────────────────────────────────────────
 
 export async function sendSms(to: string, body: string): Promise<string> {
-  const message = await twilioClient.messages.create({
+  const message = await getTwilioClient().messages.create({
     from: TWILIO_FROM,
     to,
     body,

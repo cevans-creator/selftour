@@ -8,7 +8,7 @@ import {
   generateAccessCode,
 } from "@/server/seam/locks";
 import { sendSms } from "@/server/twilio/sms";
-import { resend, EMAIL_FROM } from "@/server/email/client";
+import { getResendClient, EMAIL_FROM } from "@/server/email/client";
 import { TourConfirmationEmail } from "@/server/email/templates/tour-confirmation";
 import { TourReminderEmail } from "@/server/email/templates/tour-reminder";
 import { TourFollowupEmail } from "@/server/email/templates/tour-followup";
@@ -61,7 +61,7 @@ export const tourLifecycle = inngest.createFunction(
       );
 
       // Email confirmation
-      await resend.emails.send({
+      await getResendClient().emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Tour Confirmed: ${propertyAddress}`,
@@ -98,7 +98,7 @@ export const tourLifecycle = inngest.createFunction(
         `Reminder: Your tour of ${propertyAddress} is tomorrow at ${formatTime(scheduledDate)}. Your door code arrives 15 min before. Questions? Reply to this number.`
       );
 
-      await resend.emails.send({
+      await getResendClient().emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Reminder: Tour Tomorrow — ${propertyAddress}`,
@@ -285,7 +285,7 @@ export const tourLifecycle = inngest.createFunction(
         `Thanks for touring ${propertyAddress}, ${visitorFirstName}! 🏡 Questions? Reply to this number anytime.`
       );
 
-      await resend.emails.send({
+      await getResendClient().emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Thanks for visiting ${propertyAddress}!`,
@@ -340,7 +340,7 @@ export const tourLifecycle = inngest.createFunction(
       const [tourRow] = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
       if (!tourRow || tourRow.status !== "completed") return;
 
-      await resend.emails.send({
+      await getResendClient().emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Still thinking about ${propertyAddress}?`,
