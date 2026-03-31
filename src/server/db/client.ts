@@ -10,10 +10,7 @@ declare global {
 }
 
 function createClient() {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL environment variable is not set");
-  }
+  const connectionString = process.env.DATABASE_URL ?? "postgresql://placeholder:placeholder@localhost:5432/placeholder";
 
   return postgres(connectionString, {
     prepare: false, // Required for Supabase transaction pooler
