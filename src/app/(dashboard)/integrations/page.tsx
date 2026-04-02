@@ -157,7 +157,7 @@ export default async function IntegrationsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     {device.locked !== null && (
                       <div className="flex items-center gap-1.5 text-sm">
                         {device.locked ? (
