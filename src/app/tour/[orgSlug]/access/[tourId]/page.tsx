@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
-import { Home, RefreshCw } from "lucide-react";
+import { Home, RefreshCw, MessageCircle, Send, Loader2 } from "lucide-react";
 import { AccessCodeDisplay } from "@/components/tour/access-code-display";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+
+interface ChatMessage {
+  role: "user" | "assistant";
+  text: string;
+}
 
 interface TourPublic {
   id: string;
@@ -35,6 +40,12 @@ export default function AccessPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [chatOpen, setChatOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const load = async () => {
     try {
       const res = await fetch(`/api/tour/access/${tourId}`);
@@ -59,6 +70,39 @@ export default function AccessPage() {
     const interval = setInterval(() => void load(), 30000);
     return () => clearInterval(interval);
   }, [tourId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, chatOpen]);
+
+  const sendMessage = async () => {
+    const text = chatInput.trim();
+    if (!text || isSending) return;
+
+    setMessages((prev) => [...prev, { role: "user", text }]);
+    setChatInput("");
+    setIsSending(true);
+
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tourId, message: text }),
+      });
+      const data = await res.json() as { reply?: string; error?: string };
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", text: data.reply ?? "Sorry, I couldn't get a response. Please try again." },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", text: "Something went wrong. Please try again." },
+      ]);
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -166,6 +210,94 @@ export default function AccessPage() {
           <p className="text-gray-500">{tour.propertyCity}</p>
         </div>
       </main>
+
+      {/* AI Chat */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+        {chatOpen && (
+          <div className="w-80 rounded-2xl bg-white shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
+            {/* Chat header */}
+            <div
+              className="px-4 py-3 flex items-center justify-between"
+              style={{ backgroundColor: org.primaryColor }}
+            >
+              <div className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-white" />
+                <span className="text-sm font-semibold text-white">Ask a Question</span>
+              </div>
+              <button
+                onClick={() => setChatOpen(false)}
+                className="text-white/70 hover:text-white text-lg leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2 max-h-72">
+              {messages.length === 0 && (
+                <p className="text-xs text-gray-400 text-center pt-4">
+                  Ask me anything about this property!
+                </p>
+              )}
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
+                      msg.role === "user"
+                        ? "text-white"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                    style={msg.role === "user" ? { backgroundColor: org.primaryColor } : {}}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {isSending && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 rounded-xl px-3 py-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className="border-t border-gray-100 p-2 flex gap-2">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") void sendMessage(); }}
+                placeholder="Type a question..."
+                className="flex-1 text-sm px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+                style={{ "--tw-ring-color": org.primaryColor } as React.CSSProperties}
+              />
+              <button
+                onClick={() => void sendMessage()}
+                disabled={isSending || !chatInput.trim()}
+                className="p-2 rounded-lg disabled:opacity-40"
+                style={{ backgroundColor: org.primaryColor }}
+              >
+                <Send className="h-4 w-4 text-white" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* FAB */}
+        <button
+          onClick={() => setChatOpen((prev) => !prev)}
+          className="h-14 w-14 rounded-full shadow-lg flex items-center justify-center"
+          style={{ backgroundColor: org.primaryColor }}
+        >
+          <MessageCircle className="h-6 w-6 text-white" />
+        </button>
+      </div>
     </div>
   );
 }
