@@ -8,6 +8,8 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Wifi, WifiOff, Battery, Lock, Unlock, Plug, BookOpen, CheckCircle2, Circle } from "lucide-react";
+import { GenerateCodeDialog } from "@/components/dashboard/generate-code-dialog";
+import { LockEventLog } from "@/components/dashboard/lock-event-log";
 
 export default async function IntegrationsPage() {
   const supabase = await createSupabaseServerClient();
@@ -155,7 +157,7 @@ export default async function IntegrationsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     {device.locked !== null && (
                       <div className="flex items-center gap-1.5 text-sm">
                         {device.locked ? (
@@ -179,11 +181,20 @@ export default async function IntegrationsPage() {
                     <Badge variant={device.connected ? "success" : "destructive"}>
                       {device.connected ? "Online" : "Offline"}
                     </Badge>
+
+                    <GenerateCodeDialog deviceId={device.deviceId} deviceName={device.name} />
                   </div>
                 </div>
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Lock Activity Log */}
+      <Card>
+        <CardContent className="p-6">
+          <LockEventLog />
         </CardContent>
       </Card>
 
