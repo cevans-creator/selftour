@@ -161,15 +161,28 @@ export default function LandingPage() {
                 codes, AI-powered Q&A, and automated follow-ups that convert.
               </p>
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Button asChild size="lg" className="bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/25 text-base px-8">
-                  <Link href="/signup">
-                    Start for free
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild size="lg" className="border-slate-600 bg-slate-800/50 text-white hover:bg-slate-700 hover:border-slate-500 text-base px-8">
-                  <a href="#features">See how it works</a>
-                </Button>
+                <a
+                  href="/signup"
+                  className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white transition-all duration-200
+                    bg-violet-600/90 backdrop-blur-sm
+                    border border-violet-400/40
+                    shadow-[0_0_24px_4px_rgba(139,92,246,0.45),inset_0_1px_0_rgba(255,255,255,0.15)]
+                    hover:shadow-[0_0_36px_8px_rgba(139,92,246,0.6),inset_0_1px_0_rgba(255,255,255,0.2)]
+                    hover:bg-violet-500/90 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Start for free
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <a
+                  href="#features"
+                  className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white/90 transition-all duration-200
+                    bg-white/5 backdrop-blur-sm
+                    border border-white/15
+                    shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_1px_3px_rgba(0,0,0,0.3)]
+                    hover:bg-white/10 hover:border-white/25 hover:text-white hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  See how it works
+                </a>
               </div>
               <p className="mt-4 text-sm text-slate-500">
                 No credit card required · Free plan available
