@@ -129,7 +129,7 @@ export const hubHealthCheck = inngest.createFunction(
             })
             .join("\n");
 
-          await getResendClient().emails.send({
+          await getResendClient()?.emails.send({
             from: EMAIL_FROM,
             to: EMAIL_FROM, // In production this would be the org's admin email
             subject: `[SelfTour Alert] ${orgIssues.length} lock issue${orgIssues.length !== 1 ? "s" : ""} detected`,

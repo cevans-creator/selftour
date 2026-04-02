@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     // Send welcome email (best effort)
     const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
     try {
-      await getResendClient().emails.send({
+      await getResendClient()?.emails.send({
         from: EMAIL_FROM,
         to: body.userId, // In production, pass email separately
         subject: `Welcome to SelfTour, ${firstName}!`,
