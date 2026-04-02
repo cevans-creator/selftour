@@ -12,6 +12,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const DAY_OPTIONS = [
+  { label: "Sun", value: 0 },
+  { label: "Mon", value: 1 },
+  { label: "Tue", value: 2 },
+  { label: "Wed", value: 3 },
+  { label: "Thu", value: 4 },
+  { label: "Fri", value: 5 },
+  { label: "Sat", value: 6 },
+];
+
 interface PropertyForm {
   name: string;
   address: string;
@@ -30,6 +40,7 @@ interface PropertyForm {
   bufferMinutes: string;
   availableFrom: string;
   availableTo: string;
+  availableDays: number[];
 }
 
 export default function EditPropertyPage() {
@@ -56,6 +67,7 @@ export default function EditPropertyPage() {
     bufferMinutes: "10",
     availableFrom: "09:00",
     availableTo: "17:00",
+    availableDays: [1, 2, 3, 4, 5],
   });
 
   const supabase = createBrowserClient(
@@ -90,6 +102,7 @@ export default function EditPropertyPage() {
         bufferMinutes: String(data.bufferMinutes ?? "10"),
         availableFrom: String(data.availableFrom ?? "09:00"),
         availableTo: String(data.availableTo ?? "17:00"),
+        availableDays: Array.isArray(data.availableDays) ? (data.availableDays as number[]) : [1, 2, 3, 4, 5],
       });
       setIsFetching(false);
     }
@@ -122,6 +135,7 @@ export default function EditPropertyPage() {
           price: form.price ? parseInt(form.price) * 100 : null,
           tourDurationMinutes: parseInt(form.tourDurationMinutes),
           bufferMinutes: parseInt(form.bufferMinutes),
+          availableDays: form.availableDays,
         }),
       });
 
@@ -240,7 +254,37 @@ export default function EditPropertyPage() {
 
         <Card>
           <CardHeader><CardTitle>Tour Availability</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="mb-2 block">Available Days</Label>
+              <div className="flex gap-2 flex-wrap">
+                {DAY_OPTIONS.map((day) => {
+                  const isSelected = form.availableDays.includes(day.value);
+                  return (
+                    <button
+                      key={day.value}
+                      type="button"
+                      onClick={() => {
+                        setForm((prev) => ({
+                          ...prev,
+                          availableDays: isSelected
+                            ? prev.availableDays.filter((d) => d !== day.value)
+                            : [...prev.availableDays, day.value].sort(),
+                        }));
+                      }}
+                      className={`rounded-md px-3 py-1.5 text-sm font-medium border transition-colors ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background text-muted-foreground border-input hover:bg-accent"
+                      }`}
+                    >
+                      {day.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div className="space-y-2">
               <Label htmlFor="availableFrom">Opens</Label>
               <Input id="availableFrom" name="availableFrom" type="time" value={form.availableFrom} onChange={handleChange} />
@@ -256,6 +300,7 @@ export default function EditPropertyPage() {
             <div className="space-y-2">
               <Label htmlFor="bufferMinutes">Buffer (min)</Label>
               <Input id="bufferMinutes" name="bufferMinutes" type="number" min="0" max="60" step="5" value={form.bufferMinutes} onChange={handleChange} />
+            </div>
             </div>
           </CardContent>
         </Card>

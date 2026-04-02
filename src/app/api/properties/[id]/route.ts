@@ -57,6 +57,7 @@ const updateSchema = z.object({
   bufferMinutes: z.number().min(0).max(60),
   availableFrom: z.string().optional(),
   availableTo: z.string().optional(),
+  availableDays: z.array(z.number().min(0).max(6)).optional(),
 });
 
 export async function PATCH(
@@ -78,7 +79,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid data", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { seamDeviceId, bathrooms, ...rest } = parsed.data;
+  const { seamDeviceId, bathrooms, availableDays, ...rest } = parsed.data;
 
   const [updated] = await db
     .update(properties)
@@ -86,6 +87,7 @@ export async function PATCH(
       ...rest,
       bathrooms: bathrooms != null ? bathrooms.toString() : null,
       seamDeviceId: seamDeviceId || null,
+      availableDays: availableDays ?? [1, 2, 3, 4, 5],
       updatedAt: new Date(),
     })
     .where(and(eq(properties.id, id), eq(properties.organizationId, org.id)))
