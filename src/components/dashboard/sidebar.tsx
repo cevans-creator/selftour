@@ -15,10 +15,13 @@ import {
   ChevronDown,
   KeyRound,
   ExternalLink,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const ICON_MAP = {
   LayoutDashboard,
@@ -48,7 +51,12 @@ interface SidebarProps {
   userEmail: string;
 }
 
-export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
+function SidebarContent({
+  orgName,
+  orgSlug,
+  userEmail,
+  onNavigate,
+}: SidebarProps & { onNavigate?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -63,10 +71,10 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
   };
 
   return (
-    <aside className="flex h-full w-64 flex-col bg-slate-950">
+    <div className="flex h-full flex-col bg-slate-950">
       {/* Logo */}
       <div className="flex h-16 items-center px-6 border-b border-slate-800">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
+        <Link href="/dashboard" className="flex items-center gap-2.5" onClick={onNavigate}>
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-white shadow-lg shadow-violet-500/30">
             <KeyRound className="h-4 w-4" />
           </div>
@@ -95,8 +103,9 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  onClick={onNavigate}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                     isActive
                       ? "bg-violet-600 text-white shadow-sm shadow-violet-500/20"
                       : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-100"
@@ -138,6 +147,65 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
           </button>
         </div>
       </div>
-    </aside>
+    </div>
+  );
+}
+
+export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close drawer on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex h-full w-64 flex-col flex-shrink-0">
+        <SidebarContent orgName={orgName} orgSlug={orgSlug} userEmail={userEmail} />
+      </aside>
+
+      {/* Mobile top bar */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex h-14 items-center justify-between bg-slate-950 border-b border-slate-800 px-4">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-600 text-white">
+            <KeyRound className="h-3.5 w-3.5" />
+          </div>
+          <span className="text-base font-bold text-white tracking-tight">KeySherpa</span>
+        </Link>
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Mobile drawer overlay */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="relative w-72 flex-shrink-0">
+            <SidebarContent
+              orgName={orgName}
+              orgSlug={orgSlug}
+              userEmail={userEmail}
+              onNavigate={() => setMobileOpen(false)}
+            />
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
