@@ -14,7 +14,9 @@ function createClient() {
 
   return postgres(connectionString, {
     prepare: false, // Required for Supabase transaction pooler
-    max: 1, // Supabase free tier session mode limits connections
+    max: 1,
+    idle_timeout: 20,
+    connect_timeout: 10,
   });
 }
 
