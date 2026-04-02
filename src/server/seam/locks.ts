@@ -70,9 +70,7 @@ export async function unlockDoor(deviceId: string): Promise<void> {
 // ─── Device listing ───────────────────────────────────────────────────────────
 
 export async function listDevices(): Promise<SeamDevice[]> {
-  const devices = await getSeamClient().devices.list({
-    device_type: "schlage_lock",
-  });
+  const devices = await getSeamClient().devices.list({});
 
   return devices.map((d) => ({
     deviceId: d.device_id,
