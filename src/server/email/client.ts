@@ -6,11 +6,12 @@ declare global {
   var __resendClient: Resend | undefined;
 }
 
-export function getResendClient(): Resend {
+export function getResendClient(): Resend | null {
   if (globalThis.__resendClient) return globalThis.__resendClient;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    throw new Error("RESEND_API_KEY environment variable is not set");
+    console.warn("[Email] RESEND_API_KEY not set — skipping email");
+    return null;
   }
   const client = new Resend(apiKey);
   if (process.env.NODE_ENV !== "production") {

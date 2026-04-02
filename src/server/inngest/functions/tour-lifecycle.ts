@@ -65,7 +65,8 @@ export const tourLifecycle = inngest.createFunction(
       }
 
       // Email confirmation
-      await getResendClient().emails.send({
+      const resend = getResendClient();
+      if (resend) await resend.emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Tour Confirmed: ${propertyAddress}`,
@@ -106,7 +107,8 @@ export const tourLifecycle = inngest.createFunction(
         console.warn("[SMS] Skipping 24h reminder SMS:", err instanceof Error ? err.message : err);
       }
 
-      await getResendClient().emails.send({
+      const resend24h = getResendClient();
+      if (resend24h) await resend24h.emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Reminder: Tour Tomorrow — ${propertyAddress}`,
@@ -309,7 +311,8 @@ export const tourLifecycle = inngest.createFunction(
         console.warn("[SMS] Skipping thank-you SMS:", err instanceof Error ? err.message : err);
       }
 
-      await getResendClient().emails.send({
+      const resendThanks = getResendClient();
+      if (resendThanks) await resendThanks.emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Thanks for visiting ${propertyAddress}!`,
@@ -368,7 +371,8 @@ export const tourLifecycle = inngest.createFunction(
       const [tourRow] = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
       if (!tourRow || tourRow.status !== "completed") return;
 
-      await getResendClient().emails.send({
+      const resendNurture = getResendClient();
+      if (resendNurture) await resendNurture.emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
         subject: `Still thinking about ${propertyAddress}?`,
