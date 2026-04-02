@@ -1,6 +1,6 @@
 export default function TermsPage() {
-  const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "SelfTour";
-  const email = "support@selftour.vercel.app";
+  const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "KeySherpa";
+  const email = "support@keysherpa.io";
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-16">

@@ -21,4 +21,4 @@ export function getResendClient(): Resend | null {
 }
 
 export const EMAIL_FROM =
-  process.env.EMAIL_FROM ?? "noreply@selftour.app";
+  process.env.EMAIL_FROM ?? "noreply@keysherpa.io";

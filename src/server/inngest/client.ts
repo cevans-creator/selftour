@@ -1,8 +1,8 @@
 import { Inngest } from "inngest";
 
 export const inngest = new Inngest({
-  id: "selftour",
-  name: "SelfTour",
+  id: "keysherpa",
+  name: "KeySherpa",
 });
 
 // ─── Event type definitions ───────────────────────────────────────────────────

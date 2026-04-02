@@ -28,7 +28,7 @@ const PREVIEW_VARS: Record<string, string> = {
   tour_date: "Monday, Jan 6",
   tour_time: "2:00 PM",
   access_code: "7842",
-  access_url: "https://app.selftour.com/tour/acme/access/abc123",
+  access_url: "https://app.keysherpa.io/tour/acme/access/abc123",
   org_name: "Sunrise Homes",
 };
 

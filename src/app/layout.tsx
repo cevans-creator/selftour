@@ -4,8 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "SelfTour",
-    template: "%s | SelfTour",
+    default: "KeySherpa",
+    template: "%s | KeySherpa",
   },
   description: "Self-guided home tours powered by smart locks and AI",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),

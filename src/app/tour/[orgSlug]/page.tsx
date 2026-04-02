@@ -88,7 +88,7 @@ export default async function TourBrowsePage({
 
       {/* Footer */}
       <footer className="mt-20 border-t border-gray-100 py-8 text-center text-sm text-gray-400">
-        <p>© {new Date().getFullYear()} {org.name}. Powered by SelfTour.</p>
+        <p>© {new Date().getFullYear()} {org.name}. Powered by KeySherpa.</p>
       </footer>
     </div>
   );

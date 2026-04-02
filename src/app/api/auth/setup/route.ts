@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       await getResendClient()?.emails.send({
         from: EMAIL_FROM,
         to: body.userId, // In production, pass email separately
-        subject: `Welcome to SelfTour, ${firstName}!`,
+        subject: `Welcome to KeySherpa, ${firstName}!`,
         react: React.createElement(WelcomeBuilderEmail, {
           firstName,
           orgName,

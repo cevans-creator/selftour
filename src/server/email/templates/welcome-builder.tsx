@@ -23,23 +23,23 @@ export function WelcomeBuilderEmail({
   firstName,
   orgName,
   dashboardUrl,
-  docsUrl = "https://docs.selftour.app",
+  docsUrl = "https://docs.keysherpa.io",
 }: WelcomeBuilderEmailProps) {
   return (
     <Html>
       <Head />
-      <Preview>Welcome to SelfTour, {firstName} — let's get your first property live</Preview>
+      <Preview>Welcome to KeySherpa, {firstName} — let's get your first property live</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Text style={logo}>SelfTour</Text>
+            <Text style={logo}>KeySherpa</Text>
           </Section>
 
           <Section style={content}>
             <Heading style={h1}>Welcome, {firstName}!</Heading>
             <Text style={paragraph}>
               You're all set up with your <strong>{orgName}</strong> account.
-              SelfTour makes it easy to offer 24/7 self-guided tours with smart
+              KeySherpa makes it easy to offer 24/7 self-guided tours with smart
               locks, AI assistance, and automated follow-ups — all in one place.
             </Text>
 
@@ -94,7 +94,7 @@ export function WelcomeBuilderEmail({
 
           <Section style={footer}>
             <Text style={footerText}>
-              © {new Date().getFullYear()} SelfTour. All rights reserved.
+              © {new Date().getFullYear()} KeySherpa. All rights reserved.
             </Text>
           </Section>
         </Container>
@@ -120,7 +120,7 @@ const container: React.CSSProperties = {
 };
 
 const header: React.CSSProperties = {
-  backgroundColor: "#2563eb",
+  backgroundColor: "#7c3aed",
   padding: "24px 32px",
   textAlign: "center" as const,
 };
@@ -160,7 +160,7 @@ const paragraph: React.CSSProperties = {
 
 const button: React.CSSProperties = {
   display: "inline-block",
-  backgroundColor: "#2563eb",
+  backgroundColor: "#7c3aed",
   color: "#ffffff",
   fontSize: "16px",
   fontWeight: "600",
@@ -183,7 +183,7 @@ const step: React.CSSProperties = {
 };
 
 const stepNumber: React.CSSProperties = {
-  backgroundColor: "#2563eb",
+  backgroundColor: "#7c3aed",
   color: "#ffffff",
   width: "28px",
   height: "28px",
@@ -205,7 +205,7 @@ const stepContent: React.CSSProperties = {
 };
 
 const link: React.CSSProperties = {
-  color: "#2563eb",
+  color: "#7c3aed",
   textDecoration: "underline",
 };
 

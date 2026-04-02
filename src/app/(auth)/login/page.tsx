@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { toast } from "sonner";
-import { Home, Loader2 } from "lucide-react";
+import { KeyRound, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,16 +47,16 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4">
-      <Link href="/" className="mb-8 flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-          <Home className="h-4 w-4" />
+      <Link href="/" className="mb-8 flex items-center gap-2.5">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-500/30">
+          <KeyRound className="h-4.5 w-4.5 h-[18px] w-[18px]" />
         </div>
-        <span className="text-lg font-bold">SelfTour</span>
+        <span className="text-xl font-bold tracking-tight">KeySherpa</span>
       </Link>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-sm">
         <CardHeader>
-          <CardTitle>Sign in to your account</CardTitle>
+          <CardTitle className="text-xl">Sign in to your account</CardTitle>
           <CardDescription>
             Enter your email and password to access your dashboard.
           </CardDescription>
@@ -91,13 +91,13 @@ export default function LoginPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-3">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign in
             </Button>
             <p className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Link href="/signup" className="font-medium text-primary hover:underline">
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className="font-medium text-violet-600 hover:underline">
                 Create one free
               </Link>
             </p>

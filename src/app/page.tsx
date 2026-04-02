@@ -6,9 +6,9 @@ import {
   BarChart3,
   Check,
   ArrowRight,
-  Home,
   Zap,
   Shield,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,7 +31,7 @@ const FEATURES = [
     icon: Brain,
     title: "AI On-Tour Assistant",
     description:
-      "Visitors text questions during their tour and get instant, accurate answers from your custom knowledge base — powered by Claude.",
+      "Visitors ask questions during their tour and get instant, accurate answers from your custom knowledge base — powered by Claude.",
   },
   {
     icon: BarChart3,
@@ -114,27 +114,27 @@ export default function LandingPage() {
       {/* Nav */}
       <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-              <Home className="h-4 w-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-white shadow-sm shadow-violet-500/30">
+              <KeyRound className="h-4 w-4" />
             </div>
-            <span className="text-lg font-bold">SelfTour</span>
+            <span className="text-lg font-bold tracking-tight">KeySherpa</span>
           </div>
           <nav className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm text-gray-600 hover:text-gray-900">
+            <a href="#features" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
               Features
             </a>
-            <a href="#pricing" className="text-sm text-gray-600 hover:text-gray-900">
+            <a href="#pricing" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
               Pricing
             </a>
-            <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900">
+            <Link href="/login" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
               Sign in
             </Link>
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="bg-violet-600 hover:bg-violet-700 shadow-sm shadow-violet-500/20">
               <Link href="/signup">Get started free</Link>
             </Button>
           </nav>
-          <Button asChild size="sm" className="md:hidden">
+          <Button asChild size="sm" className="md:hidden bg-violet-600 hover:bg-violet-700">
             <Link href="/signup">Get started</Link>
           </Button>
         </div>
@@ -142,60 +142,64 @@ export default function LandingPage() {
 
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white py-20 sm:py-32">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden bg-slate-950 py-24 sm:py-36">
+          {/* Background gradient */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/40 via-slate-950 to-slate-950" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-indigo-900/20 via-transparent to-transparent" />
+
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
-              <Badge variant="info" className="mb-6">
-                Smart Lock + AI + Automation
+              <Badge className="mb-6 bg-violet-500/10 text-violet-300 border-violet-500/20 hover:bg-violet-500/10">
+                Smart Lock · AI · Automation
               </Badge>
-              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl">
-                Self-guided home tours
-                <span className="text-blue-600"> on autopilot</span>
+              <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-7xl leading-[1.05]">
+                Home tours that
+                <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent"> run themselves</span>
               </h1>
-              <p className="mt-6 text-xl text-gray-600">
+              <p className="mt-6 text-xl text-slate-400 leading-relaxed">
                 Let buyers and renters tour your properties 24/7 — with smart lock access
                 codes, AI-powered Q&A, and automated follow-ups that convert.
               </p>
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/25 text-base px-8">
                   <Link href="/signup">
                     Start for free
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" asChild size="lg">
+                <Button variant="outline" asChild size="lg" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white text-base px-8">
                   <a href="#features">See how it works</a>
                 </Button>
               </div>
-              <p className="mt-4 text-sm text-gray-500">
+              <p className="mt-4 text-sm text-slate-500">
                 No credit card required · Free plan available
               </p>
             </div>
           </div>
 
           {/* Mock dashboard preview */}
-          <div className="mx-auto mt-16 max-w-5xl px-4 sm:px-6 lg:px-8">
-            <div className="overflow-hidden rounded-xl border border-gray-200 shadow-2xl">
-              <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-3">
-                <div className="h-3 w-3 rounded-full bg-red-400" />
-                <div className="h-3 w-3 rounded-full bg-yellow-400" />
-                <div className="h-3 w-3 rounded-full bg-green-400" />
-                <div className="ml-2 flex-1 rounded bg-white px-3 py-1 text-xs text-gray-400">
-                  app.selftour.com/dashboard
+          <div className="relative mx-auto mt-20 max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div className="overflow-hidden rounded-2xl border border-slate-800 shadow-2xl shadow-black/50 ring-1 ring-white/5">
+              <div className="flex items-center gap-2 border-b border-slate-800 bg-slate-900 px-4 py-3">
+                <div className="h-3 w-3 rounded-full bg-red-500/70" />
+                <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
+                <div className="h-3 w-3 rounded-full bg-green-500/70" />
+                <div className="ml-3 flex-1 rounded-md bg-slate-800 px-3 py-1 text-xs text-slate-500">
+                  app.keysherpa.io/dashboard
                 </div>
               </div>
-              <div className="grid grid-cols-4 gap-4 bg-gray-50/50 p-6">
+              <div className="grid grid-cols-4 gap-4 bg-slate-900/80 p-6">
                 {[
-                  { label: "Tours Today", value: "12", color: "text-blue-600" },
-                  { label: "This Week", value: "47", color: "text-purple-600" },
-                  { label: "Conversion", value: "68%", color: "text-green-600" },
-                  { label: "No-Show Rate", value: "8%", color: "text-orange-600" },
+                  { label: "Tours Today", value: "12", color: "text-violet-400" },
+                  { label: "This Week", value: "47", color: "text-indigo-400" },
+                  { label: "Conversion", value: "68%", color: "text-emerald-400" },
+                  { label: "No-Show Rate", value: "8%", color: "text-orange-400" },
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-100"
+                    className="rounded-xl bg-slate-800/80 p-4 ring-1 ring-white/5"
                   >
-                    <p className="text-xs text-gray-500">{stat.label}</p>
+                    <p className="text-xs text-slate-500">{stat.label}</p>
                     <p className={`mt-1 text-2xl font-bold ${stat.color}`}>
                       {stat.value}
                     </p>
@@ -207,26 +211,26 @@ export default function LandingPage() {
         </section>
 
         {/* Features */}
-        <section id="features" className="py-20 sm:py-32">
+        <section id="features" className="py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Everything you need to run self-guided tours
+              <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                Everything you need
               </h2>
-              <p className="mt-4 text-lg text-gray-600">
-                From smart lock provisioning to post-tour nurture sequences — SelfTour
+              <p className="mt-4 text-lg text-gray-500 leading-relaxed">
+                From smart lock provisioning to post-tour nurture sequences — KeySherpa
                 handles the whole lifecycle so your team doesn't have to.
               </p>
             </div>
-            <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {FEATURES.map((feature) => (
-                <Card key={feature.title} className="border-0 shadow-sm ring-1 ring-gray-100">
+                <Card key={feature.title} className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
                       <feature.icon className="h-5 w-5" />
                     </div>
                     <h3 className="mt-4 font-semibold text-gray-900">{feature.title}</h3>
-                    <p className="mt-2 text-sm text-gray-600">{feature.description}</p>
+                    <p className="mt-2 text-sm text-gray-500 leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -235,13 +239,14 @@ export default function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section className="bg-gray-50 py-20 sm:py-32">
+        <section className="bg-gray-50 py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold text-gray-900">How it works</h2>
+              <h2 className="text-4xl font-bold text-gray-900">How it works</h2>
+              <p className="mt-4 text-lg text-gray-500">Up and running in under an hour.</p>
             </div>
             <div className="mx-auto mt-16 max-w-3xl">
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {[
                   {
                     step: "01",
@@ -263,19 +268,22 @@ export default function LandingPage() {
                   },
                   {
                     step: "04",
-                    title: "SelfTour handles the rest",
+                    title: "KeySherpa handles the rest",
                     description:
                       "Confirmations, reminders, access codes, AI Q&A, and follow-ups run automatically. You just close deals.",
                   },
-                ].map((item) => (
-                  <div key={item.step} className="flex gap-6">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
+                ].map((item, i) => (
+                  <div key={item.step} className="flex gap-6 items-start">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white">
                       {item.step}
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                      <p className="mt-1 text-gray-600">{item.description}</p>
+                    <div className="pt-2">
+                      <h3 className="font-semibold text-gray-900 text-lg">{item.title}</h3>
+                      <p className="mt-1 text-gray-500">{item.description}</p>
                     </div>
+                    {i < 3 && (
+                      <ChevronRight className="ml-auto mt-3 h-5 w-5 text-gray-300 flex-shrink-0 hidden sm:block" />
+                    )}
                   </div>
                 ))}
               </div>
@@ -284,13 +292,13 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="py-20 sm:py-32">
+        <section id="pricing" className="py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-4xl font-bold text-gray-900">
                 Simple, transparent pricing
               </h2>
-              <p className="mt-4 text-lg text-gray-600">
+              <p className="mt-4 text-lg text-gray-500">
                 Start free. Upgrade when you need to.
               </p>
             </div>
@@ -300,13 +308,13 @@ export default function LandingPage() {
                   key={plan.name}
                   className={
                     plan.highlighted
-                      ? "border-blue-600 shadow-lg ring-2 ring-blue-600"
-                      : ""
+                      ? "border-violet-600 shadow-xl shadow-violet-500/10 ring-2 ring-violet-600 relative"
+                      : "border-gray-100 shadow-sm"
                   }
                 >
                   {plan.highlighted && (
-                    <div className="-mt-px flex justify-center">
-                      <Badge className="rounded-t-none bg-blue-600 text-white">
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-violet-600 text-white shadow-sm px-3">
                         Most popular
                       </Badge>
                     </div>
@@ -316,19 +324,19 @@ export default function LandingPage() {
                     <p className="mt-1 text-sm text-gray-500">{plan.description}</p>
                     <div className="mt-4">
                       <span className="text-4xl font-extrabold">{plan.price}</span>
-                      <span className="ml-1 text-gray-500">/{plan.period}</span>
+                      <span className="ml-1 text-gray-500 text-sm">/{plan.period}</span>
                     </div>
                     <ul className="mt-6 space-y-3">
                       {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2 text-sm">
-                          <Check className="h-4 w-4 flex-shrink-0 text-green-600" />
-                          {feature}
+                        <li key={feature} className="flex items-center gap-2.5 text-sm">
+                          <Check className="h-4 w-4 flex-shrink-0 text-violet-600" />
+                          <span className="text-gray-600">{feature}</span>
                         </li>
                       ))}
                     </ul>
                     <Button
                       asChild
-                      className="mt-8 w-full"
+                      className={`mt-8 w-full ${plan.highlighted ? "bg-violet-600 hover:bg-violet-700 shadow-sm shadow-violet-500/20" : ""}`}
                       variant={plan.highlighted ? "default" : "outline"}
                     >
                       <Link href={plan.href}>{plan.cta}</Link>
@@ -341,18 +349,19 @@ export default function LandingPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-blue-600 py-20">
-          <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-white">
+        <section className="bg-slate-950 py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/30 via-transparent to-transparent" />
+          <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+            <h2 className="text-4xl font-bold text-white">
               Ready to automate your tours?
             </h2>
-            <p className="mt-4 text-xl text-blue-100">
-              Join hundreds of builders and property managers using SelfTour.
+            <p className="mt-4 text-xl text-slate-400">
+              Join hundreds of builders and property managers using KeySherpa.
             </p>
             <Button
               asChild
               size="lg"
-              className="mt-8 bg-white text-blue-600 hover:bg-blue-50"
+              className="mt-8 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/25 text-base px-8"
             >
               <Link href="/signup">
                 Get started free
@@ -363,17 +372,17 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-gray-100 py-12">
+      <footer className="border-t border-gray-100 py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-600 text-white">
-                <Home className="h-3 w-3" />
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-violet-600 text-white">
+                <KeyRound className="h-3.5 w-3.5" />
               </div>
-              <span className="font-semibold">SelfTour</span>
+              <span className="font-semibold tracking-tight">KeySherpa</span>
             </div>
-            <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} SelfTour. All rights reserved.
+            <p className="text-sm text-gray-400">
+              © {new Date().getFullYear()} KeySherpa. All rights reserved.
             </p>
           </div>
         </div>

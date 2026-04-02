@@ -132,8 +132,8 @@ export const hubHealthCheck = inngest.createFunction(
           await getResendClient()?.emails.send({
             from: EMAIL_FROM,
             to: EMAIL_FROM, // In production this would be the org's admin email
-            subject: `[SelfTour Alert] ${orgIssues.length} lock issue${orgIssues.length !== 1 ? "s" : ""} detected`,
-            text: `Hub Health Check Alert\n\nThe following issues were detected for ${org.name}:\n\n${issueLines}\n\nPlease review your Integrations dashboard and resolve these issues to avoid disruption to self-guided tours.\n\n— SelfTour`,
+            subject: `[KeySherpa Alert] ${orgIssues.length} lock issue${orgIssues.length !== 1 ? "s" : ""} detected`,
+            text: `Hub Health Check Alert\n\nThe following issues were detected for ${org.name}:\n\n${issueLines}\n\nPlease review your Integrations dashboard and resolve these issues to avoid disruption to self-guided tours.\n\n— KeySherpa`,
           });
         }
       });
