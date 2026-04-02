@@ -371,16 +371,18 @@ export default function LandingPage() {
             <p className="mt-4 text-xl text-slate-400">
               Join hundreds of builders and property managers using KeySherpa.
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="mt-8 bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-500/25 text-base px-8"
+            <a
+              href="/signup"
+              className="mt-8 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white transition-all duration-200
+                bg-violet-600/90 backdrop-blur-sm
+                border border-violet-400/40
+                shadow-[0_0_24px_4px_rgba(139,92,246,0.45),inset_0_1px_0_rgba(255,255,255,0.15)]
+                hover:shadow-[0_0_36px_8px_rgba(139,92,246,0.6),inset_0_1px_0_rgba(255,255,255,0.2)]
+                hover:bg-violet-500/90 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Link href="/signup">
-                Get started free
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+              Get started free
+              <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
         </section>
       </main>
