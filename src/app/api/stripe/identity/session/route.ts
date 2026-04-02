@@ -9,10 +9,6 @@ function getStripe() {
 
 export async function POST(_req: NextRequest) {
   try {
-    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === "placeholder") {
-      return NextResponse.json({ error: "Stripe not configured" }, { status: 503 });
-    }
-
     const stripe = getStripe();
 
     const session = await stripe.identity.verificationSessions.create({
