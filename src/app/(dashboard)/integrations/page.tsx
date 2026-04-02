@@ -48,7 +48,7 @@ export default async function IntegrationsPage() {
       {/* Setup Guide */}
       <Card className="border-violet-200 bg-gradient-to-r from-violet-50 to-indigo-50">
         <CardContent className="p-6">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
                 <BookOpen className="h-5 w-5 text-violet-600" />
@@ -141,7 +141,7 @@ export default async function IntegrationsPage() {
               {devices.map((device) => (
                 <div
                   key={device.deviceId}
-                  className="flex items-center justify-between rounded-lg border p-4"
+                  className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <div className={`flex h-10 w-10 items-center justify-center rounded-full ${device.connected ? "bg-green-100" : "bg-red-100"}`}>

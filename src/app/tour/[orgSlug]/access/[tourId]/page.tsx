@@ -214,7 +214,7 @@ export default function AccessPage() {
       {/* AI Chat */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
         {chatOpen && (
-          <div className="w-80 rounded-2xl bg-white shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
+          <div className="w-[min(320px,calc(100vw-3rem))] rounded-2xl bg-white shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
             {/* Chat header */}
             <div
               className="px-4 py-3 flex items-center justify-between"

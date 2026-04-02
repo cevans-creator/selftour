@@ -81,62 +81,76 @@ export default async function VisitorsPage() {
               No visitors yet. They'll appear here once they book a tour.
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>ID Verification</TableHead>
-                  <TableHead>Tours</TableHead>
-                  <TableHead>First Visit</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Desktop table */}
+              <div className="hidden sm:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>ID Verification</TableHead>
+                      <TableHead>Tours</TableHead>
+                      <TableHead>First Visit</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rows.map((visitor) => (
+                      <TableRow key={visitor.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-medium">
+                              {visitor.firstName[0]}{visitor.lastName[0]}
+                            </div>
+                            <p className="font-medium">{visitor.firstName} {visitor.lastName}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <p className="text-sm">{visitor.email}</p>
+                          <p className="text-xs text-muted-foreground">{formatPhone(visitor.phone)}</p>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <VerificationIcon method={visitor.idVerificationMethod} status={visitor.idVerificationStatus} />
+                            <span className="text-xs text-muted-foreground capitalize">{visitor.idVerificationStatus ?? "none"}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">
+                            {tourCountMap.get(visitor.id) ?? 0} tour{(tourCountMap.get(visitor.id) ?? 0) !== 1 ? "s" : ""}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{formatDate(visitor.createdAt)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile card list */}
+              <div className="sm:hidden divide-y divide-border">
                 {rows.map((visitor) => (
-                  <TableRow key={visitor.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-medium">
-                          {visitor.firstName[0]}{visitor.lastName[0]}
-                        </div>
-                        <div>
-                          <p className="font-medium">
-                            {visitor.firstName} {visitor.lastName}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="text-sm">{visitor.email}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatPhone(visitor.phone)}
-                        </p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1.5">
-                        <VerificationIcon
-                          method={visitor.idVerificationMethod}
-                          status={visitor.idVerificationStatus}
-                        />
-                        <span className="text-xs text-muted-foreground capitalize">
-                          {visitor.idVerificationStatus ?? "none"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">
+                  <div key={visitor.id} className="flex items-start gap-3 p-4">
+                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
+                      {visitor.firstName[0]}{visitor.lastName[0]}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm">{visitor.firstName} {visitor.lastName}</p>
+                      <p className="text-xs text-muted-foreground truncate">{visitor.email}</p>
+                      <p className="text-xs text-muted-foreground">{formatPhone(visitor.phone)}</p>
+                    </div>
+                    <div className="flex-shrink-0 text-right space-y-1">
+                      <Badge variant="secondary" className="text-xs">
                         {tourCountMap.get(visitor.id) ?? 0} tour{(tourCountMap.get(visitor.id) ?? 0) !== 1 ? "s" : ""}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(visitor.createdAt)}
-                    </TableCell>
-                  </TableRow>
+                      <div className="flex items-center justify-end gap-1">
+                        <VerificationIcon method={visitor.idVerificationMethod} status={visitor.idVerificationStatus} />
+                      </div>
+                    </div>
+                  </div>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

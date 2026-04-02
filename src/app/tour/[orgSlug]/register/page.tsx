@@ -125,7 +125,7 @@ export default function RegisterPage() {
             <div className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-4 font-semibold">Your Information</h2>
               <form onSubmit={handleInfoSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="firstName">First Name *</Label>
                     <Input

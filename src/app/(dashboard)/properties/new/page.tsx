@@ -128,8 +128,8 @@ export default function NewPropertyPage() {
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 space-y-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="sm:col-span-2 space-y-2">
                 <Label htmlFor="city">City *</Label>
                 <Input id="city" name="city" placeholder="Austin" value={form.city} onChange={handleChange} required />
               </div>
@@ -139,7 +139,7 @@ export default function NewPropertyPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="zip">ZIP Code *</Label>
                 <Input id="zip" name="zip" placeholder="78701" value={form.zip} onChange={handleChange} required />
@@ -156,7 +156,7 @@ export default function NewPropertyPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor="bedrooms">Bedrooms</Label>
                 <Input id="bedrooms" name="bedrooms" type="number" min="0" placeholder="3" value={form.bedrooms} onChange={handleChange} />
@@ -189,7 +189,7 @@ export default function NewPropertyPage() {
             <CardTitle>Tour Schedule</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="tourDurationMinutes">Tour Duration</Label>
                 <Select id="tourDurationMinutes" name="tourDurationMinutes" value={form.tourDurationMinutes} onChange={handleChange}>
@@ -208,7 +208,7 @@ export default function NewPropertyPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="availableFrom">Available From</Label>
                 <Input id="availableFrom" name="availableFrom" type="time" value={form.availableFrom} onChange={handleChange} />
@@ -221,7 +221,7 @@ export default function NewPropertyPage() {
 
             <div className="space-y-2">
               <Label>Available Days</Label>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {DAY_LABELS.map((label, i) => (
                   <button
                     key={i}
