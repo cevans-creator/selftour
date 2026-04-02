@@ -4,6 +4,7 @@ import { db } from "@/server/db/client";
 import { orgMembers, organizations } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { SupportChat } from "@/components/dashboard/support-chat";
 
 export default async function DashboardLayout({
   children,
@@ -45,6 +46,7 @@ export default async function DashboardLayout({
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-7xl p-6">{children}</div>
       </main>
+      <SupportChat />
     </div>
   );
 }
