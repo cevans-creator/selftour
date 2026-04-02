@@ -82,32 +82,26 @@ export async function POST(req: NextRequest) {
       case "identity.verification_session.verified": {
         const session = event.data.object as Stripe.Identity.VerificationSession;
 
-        // Update visitor verification status
-        if (session.metadata?.visitor_id) {
-          await db
-            .update(visitors)
-            .set({
-              idVerificationStatus: "verified",
-              stripeIdentitySessionId: session.id,
-              updatedAt: new Date(),
-            })
-            .where(eq(visitors.id, session.metadata.visitor_id));
-        }
+        await db
+          .update(visitors)
+          .set({
+            idVerificationStatus: "verified",
+            updatedAt: new Date(),
+          })
+          .where(eq(visitors.stripeIdentitySessionId, session.id));
         break;
       }
 
       case "identity.verification_session.requires_input": {
         const session = event.data.object as Stripe.Identity.VerificationSession;
 
-        if (session.metadata?.visitor_id) {
-          await db
-            .update(visitors)
-            .set({
-              idVerificationStatus: "failed",
-              updatedAt: new Date(),
-            })
-            .where(eq(visitors.id, session.metadata.visitor_id));
-        }
+        await db
+          .update(visitors)
+          .set({
+            idVerificationStatus: "failed",
+            updatedAt: new Date(),
+          })
+          .where(eq(visitors.stripeIdentitySessionId, session.id));
         break;
       }
 
