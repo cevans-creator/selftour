@@ -4,9 +4,10 @@ import { db } from "@/server/db/client";
 import { orgMembers, organizations } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { listDevices } from "@/server/seam/locks";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Wifi, WifiOff, Battery, Lock, Unlock, Plug } from "lucide-react";
+import { Wifi, WifiOff, Battery, Lock, Unlock, Plug, BookOpen, CheckCircle2, Circle } from "lucide-react";
 
 export default async function IntegrationsPage() {
   const supabase = await createSupabaseServerClient();
@@ -33,12 +34,52 @@ export default async function IntegrationsPage() {
     seamError = true;
   }
 
+  const hasDevices = !seamError && devices.length > 0;
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Integrations</h1>
         <p className="text-muted-foreground">Connect and manage your smart lock devices.</p>
       </div>
+
+      {/* Setup Guide */}
+      <Card className="border-violet-200 bg-gradient-to-r from-violet-50 to-indigo-50">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-3">
+                <BookOpen className="h-5 w-5 text-violet-600" />
+                <h3 className="font-semibold text-gray-900">Lock Setup Guide</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                {[
+                  { label: "Create Seam account", done: hasDevices },
+                  { label: "Connect lock to Seam", done: hasDevices },
+                  { label: "Add API key to settings", done: hasDevices },
+                  { label: "Assign lock to property", done: false },
+                ].map((step) => (
+                  <div key={step.label} className="flex items-center gap-2 text-sm">
+                    {step.done ? (
+                      <CheckCircle2 className="h-4 w-4 text-violet-600 flex-shrink-0" />
+                    ) : (
+                      <Circle className="h-4 w-4 text-gray-300 flex-shrink-0" />
+                    )}
+                    <span className={step.done ? "text-gray-500 line-through" : "text-gray-700"}>{step.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <Link
+              href="/docs/lock-setup"
+              target="_blank"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 transition-colors"
+            >
+              View Full Guide →
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Seam Connect */}
       <Card>
