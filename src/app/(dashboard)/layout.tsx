@@ -44,7 +44,7 @@ export default async function DashboardLayout({
         userEmail={user.email ?? ""}
       />
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-7xl p-4 pt-18 md:pt-6 md:p-6">{children}</div>
+        <div className="mx-auto max-w-7xl p-4 pt-16 md:pt-6 md:p-6">{children}</div>
       </main>
       <SupportChat />
     </div>
