@@ -54,11 +54,15 @@ export const tourLifecycle = inngest.createFunction(
       const tour = await getTourWithDetails(tourId);
       if (!tour) return;
 
-      // SMS confirmation
-      await sendSms(
-        visitorPhone,
-        `Hi ${visitorFirstName}! Your self-guided tour of ${propertyAddress} is confirmed for ${formatDate(scheduledDate)} at ${formatTime(scheduledDate)}. We'll text your door code 15 min before. Questions: ${accessUrl}`
-      );
+      // SMS confirmation (non-fatal — Twilio may not be configured yet)
+      try {
+        await sendSms(
+          visitorPhone,
+          `Hi ${visitorFirstName}! Your self-guided tour of ${propertyAddress} is confirmed for ${formatDate(scheduledDate)} at ${formatTime(scheduledDate)}. We'll text your door code 15 min before. Questions: ${accessUrl}`
+        );
+      } catch (err) {
+        console.warn("[SMS] Skipping confirmation SMS:", err instanceof Error ? err.message : err);
+      }
 
       // Email confirmation
       await getResendClient().emails.send({
@@ -93,10 +97,14 @@ export const tourLifecycle = inngest.createFunction(
       const tour = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
       if (!tour[0] || tour[0].status === "cancelled") return;
 
-      await sendSms(
-        visitorPhone,
-        `Reminder: Your tour of ${propertyAddress} is tomorrow at ${formatTime(scheduledDate)}. Your door code arrives 15 min before. Questions? Reply to this number.`
-      );
+      try {
+        await sendSms(
+          visitorPhone,
+          `Reminder: Your tour of ${propertyAddress} is tomorrow at ${formatTime(scheduledDate)}. Your door code arrives 15 min before. Questions? Reply to this number.`
+        );
+      } catch (err) {
+        console.warn("[SMS] Skipping 24h reminder SMS:", err instanceof Error ? err.message : err);
+      }
 
       await getResendClient().emails.send({
         from: EMAIL_FROM,
@@ -127,10 +135,14 @@ export const tourLifecycle = inngest.createFunction(
       const [tourRow] = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
       if (!tourRow || tourRow.status === "cancelled") return;
 
-      await sendSms(
-        visitorPhone,
-        `1 hour until your tour of ${propertyAddress}! Your door code is coming soon. Text any questions to this number.`
-      );
+      try {
+        await sendSms(
+          visitorPhone,
+          `1 hour until your tour of ${propertyAddress}! Your door code is coming soon. Text any questions to this number.`
+        );
+      } catch (err) {
+        console.warn("[SMS] Skipping 1h reminder SMS:", err instanceof Error ? err.message : err);
+      }
 
       await logTourEvent(tourId, "sms_sent", { trigger: "reminder_1h" });
     });
@@ -174,10 +186,14 @@ export const tourLifecycle = inngest.createFunction(
         .where(eq(tours.id, tourId));
 
       // Send access code via SMS
-      await sendSms(
-        visitorPhone,
-        `Your tour starts in 15 min! Door code: ${code}\n\n${propertyAddress}\nView instructions: ${accessUrl}\n\nText questions to this number.`
-      );
+      try {
+        await sendSms(
+          visitorPhone,
+          `Your tour starts in 15 min! Door code: ${code}\n\n${propertyAddress}\nView instructions: ${accessUrl}\n\nText questions to this number.`
+        );
+      } catch (err) {
+        console.warn("[SMS] Skipping access code SMS:", err instanceof Error ? err.message : err);
+      }
 
       await logTourEvent(tourId, "sms_sent", { trigger: "access_code_sent", code });
       if (accessCodeId) {
@@ -242,10 +258,14 @@ export const tourLifecycle = inngest.createFunction(
       const [tourRow] = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
       if (!tourRow || tourRow.status === "no_show" || tourRow.status === "cancelled") return;
 
-      await sendSms(
-        visitorPhone,
-        `Your tour of ${propertyAddress} ends in 5 minutes. Please ensure the door is locked when you leave. Thank you!`
-      );
+      try {
+        await sendSms(
+          visitorPhone,
+          `Your tour of ${propertyAddress} ends in 5 minutes. Please ensure the door is locked when you leave. Thank you!`
+        );
+      } catch (err) {
+        console.warn("[SMS] Skipping wrap-up SMS:", err instanceof Error ? err.message : err);
+      }
 
       await logTourEvent(tourId, "sms_sent", { trigger: "tour_ending" });
     });
@@ -280,10 +300,14 @@ export const tourLifecycle = inngest.createFunction(
       const [tourRow] = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
       if (!tourRow || tourRow.status !== "completed") return;
 
-      await sendSms(
-        visitorPhone,
-        `Thanks for touring ${propertyAddress}, ${visitorFirstName}! 🏡 Questions? Reply to this number anytime.`
-      );
+      try {
+        await sendSms(
+          visitorPhone,
+          `Thanks for touring ${propertyAddress}, ${visitorFirstName}! Questions? Reply to this number anytime.`
+        );
+      } catch (err) {
+        console.warn("[SMS] Skipping thank-you SMS:", err instanceof Error ? err.message : err);
+      }
 
       await getResendClient().emails.send({
         from: EMAIL_FROM,
@@ -324,10 +348,14 @@ export const tourLifecycle = inngest.createFunction(
       const [tourRow] = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
       if (!tourRow || tourRow.status !== "completed") return;
 
-      await sendSms(
-        visitorPhone,
-        `Hi ${visitorFirstName}! How did your tour of ${propertyAddress} go yesterday? We'd love your feedback or to answer any questions. Just reply!`
-      );
+      try {
+        await sendSms(
+          visitorPhone,
+          `Hi ${visitorFirstName}! How did your tour of ${propertyAddress} go yesterday? We'd love your feedback or to answer any questions. Just reply!`
+        );
+      } catch (err) {
+        console.warn("[SMS] Skipping 24h follow-up SMS:", err instanceof Error ? err.message : err);
+      }
 
       await logTourEvent(tourId, "sms_sent", { trigger: "follow_up_24h" });
     });
