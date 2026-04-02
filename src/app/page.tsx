@@ -167,7 +167,7 @@ export default function LandingPage() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" asChild size="lg" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white text-base px-8">
+                <Button variant="outline" asChild size="lg" className="border-slate-600 bg-slate-800/50 text-white hover:bg-slate-700 hover:border-slate-500 text-base px-8">
                   <a href="#features">See how it works</a>
                 </Button>
               </div>
