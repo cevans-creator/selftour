@@ -47,11 +47,15 @@ export function GenerateCodeDialog({ deviceId, deviceName }: GenerateCodeDialogP
     if (!generated) return;
     const codeId = generated.accessCodeId;
     setIsRevoking(true);
+    console.log("[Revoke] accessCodeId:", codeId);
     try {
-      const res = await fetch(`/api/locks/generate-code?accessCodeId=${codeId}`, {
+      const res = await fetch(`/api/locks/generate-code?accessCodeId=${encodeURIComponent(codeId)}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Failed to revoke");
+      if (!res.ok) {
+        const data = await res.json() as { error?: string };
+        throw new Error(data.error ?? "Failed to revoke");
+      }
       setGenerated(null);
       setOpen(false);
       toast.success("Code revoked from lock");
