@@ -39,7 +39,7 @@ export async function DELETE(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { accessCodeId } = (await req.json()) as { accessCodeId: string };
+  const accessCodeId = req.nextUrl.searchParams.get("accessCodeId");
   if (!accessCodeId) return NextResponse.json({ error: "Missing accessCodeId" }, { status: 400 });
 
   await deleteTourAccessCode(accessCodeId);
