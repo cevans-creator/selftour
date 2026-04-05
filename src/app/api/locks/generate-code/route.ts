@@ -42,6 +42,11 @@ export async function DELETE(req: NextRequest) {
   const accessCodeId = req.nextUrl.searchParams.get("accessCodeId");
   if (!accessCodeId) return NextResponse.json({ error: "Missing accessCodeId" }, { status: 400 });
 
-  await deleteTourAccessCode(accessCodeId);
-  return NextResponse.json({ success: true });
+  try {
+    await deleteTourAccessCode(accessCodeId);
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("[Revoke Code] Error:", err);
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Failed to revoke" }, { status: 500 });
+  }
 }
