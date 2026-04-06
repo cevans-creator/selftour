@@ -8,12 +8,14 @@ function getApiBase(): string {
   const el = document.currentScript as HTMLScriptElement | null;
   if (el?.src) {
     try {
-      return new URL(el.src).origin;
+      const origin = new URL(el.src).origin;
+      // Normalize to www to avoid Vercel's apex→www redirect (which strips CORS headers)
+      return origin.replace("://keysherpa.io", "://www.keysherpa.io");
     } catch {
       // ignore
     }
   }
-  return "https://keysherpa.io";
+  return "https://www.keysherpa.io";
 }
 
 const API_BASE = getApiBase();
