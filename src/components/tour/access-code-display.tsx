@@ -39,12 +39,12 @@ export function AccessCodeDisplay({
   return (
     <div className="space-y-6">
       {/* Code display */}
-      <div className="rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 p-8 text-center">
+      <div className="rounded-2xl border-2 border-dashed p-8 text-center" style={{ borderColor: primaryColor + "40", backgroundColor: primaryColor + "08" }}>
         <KeyRound
-          className="mx-auto mb-3 h-8 w-8 text-primary"
+          className="mx-auto mb-3 h-8 w-8"
           style={{ color: primaryColor }}
         />
-        <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
+        <p className="text-sm font-medium uppercase tracking-wider text-gray-500">
           Your Door Code
         </p>
         <div className="mt-2 flex items-center justify-center gap-2">
@@ -61,7 +61,7 @@ export function AccessCodeDisplay({
           </div>
           <button
             onClick={handleCopy}
-            className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
+            className="rounded-lg p-2 text-gray-400 hover:bg-gray-100"
             title="Copy code"
           >
             {copied ? (
@@ -75,7 +75,7 @@ export function AccessCodeDisplay({
         {/* Status + timer */}
         <div className="mt-4">
           {tourEnded ? (
-            <p className="text-sm font-medium text-muted-foreground">Tour has ended</p>
+            <p className="text-sm font-medium text-gray-500">Tour has ended</p>
           ) : tourStarted ? (
             <div>
               <p className="text-sm font-medium text-green-600">Tour in progress</p>
@@ -87,7 +87,7 @@ export function AccessCodeDisplay({
             </div>
           ) : (
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Tour starts in</p>
+              <p className="text-sm font-medium text-gray-500">Tour starts in</p>
               <CountdownTimer
                 targetDate={startsAt}
                 className="mt-2"
@@ -98,25 +98,25 @@ export function AccessCodeDisplay({
       </div>
 
       {/* Instructions */}
-      <div className="rounded-lg bg-muted/50 p-5">
-        <h3 className="font-semibold">How to enter</h3>
-        <ol className="mt-2 space-y-2 text-sm text-muted-foreground">
+      <div className="rounded-lg bg-gray-50 p-5">
+        <h3 className="font-semibold text-gray-900">How to enter</h3>
+        <ol className="mt-2 space-y-2 text-sm text-gray-600">
           <li className="flex gap-2">
-            <span className="flex-shrink-0 font-bold text-foreground">1.</span>
+            <span className="flex-shrink-0 font-bold text-gray-900">1.</span>
             Approach the front door at {propertyAddress}
           </li>
           <li className="flex gap-2">
-            <span className="flex-shrink-0 font-bold text-foreground">2.</span>
+            <span className="flex-shrink-0 font-bold text-gray-900">2.</span>
             Enter your code{" "}
-            <strong className="text-foreground">{accessCode.split("").join("-")}</strong>{" "}
+            <strong className="text-gray-900">{accessCode.split("").join("-")}</strong>{" "}
             on the keypad
           </li>
           <li className="flex gap-2">
-            <span className="flex-shrink-0 font-bold text-foreground">3.</span>
+            <span className="flex-shrink-0 font-bold text-gray-900">3.</span>
             Press the checkmark or enter key to unlock
           </li>
           <li className="flex gap-2">
-            <span className="flex-shrink-0 font-bold text-foreground">4.</span>
+            <span className="flex-shrink-0 font-bold text-gray-900">4.</span>
             Please lock the door when you leave — your code will automatically deactivate
             at tour end
           </li>
@@ -138,7 +138,7 @@ export function AccessCodeDisplay({
             />
             <div>
               <p className="font-medium">Have questions during your tour?</p>
-              <p className="mt-0.5 text-muted-foreground">
+              <p className="mt-0.5 text-gray-500">
                 Text{" "}
                 <a
                   href={`sms:${supportPhone}`}

@@ -140,7 +140,7 @@ export default function ManageTourPage() {
   const alreadyCancelled = tour.status === "cancelled";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
       <header className="py-4 px-4" style={{ backgroundColor: primaryColor }}>
         <div className="mx-auto max-w-lg">
@@ -166,6 +166,7 @@ export default function ManageTourPage() {
               className="mt-6 w-full"
               style={{ backgroundColor: primaryColor }}
               onClick={() => router.push(`/tour/${orgSlug}/${property.id}`)}
+              className="text-white"
             >
               Book a New Time
             </Button>
@@ -194,6 +195,7 @@ export default function ManageTourPage() {
               className="w-full"
               style={{ backgroundColor: primaryColor }}
               onClick={() => router.push(`/tour/${orgSlug}/${property.id}`)}
+              className="text-white"
             >
               Book a New Time
             </Button>
@@ -239,7 +241,7 @@ export default function ManageTourPage() {
                 {/* Reschedule */}
                 {!confirmingReschedule ? (
                   <Button
-                    className="w-full gap-2"
+                    className="w-full gap-2 text-white"
                     style={{ backgroundColor: primaryColor }}
                     onClick={handleReschedule}
                     disabled={cancelling}
@@ -253,7 +255,7 @@ export default function ManageTourPage() {
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
-                        className="flex-1 text-sm"
+                        className="flex-1 text-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
                         onClick={() => setConfirmingReschedule(false)}
                         disabled={cancelling}
                       >
@@ -261,7 +263,7 @@ export default function ManageTourPage() {
                         Go Back
                       </Button>
                       <Button
-                        className="flex-1 text-sm"
+                        className="flex-1 text-sm text-white"
                         style={{ backgroundColor: primaryColor }}
                         onClick={handleReschedule}
                         disabled={cancelling}
@@ -290,7 +292,7 @@ export default function ManageTourPage() {
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
-                        className="flex-1 text-sm"
+                        className="flex-1 text-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
                         onClick={() => setConfirming(false)}
                         disabled={cancelling}
                       >

@@ -120,14 +120,17 @@ export default function AccessPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gray-50 text-center px-4">
         <Home className="h-12 w-12 text-gray-300" />
-        <h1 className="text-xl font-semibold">Tour not found</h1>
+        <h1 className="text-xl font-semibold text-gray-900">Tour not found</h1>
         <p className="text-sm text-gray-500">
           {error ?? "We couldn't find this tour. Please check the link and try again."}
         </p>
-        <Button variant="outline" onClick={() => void load()}>
-          <RefreshCw className="mr-2 h-4 w-4" />
+        <button
+          onClick={() => void load()}
+          className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        >
+          <RefreshCw className="h-4 w-4" />
           Try Again
-        </Button>
+        </button>
       </div>
     );
   }
@@ -135,7 +138,7 @@ export default function AccessPage() {
   const hasTourCode = tour.status === "access_sent" || tour.status === "in_progress" || tour.status === "completed";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
       <header className="py-4" style={{ backgroundColor: org.primaryColor }}>
         <div className="mx-auto max-w-lg px-4">

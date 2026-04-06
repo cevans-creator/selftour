@@ -91,8 +91,8 @@ export default function PropertyDetailTourPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
       </div>
     );
   }
@@ -210,7 +210,7 @@ export default function PropertyDetailTourPage() {
               )}
 
               <Button
-                className="mt-4 w-full"
+                className="mt-4 w-full text-white"
                 disabled={!selectedSlot}
                 onClick={handleBooking}
                 style={

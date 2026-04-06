@@ -76,14 +76,14 @@ export function IdVerification({
   }
 
   return (
-    <div className="rounded-lg border border-border p-6">
+    <div className="rounded-lg border border-gray-200 bg-white p-6">
       <div className="flex items-start gap-4">
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
           <ShieldCheck className="h-5 w-5 text-blue-600" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold">Identity Verification</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h3 className="font-semibold text-gray-900">Identity Verification</h3>
+          <p className="mt-1 text-sm text-gray-500">
             For your safety and security, we require a quick identity check
             before your tour. This takes about 2 minutes and uses Stripe
             Identity — a secure, government-ID verification service.
@@ -102,7 +102,7 @@ export function IdVerification({
               disabled={status === "loading" || status === "verifying"}
               isLoading={status === "loading" || status === "verifying"}
               style={{ backgroundColor: primaryColor }}
-              className="border-0"
+              className="border-0 text-white"
             >
               {status === "verifying" ? "Verifying…" : "Verify My Identity"}
             </Button>
@@ -110,14 +110,14 @@ export function IdVerification({
             {!required && onSkip && status !== "loading" && status !== "verifying" && (
               <button
                 onClick={onSkip}
-                className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+                className="text-sm text-gray-500 underline-offset-4 hover:underline"
               >
                 Skip for now
               </button>
             )}
           </div>
 
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="mt-3 text-xs text-gray-400">
             Your data is encrypted and never stored by us. Powered by Stripe Identity.
           </p>
         </div>

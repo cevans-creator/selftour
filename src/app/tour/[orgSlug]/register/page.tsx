@@ -103,7 +103,7 @@ export default function RegisterPage() {
   const startsAt = new Date(slot.startsAt);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <div className="mx-auto max-w-lg px-4 py-12 sm:px-6">
         <Link href={`/tour/${orgSlug}/${slot.propertyId}`} className="mb-6 flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700">
           <ArrowLeft className="h-4 w-4" />
@@ -112,7 +112,7 @@ export default function RegisterPage() {
 
         <div className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold">Complete Your Booking</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Complete Your Booking</h1>
             <p className="mt-1 text-sm text-gray-500">
               Tour scheduled for{" "}
               <strong>
@@ -123,11 +123,11 @@ export default function RegisterPage() {
 
           {step === "info" ? (
             <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h2 className="mb-4 font-semibold">Your Information</h2>
+              <h2 className="mb-4 font-semibold text-gray-900">Your Information</h2>
               <form onSubmit={handleInfoSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <Label htmlFor="firstName">First Name *</Label>
+                    <Label htmlFor="firstName" className="text-gray-700">First Name *</Label>
                     <Input
                       id="firstName"
                       name="firstName"
@@ -135,10 +135,11 @@ export default function RegisterPage() {
                       value={form.firstName}
                       onChange={handleChange}
                       required
+                      className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Label htmlFor="lastName" className="text-gray-700">Last Name *</Label>
                     <Input
                       id="lastName"
                       name="lastName"
@@ -146,11 +147,12 @@ export default function RegisterPage() {
                       value={form.lastName}
                       onChange={handleChange}
                       required
+                      className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email" className="text-gray-700">Email *</Label>
                   <Input
                     id="email"
                     name="email"
@@ -159,11 +161,12 @@ export default function RegisterPage() {
                     value={form.email}
                     onChange={handleChange}
                     required
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
                   />
                   <p className="text-xs text-gray-400">Your booking confirmation will be sent here.</p>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone" className="text-gray-700">Phone Number *</Label>
                   <Input
                     id="phone"
                     name="phone"
@@ -172,10 +175,11 @@ export default function RegisterPage() {
                     value={form.phone}
                     onChange={handleChange}
                     required
+                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
                   />
                   <p className="text-xs text-gray-400">Your door access code will be sent here by text.</p>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full text-white">
                   Continue
                 </Button>
               </form>

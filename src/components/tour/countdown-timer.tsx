@@ -40,7 +40,7 @@ export function CountdownTimer({
   if (expired) {
     return (
       <div className={className}>
-        <span className="text-muted-foreground text-sm">Tour ended</span>
+        <span className="text-gray-500 text-sm">Tour ended</span>
       </div>
     );
   }
@@ -54,7 +54,7 @@ export function CountdownTimer({
   return (
     <div className={className}>
       {label && (
-        <p className="mb-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        <p className="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500">
           {label}
         </p>
       )}
