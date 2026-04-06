@@ -114,55 +114,27 @@ const item = {
 
 // ─── Neon Line ──────────────────────────────────────────────────────────────
 
-const ON  = "0 0 4px rgba(147,197,253,1), 0 0 14px rgba(49,110,224,0.95), 0 0 40px rgba(49,110,224,0.7), 0 0 90px rgba(49,110,224,0.35), 0 0 160px rgba(49,110,224,0.12)";
-const DIM = "0 0 2px rgba(49,110,224,0.15), 0 0 6px rgba(49,110,224,0.08)";
-const OFF = "0 0 1px rgba(49,110,224,0.04)";
-
 function NeonLine() {
   const controls = useAnimation();
 
   useEffect(() => {
     async function run() {
-      // Phase 1 — power on: blur resolves, stroke materialises, glow builds
+      // Power on — stroke and glow materialise slowly
       await controls.start({
         filter: "blur(0px)",
-        WebkitTextStroke: "1px rgba(255,255,255,0.30)",
-        textShadow: ON,
-        transition: { duration: 2.6, delay: 1.0, ease: [0.06, 0.8, 0.2, 1] },
+        WebkitTextStroke: "1px rgba(255,255,255,0.28)",
+        textShadow: "0 0 6px rgba(147,197,253,0.6), 0 0 20px rgba(49,110,224,0.55), 0 0 55px rgba(49,110,224,0.25), 0 0 110px rgba(49,110,224,0.08)",
+        transition: { duration: 2.8, delay: 1.0, ease: [0.06, 0.8, 0.2, 1] },
       });
 
-      // Phase 2 — unstable flicker like a bad neon tube, then settles
-      await controls.start({
-        textShadow: [ON, OFF, ON, DIM, ON, OFF, OFF, ON, DIM, ON, ON, ON],
-        WebkitTextStroke: [
-          "1px rgba(255,255,255,0.30)",
-          "1px rgba(255,255,255,0.05)",
-          "1px rgba(255,255,255,0.30)",
-          "1px rgba(255,255,255,0.18)",
-          "1px rgba(255,255,255,0.30)",
-          "1px rgba(255,255,255,0.04)",
-          "1px rgba(255,255,255,0.04)",
-          "1px rgba(255,255,255,0.30)",
-          "1px rgba(255,255,255,0.20)",
-          "1px rgba(255,255,255,0.30)",
-          "1px rgba(255,255,255,0.30)",
-          "1px rgba(255,255,255,0.30)",
-        ],
-        transition: {
-          duration: 1.6,
-          times: [0, 0.05, 0.12, 0.22, 0.30, 0.36, 0.44, 0.50, 0.62, 0.72, 0.86, 1],
-          ease: "linear",
-        },
-      });
-
-      // Phase 3 — settled, slow organic pulse forever
+      // Puffco-style pulse — slow, deep, expanding heat glow
       controls.start({
         textShadow: [
-          ON,
-          "0 0 4px rgba(147,197,253,0.8), 0 0 12px rgba(49,110,224,0.75), 0 0 32px rgba(49,110,224,0.5), 0 0 70px rgba(49,110,224,0.25), 0 0 130px rgba(49,110,224,0.09)",
-          ON,
+          "0 0 6px rgba(147,197,253,0.6), 0 0 20px rgba(49,110,224,0.55), 0 0 55px rgba(49,110,224,0.25), 0 0 110px rgba(49,110,224,0.08)",
+          "0 0 10px rgba(147,197,253,0.95), 0 0 30px rgba(49,110,224,0.9), 0 0 80px rgba(49,110,224,0.5), 0 0 160px rgba(49,110,224,0.2), 0 0 260px rgba(49,110,224,0.07)",
+          "0 0 6px rgba(147,197,253,0.6), 0 0 20px rgba(49,110,224,0.55), 0 0 55px rgba(49,110,224,0.25), 0 0 110px rgba(49,110,224,0.08)",
         ],
-        transition: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+        transition: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
       });
     }
     void run();
@@ -173,7 +145,7 @@ function NeonLine() {
       <motion.h1
         className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none"
         style={{ color: "transparent" }}
-        initial={{ filter: "blur(10px)", WebkitTextStroke: "1px rgba(255,255,255,0)", textShadow: OFF }}
+        initial={{ filter: "blur(10px)", WebkitTextStroke: "1px rgba(255,255,255,0)", textShadow: "none" }}
         animate={controls}
       >
         That Run
