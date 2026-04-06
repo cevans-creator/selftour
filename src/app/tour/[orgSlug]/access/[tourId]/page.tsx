@@ -127,105 +127,89 @@ export default function AccessPage() {
   const primary = org.primaryColor;
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-[#f5f5f7] text-gray-900">
 
-      {/* ── Header + Hero ── */}
-      <div style={{ backgroundColor: primary }} className="pb-12">
-        {/* Org name + label bar */}
-        <div className="mx-auto max-w-lg px-4 pt-5 pb-5 flex items-center justify-between">
-          <span className="font-bold text-white text-base">{org.name}</span>
-          <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Self-Guided Tour</span>
-        </div>
-        {/* Greeting */}
-        <div className="mx-auto max-w-lg px-4">
-          <h1 className="text-white text-2xl font-bold">Hi {tour.visitorFirstName}!</h1>
-          <p className="text-white/80 text-sm mt-1">Here are your tour details.</p>
+      {/* ── Header ── */}
+      <div style={{ backgroundColor: primary }} className="pt-10 pb-20">
+        <div className="mx-auto max-w-lg px-5">
+          {/* Org name — small, top-left, like a nav wordmark */}
+          <p className="text-white/60 text-[11px] font-semibold uppercase tracking-[0.14em] mb-7">{org.name}</p>
+          {/* Greeting */}
+          <h1 className="text-white text-[2rem] font-bold leading-tight tracking-tight">
+            Hi {tour.visitorFirstName},
+          </h1>
+          <p className="text-white/70 text-sm mt-1.5 font-medium">your self-guided tour details are below.</p>
         </div>
       </div>
 
       {/* ── Cards ── */}
-      <main className="mx-auto max-w-lg px-4 -mt-8 pb-24 space-y-4">
+      <main className="mx-auto max-w-lg px-5 -mt-10 pb-28 space-y-3">
 
         {/* Tour status card */}
         {tour.status === "scheduled" && !tour.accessCode ? (
-          <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
-            {/* Top accent */}
-            <div className="h-1.5" style={{ backgroundColor: primary }} />
-            <div className="p-6 text-center">
+          <div className="rounded-2xl bg-white shadow-sm border border-black/[0.04] p-5">
+            <div className="flex items-start gap-4">
               <div
-                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full overflow-hidden"
-                style={{ backgroundColor: primary + "15" }}
+                className="flex-shrink-0 h-10 w-10 rounded-xl flex items-center justify-center mt-0.5"
+                style={{ backgroundColor: primary + "18" }}
               >
-                {org.logoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={org.logoUrl} alt={org.name} className="h-10 w-10 object-contain" />
-                ) : (
-                  <Home className="h-8 w-8" style={{ color: primary }} />
-                )}
+                <Home className="h-5 w-5" style={{ color: primary }} />
               </div>
-              <h2 className="text-lg font-bold text-gray-900">Tour Confirmed!</h2>
-              <p className="mt-2 text-sm text-gray-500 leading-relaxed">
-                Your door access code will be sent via text message{" "}
-                <strong className="text-gray-700">15 minutes before your tour</strong>.
-                This page updates automatically when your code is ready.
-              </p>
-              <p className="mt-3 text-sm font-semibold" style={{ color: primary }}>
-                Check back 15 min before your tour starts.
-              </p>
-              <button
-                onClick={() => void load()}
-                className="mt-4 flex items-center gap-1.5 mx-auto text-xs text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <RefreshCw className="h-3 w-3" /> Refresh
-              </button>
+              <div className="flex-1 min-w-0">
+                <h2 className="text-[15px] font-semibold text-gray-900">Tour Confirmed</h2>
+                <p className="mt-1 text-[13px] text-gray-500 leading-relaxed">
+                  Your door code will be texted{" "}
+                  <span className="font-medium text-gray-700">15 minutes before your tour</span>.
+                  This page refreshes automatically.
+                </p>
+                <button
+                  onClick={() => void load()}
+                  className="mt-3 flex items-center gap-1.5 text-[12px] text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <RefreshCw className="h-3 w-3" /> Refresh now
+                </button>
+              </div>
             </div>
           </div>
         ) : hasTourCode && tour.accessCode ? (
-          <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
-            <div className="h-1.5" style={{ backgroundColor: primary }} />
-            <div className="p-6">
-              <AccessCodeDisplay
-                accessCode={tour.accessCode}
-                propertyAddress={`${tour.propertyAddress}, ${tour.propertyCity}`}
-                startsAt={new Date(tour.scheduledAt)}
-                endsAt={new Date(tour.endsAt)}
-                visitorFirstName={tour.visitorFirstName}
-                supportPhone={org.twilioPhoneNumber ?? undefined}
-                primaryColor={primary}
-              />
-            </div>
+          <div className="rounded-2xl bg-white shadow-sm border border-black/[0.04] p-5">
+            <AccessCodeDisplay
+              accessCode={tour.accessCode}
+              propertyAddress={`${tour.propertyAddress}, ${tour.propertyCity}`}
+              startsAt={new Date(tour.scheduledAt)}
+              endsAt={new Date(tour.endsAt)}
+              visitorFirstName={tour.visitorFirstName}
+              supportPhone={org.twilioPhoneNumber ?? undefined}
+              primaryColor={primary}
+            />
           </div>
         ) : tour.status === "cancelled" ? (
-          <div className="rounded-2xl bg-red-50 border border-red-100 p-6 text-center">
-            <h2 className="font-semibold text-red-800">Tour Cancelled</h2>
-            <p className="mt-1 text-sm text-red-600">This tour has been cancelled. Please contact us to reschedule.</p>
+          <div className="rounded-2xl bg-red-50 border border-red-100 p-5">
+            <h2 className="text-[15px] font-semibold text-red-800">Tour Cancelled</h2>
+            <p className="mt-1 text-[13px] text-red-600">This tour has been cancelled. Please contact us to reschedule.</p>
           </div>
         ) : (
-          <div className="rounded-2xl bg-white shadow-sm p-6 text-center">
-            <h2 className="font-semibold text-gray-900">Tour Completed</h2>
-            <p className="mt-1 text-sm text-gray-500">Thank you for visiting! We hope you loved the home.</p>
+          <div className="rounded-2xl bg-white shadow-sm border border-black/[0.04] p-5">
+            <h2 className="text-[15px] font-semibold text-gray-900">Tour Completed</h2>
+            <p className="mt-1 text-[13px] text-gray-500">Thank you for visiting! We hope you loved the home.</p>
           </div>
         )}
 
         {/* Property + time card */}
-        <div className="rounded-2xl bg-white shadow-sm divide-y divide-gray-100">
-          <div className="flex items-start gap-3 p-4">
-            <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: primary + "15" }}>
-              <MapPin className="h-4 w-4" style={{ color: primary }} />
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Property</p>
-              <p className="font-semibold text-gray-900">{tour.propertyAddress}</p>
-              <p className="text-sm text-gray-500">{tour.propertyCity}</p>
+        <div className="rounded-2xl bg-white shadow-sm border border-black/[0.04] divide-y divide-gray-100">
+          <div className="flex items-center gap-3.5 px-5 py-4">
+            <MapPin className="h-4 w-4 flex-shrink-0 text-gray-400" />
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Property</p>
+              <p className="text-[14px] font-semibold text-gray-900 truncate">{tour.propertyAddress}</p>
+              <p className="text-[13px] text-gray-500">{tour.propertyCity}</p>
             </div>
           </div>
-          <div className="flex items-start gap-3 p-4">
-            <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: primary + "15" }}>
-              <Clock className="h-4 w-4" style={{ color: primary }} />
-            </div>
+          <div className="flex items-center gap-3.5 px-5 py-4">
+            <Clock className="h-4 w-4 flex-shrink-0 text-gray-400" />
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Scheduled</p>
-              <p className="font-semibold text-gray-900">{formatDateTime(tour.scheduledAt)}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Scheduled</p>
+              <p className="text-[14px] font-semibold text-gray-900">{formatDateTime(tour.scheduledAt)}</p>
             </div>
           </div>
         </div>
