@@ -2,6 +2,27 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Handle CORS for embed API routes — these are public, no auth needed
+  if (pathname.startsWith("/api/tour")) {
+    if (request.method === "OPTIONS") {
+      return new NextResponse(null, {
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      });
+    }
+    const res = NextResponse.next({ request });
+    res.headers.set("Access-Control-Allow-Origin", "*");
+    res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    return res;
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -47,6 +68,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/webhooks|api/cron|api/tour|tour).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/webhooks|api/cron|tour).*)",
   ],
 };

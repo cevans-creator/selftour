@@ -3,7 +3,7 @@
   "framework": "nextjs",
   "headers": [
     {
-      "source": "/api/tour/(.*)",
+      "source": "/api/tour/:path*",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
