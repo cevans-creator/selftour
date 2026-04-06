@@ -159,12 +159,13 @@ export default function LandingPage() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const orbOpacity = useTransform(scrollYProgress, [0.5, 1], [1, 0.12]);
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden uppercase" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
 
       {/* ── Global glow orb — fixed so it follows scroll ─────────── */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <motion.div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" style={{ opacity: orbOpacity }}>
         <motion.div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[900px] w-[900px] rounded-full"
           style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
@@ -179,7 +180,7 @@ export default function LandingPage() {
           animate={{ opacity: [0.2, 0.35, 0.2], scale: [1, 1.12, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
         />
-      </div>
+      </motion.div>
 
       {/* ── Nav ─────────────────────────────────────────────────────── */}
       <motion.header
