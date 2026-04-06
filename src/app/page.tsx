@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useScroll, useTransform, useInView, useAnimation } from "framer-motion";
+import { useRef, useEffect } from "react";
 import { KeyRound, ArrowRight, Check } from "lucide-react";
 
 // ─── Data ──────────────────────────────────────────────────────────────────
@@ -112,6 +112,76 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] } },
 };
 
+// ─── Neon Line ──────────────────────────────────────────────────────────────
+
+const ON  = "0 0 4px rgba(147,197,253,1), 0 0 14px rgba(49,110,224,0.95), 0 0 40px rgba(49,110,224,0.7), 0 0 90px rgba(49,110,224,0.35), 0 0 160px rgba(49,110,224,0.12)";
+const DIM = "0 0 2px rgba(49,110,224,0.15), 0 0 6px rgba(49,110,224,0.08)";
+const OFF = "0 0 1px rgba(49,110,224,0.04)";
+
+function NeonLine() {
+  const controls = useAnimation();
+
+  useEffect(() => {
+    async function run() {
+      // Phase 1 — power on: blur resolves, stroke materialises, glow builds
+      await controls.start({
+        filter: "blur(0px)",
+        WebkitTextStroke: "1px rgba(255,255,255,0.30)",
+        textShadow: ON,
+        transition: { duration: 2.6, delay: 1.0, ease: [0.06, 0.8, 0.2, 1] },
+      });
+
+      // Phase 2 — unstable flicker like a bad neon tube, then settles
+      await controls.start({
+        textShadow: [ON, OFF, ON, DIM, ON, OFF, OFF, ON, DIM, ON, ON, ON],
+        WebkitTextStroke: [
+          "1px rgba(255,255,255,0.30)",
+          "1px rgba(255,255,255,0.05)",
+          "1px rgba(255,255,255,0.30)",
+          "1px rgba(255,255,255,0.18)",
+          "1px rgba(255,255,255,0.30)",
+          "1px rgba(255,255,255,0.04)",
+          "1px rgba(255,255,255,0.04)",
+          "1px rgba(255,255,255,0.30)",
+          "1px rgba(255,255,255,0.20)",
+          "1px rgba(255,255,255,0.30)",
+          "1px rgba(255,255,255,0.30)",
+          "1px rgba(255,255,255,0.30)",
+        ],
+        transition: {
+          duration: 1.6,
+          times: [0, 0.05, 0.12, 0.22, 0.30, 0.36, 0.44, 0.50, 0.62, 0.72, 0.86, 1],
+          ease: "linear",
+        },
+      });
+
+      // Phase 3 — settled, slow organic pulse forever
+      controls.start({
+        textShadow: [
+          ON,
+          "0 0 4px rgba(147,197,253,0.8), 0 0 12px rgba(49,110,224,0.75), 0 0 32px rgba(49,110,224,0.5), 0 0 70px rgba(49,110,224,0.25), 0 0 130px rgba(49,110,224,0.09)",
+          ON,
+        ],
+        transition: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+      });
+    }
+    void run();
+  }, [controls]);
+
+  return (
+    <div className="overflow-hidden">
+      <motion.h1
+        className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none"
+        style={{ color: "transparent" }}
+        initial={{ filter: "blur(10px)", WebkitTextStroke: "1px rgba(255,255,255,0)", textShadow: OFF }}
+        animate={controls}
+      >
+        That Run
+      </motion.h1>
+    </div>
+  );
+}
+
 // ─── Page ───────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
@@ -210,31 +280,8 @@ export default function LandingPage() {
               Home Tours
             </motion.h1>
           </div>
-          {/* "that run" — powers on slowly like a light turning on */}
-          <div className="overflow-hidden relative">
-            <motion.h1
-              className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none"
-              initial={{ color: "rgba(0,0,0,0)", WebkitTextStroke: "1px rgba(255,255,255,0)", filter: "blur(8px)" }}
-              animate={{
-                color: "rgba(0,0,0,0)",
-                WebkitTextStroke: "1px rgba(255,255,255,0.28)",
-                filter: "blur(0px)",
-                textShadow: [
-                  "0 0 0px rgba(49,110,224,0)",
-                  "0 0 40px rgba(49,110,224,0.6), 0 0 80px rgba(49,110,224,0.2)",
-                  "0 0 20px rgba(49,110,224,0.25), 0 0 60px rgba(49,110,224,0.1)",
-                ],
-              }}
-              transition={{
-                delay: 1.1,
-                duration: 2.4,
-                ease: [0.16, 1, 0.3, 1],
-                textShadow: { duration: 3, delay: 1.1, ease: "easeOut" },
-              }}
-            >
-              that run
-            </motion.h1>
-          </div>
+          {/* "that run" — powers on then flickers like a neon sign */}
+          <NeonLine />
           <div className="overflow-hidden">
             <motion.h1
               initial={{ y: "100%" }}
