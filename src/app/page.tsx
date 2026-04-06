@@ -407,11 +407,24 @@ export default function LandingPage() {
           <StaggerList className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3">
             {PRICING.map((plan) => (
               <motion.div key={plan.name} variants={item}
-                className={`relative rounded-2xl border p-8 transition-all duration-300 ${plan.highlight
-                  ? "border-[#316ee0]/40 bg-[#316ee0]/[0.05] shadow-[0_0_60px_rgba(49,110,224,0.12)]"
-                  : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]"
-                  }`}
+                className="relative rounded-2xl border p-8 cursor-default"
+                initial={plan.highlight ? {
+                  borderColor: "rgba(49,110,224,0.4)",
+                  backgroundColor: "rgba(49,110,224,0.05)",
+                  boxShadow: "0 0 60px rgba(49,110,224,0.12)",
+                } : {
+                  borderColor: "rgba(255,255,255,0.06)",
+                  backgroundColor: "rgba(255,255,255,0.02)",
+                  boxShadow: "0 0 0px rgba(49,110,224,0)",
+                }}
+                whileHover={{
+                  borderColor: "rgba(49,110,224,0.4)",
+                  backgroundColor: "rgba(49,110,224,0.05)",
+                  boxShadow: "0 0 60px rgba(49,110,224,0.18), 0 0 120px rgba(49,110,224,0.07)",
+                  transition: { duration: 0.4, ease: "easeOut" },
+                }}
               >
+                <div className="absolute -top-px left-1/2 -translate-x-1/2 h-px w-32 bg-gradient-to-r from-transparent via-[#316ee0] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 {plan.highlight && (
                   <div className="absolute -top-px left-1/2 -translate-x-1/2 h-px w-32 bg-gradient-to-r from-transparent via-[#316ee0] to-transparent" />
                 )}
