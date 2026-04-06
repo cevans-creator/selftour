@@ -163,6 +163,24 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden uppercase" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
 
+      {/* ── Global glow orb — fixed so it follows scroll ─────────── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <motion.div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[900px] w-[900px] rounded-full"
+          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
+          initial={{ opacity: 0.18 }}
+          animate={{ opacity: [0.18, 0.28, 0.18], scale: [1, 1.08, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] rounded-full"
+          style={{ background: "radial-gradient(circle, #93c5fd 0%, #316ee0 30%, transparent 70%)" }}
+          initial={{ opacity: 0.2 }}
+          animate={{ opacity: [0.2, 0.35, 0.2], scale: [1, 1.12, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+        />
+      </div>
+
       {/* ── Nav ─────────────────────────────────────────────────────── */}
       <motion.header
         className="fixed top-0 z-50 w-full"
@@ -208,22 +226,6 @@ export default function LandingPage() {
           }}
         />
 
-        {/* Blue glow orb — outer pulse */}
-        <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[900px] w-[900px] rounded-full"
-          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
-          initial={{ opacity: 0.18 }}
-          animate={{ opacity: [0.18, 0.28, 0.18], scale: [1, 1.08, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Inner bright core pulse */}
-        <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] rounded-full"
-          style={{ background: "radial-gradient(circle, #93c5fd 0%, #316ee0 30%, transparent 70%)" }}
-          initial={{ opacity: 0.2 }}
-          animate={{ opacity: [0.2, 0.35, 0.2], scale: [1, 1.12, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-        />
 
         {/* Vignette */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60 pointer-events-none" />
