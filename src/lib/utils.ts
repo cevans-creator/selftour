@@ -96,6 +96,10 @@ export function buildAccessUrl(orgSlug: string, tourId: string): string {
   return `${process.env.NEXT_PUBLIC_APP_URL}/tour/${orgSlug}/access/${tourId}`;
 }
 
+export function buildManageUrl(orgSlug: string, tourId: string): string {
+  return `${process.env.NEXT_PUBLIC_APP_URL}/tour/${orgSlug}/manage/${tourId}`;
+}
+
 // ─── Validation helpers ───────────────────────────────────────────────────────
 
 export function isValidPhone(phone: string): boolean {

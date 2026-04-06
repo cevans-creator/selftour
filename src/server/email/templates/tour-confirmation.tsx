@@ -24,6 +24,7 @@ interface TourConfirmationEmailProps {
   tourTime: string;
   tourDurationMinutes: number;
   accessUrl: string;
+  manageUrl?: string;
   orgName: string;
   orgLogoUrl?: string;
   orgPrimaryColor?: string;
@@ -40,6 +41,7 @@ export function TourConfirmationEmail({
   tourTime,
   tourDurationMinutes,
   accessUrl,
+  manageUrl,
   orgName,
   orgLogoUrl,
   orgPrimaryColor = "#2563eb",
@@ -107,6 +109,15 @@ export function TourConfirmationEmail({
             >
               View Tour Details
             </Button>
+
+            {manageUrl && (
+              <Text style={manageText}>
+                Need to cancel or reschedule?{" "}
+                <a href={manageUrl} style={manageLink}>
+                  Manage your tour here
+                </a>
+              </Text>
+            )}
 
             <Text style={paragraph}>
               During your tour, you can text questions to the number you
@@ -225,6 +236,17 @@ const button: React.CSSProperties = {
   borderRadius: "6px",
   padding: "12px 24px",
   margin: "16px 0",
+};
+
+const manageText: React.CSSProperties = {
+  color: "#64748b",
+  fontSize: "14px",
+  margin: "0 0 16px",
+};
+
+const manageLink: React.CSSProperties = {
+  color: "#7c3aed",
+  textDecoration: "underline",
 };
 
 const agentSection: React.CSSProperties = {

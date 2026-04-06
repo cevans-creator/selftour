@@ -9,7 +9,7 @@ import {
 import { eq, and, or, gte, lte, sql } from "drizzle-orm";
 import { inngest } from "@/server/inngest/client";
 import { addMinutes } from "date-fns";
-import { buildAccessUrl, normalizePhone } from "@/lib/utils";
+import { buildAccessUrl, buildManageUrl, normalizePhone } from "@/lib/utils";
 
 interface BookingBody {
   orgSlug: string;
@@ -144,6 +144,7 @@ export async function POST(req: NextRequest) {
     }
 
     const accessUrl = buildAccessUrl(org.slug, tour.id);
+    const manageUrl = buildManageUrl(org.slug, tour.id);
 
     // Fire Inngest lifecycle
     await inngest.send({
@@ -161,6 +162,7 @@ export async function POST(req: NextRequest) {
         propertyAddress: `${property.address}, ${property.city}, ${property.state}`,
         seamDeviceId: property.seamDeviceId,
         accessUrl,
+        manageUrl,
         orgName: org.name,
         orgLogoUrl: org.logoUrl,
         orgPrimaryColor: org.primaryColor,

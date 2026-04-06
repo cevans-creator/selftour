@@ -22,6 +22,7 @@ export interface TourBookedEvent {
     propertyAddress: string;
     seamDeviceId: string | null;
     accessUrl: string;
+    manageUrl: string;
     orgName: string;
     orgLogoUrl: string | null;
     orgPrimaryColor: string;
