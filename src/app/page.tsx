@@ -53,14 +53,14 @@ const PRICING = [
     price: "$0",
     period: "forever",
     description: "Perfect for trying it out",
-    features: ["2 active properties", "20 tours / month", "1 team member", "Basic SMS automation", "AI assistant"],
+    features: ["1 active property", "20 tours / month", "1 team member", "Basic SMS automation", "AI assistant"],
     cta: "Start Free",
     href: "/signup",
     highlight: false,
   },
   {
     name: "Starter",
-    price: "$99",
+    price: "$999",
     period: "per month",
     description: "For small teams",
     features: ["10 active properties", "100 tours / month", "3 team members", "Full SMS + email automation", "AI knowledge base", "Identity verification", "Analytics"],
@@ -70,7 +70,7 @@ const PRICING = [
   },
   {
     name: "Growth",
-    price: "$299",
+    price: "$2,999",
     period: "per month",
     description: "For growing portfolios",
     features: ["50 active properties", "500 tours / month", "10 team members", "Everything in Starter", "White-label branding", "Priority support", "Custom integrations"],
@@ -123,16 +123,16 @@ function NeonLine() {
       await controls.start({
         filter: "blur(0px)",
         WebkitTextStroke: "1px rgba(255,255,255,0.28)",
-        textShadow: "0 0 6px rgba(147,197,253,0.6), 0 0 20px rgba(49,110,224,0.55), 0 0 55px rgba(49,110,224,0.25), 0 0 110px rgba(49,110,224,0.08)",
+        textShadow: "0 0 6px rgba(147,197,253,0.6), 0 0 18px rgba(49,110,224,0.55), 0 0 40px rgba(49,110,224,0.22)",
         transition: { duration: 2.8, delay: 1.0, ease: [0.06, 0.8, 0.2, 1] },
       });
 
       // Puffco-style pulse — slow, deep, expanding heat glow
       controls.start({
         textShadow: [
-          "0 0 6px rgba(147,197,253,0.6), 0 0 20px rgba(49,110,224,0.55), 0 0 55px rgba(49,110,224,0.25), 0 0 110px rgba(49,110,224,0.08)",
-          "0 0 10px rgba(147,197,253,0.95), 0 0 30px rgba(49,110,224,0.9), 0 0 80px rgba(49,110,224,0.5), 0 0 160px rgba(49,110,224,0.2), 0 0 260px rgba(49,110,224,0.07)",
-          "0 0 6px rgba(147,197,253,0.6), 0 0 20px rgba(49,110,224,0.55), 0 0 55px rgba(49,110,224,0.25), 0 0 110px rgba(49,110,224,0.08)",
+          "0 0 6px rgba(147,197,253,0.6), 0 0 18px rgba(49,110,224,0.55), 0 0 40px rgba(49,110,224,0.22)",
+          "0 0 10px rgba(147,197,253,0.95), 0 0 28px rgba(49,110,224,0.9), 0 0 60px rgba(49,110,224,0.45)",
+          "0 0 6px rgba(147,197,253,0.6), 0 0 18px rgba(49,110,224,0.55), 0 0 40px rgba(49,110,224,0.22)",
         ],
         transition: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
       });
@@ -141,16 +141,14 @@ function NeonLine() {
   }, [controls]);
 
   return (
-    <div className="overflow-hidden">
-      <motion.h1
-        className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none"
-        style={{ color: "transparent" }}
-        initial={{ filter: "blur(10px)", WebkitTextStroke: "1px rgba(255,255,255,0)", textShadow: "none" }}
-        animate={controls}
-      >
-        That Run
-      </motion.h1>
-    </div>
+    <motion.h1
+      className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none"
+      style={{ color: "transparent", willChange: "text-shadow" }}
+      initial={{ filter: "blur(10px)", WebkitTextStroke: "1px rgba(255,255,255,0)", textShadow: "none" }}
+      animate={controls}
+    >
+      That Run
+    </motion.h1>
   );
 }
 
@@ -236,7 +234,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, letterSpacing: "0.5em" }}
             animate={{ opacity: 1, letterSpacing: "0.3em" }}
             transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
-            className="mb-8 text-xs text-white/55 tracking-[0.3em]"
+            className="mb-6 sm:mb-8 hidden sm:block text-xs text-white/55 tracking-[0.3em]"
           >
             // Intelligent Tour Automation
           </motion.p>
@@ -270,9 +268,11 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 1, 0.5, 1] }}
-            className="mx-auto mt-10 max-w-xl text-base leading-relaxed text-white/65 tracking-wide"
+            className="mx-auto mt-6 sm:mt-10 max-w-sm sm:max-w-xl text-sm sm:text-base leading-relaxed text-white/65 normal-case"
+            style={{ textTransform: "none" }}
           >
-            Smart lock access codes, AI-powered Q&A, and automated follow-ups — so buyers and renters can tour 24/7 while your team stays focused on closing.
+            Smart locks, AI Q&amp;A, and automated follow-ups —
+            so buyers can tour 24/7 while your team closes.
           </motion.p>
 
           {/* CTAs */}
@@ -280,16 +280,16 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65, ease: [0.25, 1, 0.5, 1] }}
-            className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+            className="mt-8 sm:mt-12 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
           >
             <Link href="/signup"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-[#316ee0] px-8 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_rgba(49,110,224,0.4)] hover:shadow-[0_0_60px_rgba(49,110,224,0.6)] hover:bg-[#2558c8] transition-all duration-300"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-[#316ee0] px-7 py-3 sm:px-8 sm:py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_rgba(49,110,224,0.4)] hover:shadow-[0_0_60px_rgba(49,110,224,0.6)] hover:bg-[#2558c8] transition-all duration-300"
             >
               Start for free
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <a href="#features"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-8 py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-7 py-3 sm:px-8 sm:py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
             >
               See how it works
             </a>
@@ -299,15 +299,15 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.9 }}
-            className="mt-5 font-mono text-xs text-white/40 tracking-widest"
+            className="mt-4 hidden sm:block font-mono text-xs text-white/40 tracking-widest"
           >
             NO CREDIT CARD · FREE PLAN AVAILABLE
           </motion.p>
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator — hidden on mobile to prevent overlap */}
         <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4, duration: 1 }}
