@@ -172,9 +172,9 @@ export default async function IntegrationsPage() {
                     {device.batteryLevel !== null && (
                       <div className="flex items-center gap-1.5 text-sm">
                         <Battery
-                          className={`h-4 w-4 ${(device.batteryLevel ?? 1) < 20 ? "text-yellow-500" : "text-green-600"}`}
+                          className={`h-4 w-4 ${(device.batteryLevel ?? 1) < 0.2 ? "text-yellow-500" : "text-green-600"}`}
                         />
-                        <span>{device.batteryLevel}%</span>
+                        <span>{Math.round((device.batteryLevel ?? 0) * 100)}%</span>
                       </div>
                     )}
 
