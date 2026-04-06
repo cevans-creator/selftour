@@ -23,23 +23,32 @@ export async function GET(req: NextRequest) {
   try {
     const seam = getSeamClient();
     const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-    const events = await seam.events.list({
-      ...(deviceId ? { device_id: deviceId } : {}),
-      event_types: [
-        "lock.locked",
-        "lock.unlocked",
-        "access_code.set_on_device",
-        "access_code.created",
-        "access_code.deleted",
-      ],
-      since,
-      limit: 50,
-    });
+
+    const [events, devices] = await Promise.all([
+      seam.events.list({
+        ...(deviceId ? { device_id: deviceId } : {}),
+        event_types: [
+          "lock.locked",
+          "lock.unlocked",
+          "access_code.set_on_device",
+          "access_code.created",
+          "access_code.deleted",
+        ],
+        since,
+        limit: 50,
+      }),
+      seam.devices.list({}),
+    ]);
+
+    const deviceNameMap = new Map(
+      devices.map((d) => [d.device_id, d.display_name ?? d.device_id])
+    );
 
     const formatted = events.map((e) => ({
       eventId: e.event_id,
       eventType: e.event_type,
       deviceId: e.device_id,
+      deviceName: deviceNameMap.get(e.device_id ?? "") ?? e.device_id ?? "Unknown device",
       occurredAt: e.occurred_at,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       accessCodeId: (e as any).access_code_id ?? null,
