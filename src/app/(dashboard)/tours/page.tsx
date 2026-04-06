@@ -5,6 +5,7 @@ import { tours, properties, visitors, orgMembers, organizations } from "@/server
 import { eq, and, gte, lte, desc } from "drizzle-orm";
 import { startOfDay, endOfDay } from "date-fns";
 import { TourTable } from "@/components/dashboard/tour-table";
+import { AddTourDialog } from "@/components/dashboard/add-tour-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { TourStatus } from "@/types";
@@ -29,6 +30,12 @@ export default async function ToursPage() {
   const todayStart = startOfDay(now);
   const todayEnd = endOfDay(now);
 
+  // Fetch active properties for "Add Tour" modal
+  const orgProperties = await db
+    .select({ id: properties.id, name: properties.name, address: properties.address, city: properties.city, state: properties.state })
+    .from(properties)
+    .where(and(eq(properties.organizationId, org.id), eq(properties.status, "active")));
+
   // Today's tours
   const todayTours = await db
     .select({ tour: tours, property: properties, visitor: visitors })
@@ -37,6 +44,17 @@ export default async function ToursPage() {
     .innerJoin(visitors, eq(tours.visitorId, visitors.id))
     .where(and(eq(tours.organizationId, org.id), gte(tours.scheduledAt, todayStart), lte(tours.scheduledAt, todayEnd)))
     .orderBy(tours.scheduledAt);
+
+  // Upcoming tours (next 30 days, excluding today)
+  const thirtyDaysAhead = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const upcomingTours = await db
+    .select({ tour: tours, property: properties, visitor: visitors })
+    .from(tours)
+    .innerJoin(properties, eq(tours.propertyId, properties.id))
+    .innerJoin(visitors, eq(tours.visitorId, visitors.id))
+    .where(and(eq(tours.organizationId, org.id), gte(tours.scheduledAt, todayEnd), lte(tours.scheduledAt, thirtyDaysAhead)))
+    .orderBy(tours.scheduledAt)
+    .limit(50);
 
   // Recent history (last 30 days)
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -56,24 +74,26 @@ export default async function ToursPage() {
       visitor: r.visitor,
     }));
 
-  // Count active tours
   const activeTours = todayTours.filter((t) =>
     ["in_progress", "access_sent"].includes(t.tour.status)
   );
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Tours</h1>
-        <div className="mt-1 flex items-center gap-3">
-          <p className="text-muted-foreground">{todayTours.length} today</p>
-          {activeTours.length > 0 && (
-            <Badge variant="success" className="flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-green-600 animate-pulse" />
-              {activeTours.length} active now
-            </Badge>
-          )}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Tours</h1>
+          <div className="mt-1 flex items-center gap-3">
+            <p className="text-muted-foreground">{todayTours.length} today</p>
+            {activeTours.length > 0 && (
+              <Badge variant="success" className="flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-600 animate-pulse" />
+                {activeTours.length} active now
+              </Badge>
+            )}
+          </div>
         </div>
+        <AddTourDialog properties={orgProperties} />
       </div>
 
       {/* Today */}
@@ -85,9 +105,26 @@ export default async function ToursPage() {
           <TourTable
             tours={mapTours(todayTours)}
             emptyMessage="No tours scheduled for today."
+            allowCancel
           />
         </CardContent>
       </Card>
+
+      {/* Upcoming */}
+      {upcomingTours.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming (Next 30 Days)</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <TourTable
+              tours={mapTours(upcomingTours)}
+              emptyMessage="No upcoming tours."
+              allowCancel
+            />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Recent history */}
       <Card>

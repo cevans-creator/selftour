@@ -1,8 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { formatTime, formatDate } from "@/lib/utils";
 import { TOUR_STATUS_STYLES } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Loader2, X } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -38,6 +43,7 @@ interface TourTableProps {
   tours: TourRow[];
   onTourClick?: (tourId: string) => void;
   emptyMessage?: string;
+  allowCancel?: boolean;
 }
 
 const STATUS_BADGE_VARIANT: Record<
@@ -52,10 +58,64 @@ const STATUS_BADGE_VARIANT: Record<
   no_show: "orange",
 };
 
+const CANCELLABLE: TourStatus[] = ["scheduled", "access_sent", "in_progress"];
+
+function CancelButton({ tourId }: { tourId: string }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+
+  const handleCancel = async () => {
+    if (!confirming) {
+      setConfirming(true);
+      setTimeout(() => setConfirming(false), 3000);
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/tours/${tourId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "cancel" }),
+      });
+      const data = await res.json() as { error?: string };
+      if (!res.ok) {
+        toast.error(data.error ?? "Failed to cancel tour");
+        return;
+      }
+      toast.success("Tour cancelled");
+      router.refresh();
+    } catch {
+      toast.error("Failed to cancel tour");
+    } finally {
+      setLoading(false);
+      setConfirming(false);
+    }
+  };
+
+  return (
+    <Button
+      size="sm"
+      variant="outline"
+      className={`h-7 px-2 text-xs gap-1 ${confirming ? "border-red-400 text-red-600 hover:bg-red-50" : "text-gray-500 hover:text-red-600 hover:border-red-300"}`}
+      onClick={(e) => { e.stopPropagation(); void handleCancel(); }}
+      disabled={loading}
+    >
+      {loading ? (
+        <Loader2 className="h-3 w-3 animate-spin" />
+      ) : (
+        <X className="h-3 w-3" />
+      )}
+      {confirming ? "Confirm?" : "Cancel"}
+    </Button>
+  );
+}
+
 export function TourTable({
   tours,
   onTourClick,
   emptyMessage = "No tours found.",
+  allowCancel = false,
 }: TourTableProps) {
   if (tours.length === 0) {
     return (
@@ -77,6 +137,7 @@ export function TourTable({
               <TableHead>Date & Time</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Code</TableHead>
+              {allowCancel && <TableHead />}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -110,6 +171,13 @@ export function TourTable({
                     <span className="text-muted-foreground">—</span>
                   )}
                 </TableCell>
+                {allowCancel && (
+                  <TableCell>
+                    {CANCELLABLE.includes(tour.status) && (
+                      <CancelButton tourId={tour.id} />
+                    )}
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -129,9 +197,14 @@ export function TourTable({
                 <p className="font-medium text-sm">{visitor.firstName} {visitor.lastName}</p>
                 <p className="text-xs text-muted-foreground">{visitor.phone}</p>
               </div>
-              <Badge variant={STATUS_BADGE_VARIANT[tour.status]} className="flex-shrink-0">
-                {TOUR_STATUS_STYLES[tour.status]?.label ?? tour.status}
-              </Badge>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Badge variant={STATUS_BADGE_VARIANT[tour.status]}>
+                  {TOUR_STATUS_STYLES[tour.status]?.label ?? tour.status}
+                </Badge>
+                {allowCancel && CANCELLABLE.includes(tour.status) && (
+                  <CancelButton tourId={tour.id} />
+                )}
+              </div>
             </div>
             <p className="text-sm text-muted-foreground">{property.address}, {property.city}</p>
             <div className="flex items-center justify-between">
