@@ -169,12 +169,26 @@ export default function ManageTourPage() {
           </div>
         ) : alreadyCancelled ? (
           /* Already cancelled */
-          <div className="rounded-2xl bg-white p-8 shadow-sm text-center">
-            <CalendarX2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h1 className="text-xl font-bold text-gray-900">Tour Already Cancelled</h1>
-            <p className="mt-2 text-gray-500 text-sm">This tour has already been cancelled.</p>
+          <div className="space-y-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Tour Cancelled</h1>
+              <p className="mt-1 text-sm text-gray-500">This tour has been cancelled.</p>
+            </div>
+            <div className="rounded-2xl bg-white p-6 shadow-sm space-y-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Property</p>
+                <p className="mt-1 font-medium text-gray-900">{property.address}</p>
+                <p className="text-sm text-gray-500">{property.city}, {property.state}</p>
+              </div>
+              <hr className="border-gray-100" />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Was Scheduled For</p>
+                <p className="mt-1 font-medium text-gray-900">{formatDate(scheduledAt)}</p>
+                <p className="text-sm text-gray-500">{formatTime(scheduledAt)} – {formatTime(endsAt)}</p>
+              </div>
+            </div>
             <Button
-              className="mt-6 w-full"
+              className="w-full"
               style={{ backgroundColor: primaryColor }}
               onClick={() => router.push(`/tour/${orgSlug}/${property.id}`)}
             >
