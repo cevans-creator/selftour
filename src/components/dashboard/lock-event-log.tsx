@@ -9,6 +9,7 @@ interface LockEvent {
   eventType: string;
   deviceId: string;
   deviceName: string;
+  propertyName: string | null;
   occurredAt: string;
   accessCodeId: string | null;
 }
@@ -57,7 +58,7 @@ function EventRow({ event }: { event: LockEvent }) {
   );
 }
 
-function DeviceGroup({ deviceName, events }: { deviceName: string; events: LockEvent[] }) {
+function DeviceGroup({ deviceName, propertyName, events }: { deviceName: string; propertyName: string | null; events: LockEvent[] }) {
   const [open, setOpen] = useState(true);
 
   return (
@@ -66,14 +67,19 @@ function DeviceGroup({ deviceName, events }: { deviceName: string; events: LockE
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between px-4 py-3 bg-white/[0.03] hover:bg-white/[0.05] transition-colors"
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 min-w-0">
           {open ? (
-            <ChevronDown className="h-4 w-4 text-white/35" />
+            <ChevronDown className="h-4 w-4 flex-shrink-0 text-white/35" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-white/35" />
+            <ChevronRight className="h-4 w-4 flex-shrink-0 text-white/35" />
           )}
-          <span className="text-sm font-medium text-white/80">{deviceName}</span>
-          <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs text-white/40">
+          <div className="flex flex-col items-start min-w-0">
+            <span className="text-sm font-medium text-white/80 truncate">{deviceName}</span>
+            <span className={`text-xs truncate ${propertyName ? "text-white/35" : "text-white/20 italic"}`}>
+              {propertyName ?? "Unassigned"}
+            </span>
+          </div>
+          <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs text-white/40 flex-shrink-0">
             {events.length}
           </span>
         </div>
@@ -115,8 +121,8 @@ export function LockEventLog({ deviceId }: LockEventLogProps) {
   useEffect(() => { void load(); }, [load]);
 
   // Group events by device
-  const grouped = events.reduce<Record<string, { name: string; events: LockEvent[] }>>((acc, e) => {
-    if (!acc[e.deviceId]) acc[e.deviceId] = { name: e.deviceName, events: [] };
+  const grouped = events.reduce<Record<string, { name: string; propertyName: string | null; events: LockEvent[] }>>((acc, e) => {
+    if (!acc[e.deviceId]) acc[e.deviceId] = { name: e.deviceName, propertyName: e.propertyName, events: [] };
     acc[e.deviceId]!.events.push(e);
     return acc;
   }, {});
@@ -185,6 +191,7 @@ export function LockEventLog({ deviceId }: LockEventLogProps) {
             <DeviceGroup
               key={id}
               deviceName={grouped[id]!.name}
+              propertyName={grouped[id]!.propertyName}
               events={grouped[id]!.events}
             />
           ))}

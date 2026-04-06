@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
-import { orgMembers, organizations } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { orgMembers, organizations, properties } from "@/server/db/schema";
+import { eq, and, inArray, isNotNull } from "drizzle-orm";
 import { getSeamClient } from "@/server/seam/client";
 
 export async function GET(req: NextRequest) {
@@ -44,11 +44,29 @@ export async function GET(req: NextRequest) {
       devices.map((d) => [d.device_id, d.display_name ?? d.device_id])
     );
 
+    // Look up which properties have these devices assigned
+    const deviceIds = devices.map((d) => d.device_id);
+    const assignedProperties = deviceIds.length > 0
+      ? await db
+          .select({ seamDeviceId: properties.seamDeviceId, name: properties.name })
+          .from(properties)
+          .where(and(
+            eq(properties.organizationId, membership.org.id),
+            isNotNull(properties.seamDeviceId),
+            inArray(properties.seamDeviceId, deviceIds),
+          ))
+      : [];
+
+    const propertyNameMap = new Map(
+      assignedProperties.map((p) => [p.seamDeviceId!, p.name])
+    );
+
     const formatted = events.map((e) => ({
       eventId: e.event_id,
       eventType: e.event_type,
       deviceId: e.device_id,
       deviceName: deviceNameMap.get(e.device_id ?? "") ?? e.device_id ?? "Unknown device",
+      propertyName: propertyNameMap.get(e.device_id ?? "") ?? null,
       occurredAt: e.occurred_at,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       accessCodeId: (e as any).access_code_id ?? null,
