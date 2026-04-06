@@ -19,6 +19,7 @@ interface TourReminderEmailProps {
   tourTime: string;
   hoursUntilTour: number;
   accessUrl: string;
+  manageUrl?: string;
   orgName: string;
   orgLogoUrl?: string;
   orgPrimaryColor?: string;
@@ -31,6 +32,7 @@ export function TourReminderEmail({
   tourTime,
   hoursUntilTour,
   accessUrl,
+  manageUrl,
   orgName,
   orgLogoUrl,
   orgPrimaryColor = "#2563eb",
@@ -85,6 +87,15 @@ export function TourReminderEmail({
             >
               View Tour Details
             </Button>
+
+            {manageUrl && (
+              <Text style={manageText}>
+                Need to cancel or reschedule?{" "}
+                <a href={manageUrl} style={manageLink}>
+                  Manage your tour here
+                </a>
+              </Text>
+            )}
 
             <Text style={paragraph}>
               Need to reschedule? Reply to this email or call the leasing
@@ -181,6 +192,17 @@ const button: React.CSSProperties = {
   borderRadius: "6px",
   padding: "12px 24px",
   margin: "16px 0",
+};
+
+const manageText: React.CSSProperties = {
+  color: "#64748b",
+  fontSize: "14px",
+  margin: "0 0 16px",
+};
+
+const manageLink: React.CSSProperties = {
+  color: "#7c3aed",
+  textDecoration: "underline",
 };
 
 const footer: React.CSSProperties = {

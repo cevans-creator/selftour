@@ -123,6 +123,7 @@ export const tourLifecycle = inngest.createFunction(
           tourTime: formatTime(scheduledDate),
           hoursUntilTour: hoursUntil24h,
           accessUrl,
+          manageUrl,
           orgName,
           orgLogoUrl: orgLogoUrl ?? undefined,
           orgPrimaryColor,
