@@ -42,6 +42,7 @@ export default async function DashboardLayout({
         orgName={membership.org.name}
         orgSlug={membership.org.slug}
         userEmail={user.email ?? ""}
+        logoUrl={membership.org.logoUrl ?? null}
       />
       <main className="flex-1 overflow-y-auto relative">
         {/* Subtle grid */}

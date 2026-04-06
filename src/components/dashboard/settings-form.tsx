@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Save, CreditCard, Globe } from "lucide-react";
+import { Save, CreditCard, Globe, Upload, X, ImageIcon } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,7 @@ interface SettingsFormProps {
     resendDomain: string;
     planTier: string;
     slug: string;
+    logoUrl: string | null;
   };
   currentUserEmail: string;
   currentUserRole: string;
@@ -32,7 +34,42 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
     resendDomain: org.resendDomain,
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(org.logoUrl);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const handleLogoUpload = async (file: File) => {
+    setLogoUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/settings/logo", { method: "POST", body: fd });
+      if (!res.ok) throw new Error();
+      const { logoUrl: newUrl } = await res.json() as { logoUrl: string };
+      setLogoUrl(newUrl);
+      toast.success("Logo updated");
+      router.refresh();
+    } catch {
+      toast.error("Failed to upload logo");
+    } finally {
+      setLogoUploading(false);
+    }
+  };
+
+  const handleLogoRemove = async () => {
+    setLogoUploading(true);
+    try {
+      await fetch("/api/settings/logo", { method: "DELETE" });
+      setLogoUrl(null);
+      toast.success("Logo removed");
+      router.refresh();
+    } catch {
+      toast.error("Failed to remove logo");
+    } finally {
+      setLogoUploading(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +119,56 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Logo upload */}
+            <div className="space-y-2">
+              <Label>Organization Logo</Label>
+              <div className="flex items-center gap-4">
+                <div
+                  className="relative flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] overflow-hidden cursor-pointer group"
+                  onClick={() => logoInputRef.current?.click()}
+                >
+                  {logoUrl ? (
+                    <Image src={logoUrl} alt="Logo" fill className="object-contain p-2" unoptimized />
+                  ) : (
+                    <ImageIcon className="h-8 w-8 text-white/20 group-hover:text-white/40 transition-colors" />
+                  )}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Upload className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <p className="text-xs text-white/45">PNG, JPG, SVG · recommended 400×400px or wider</p>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" size="sm"
+                      onClick={() => logoInputRef.current?.click()}
+                      disabled={logoUploading}
+                      className="border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/[0.06] hover:text-white/90 text-xs">
+                      {logoUploading ? "Uploading…" : logoUrl ? "Replace" : "Upload logo"}
+                    </Button>
+                    {logoUrl && (
+                      <Button type="button" variant="ghost" size="sm"
+                        onClick={handleLogoRemove}
+                        disabled={logoUploading}
+                        className="text-white/30 hover:text-red-400 text-xs">
+                        <X className="h-3.5 w-3.5 mr-1" /> Remove
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void handleLogoUpload(file);
+                  e.target.value = "";
+                }}
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="orgName">Organization Name</Label>
               <Input

@@ -45,6 +45,7 @@ export default async function SettingsPage() {
         resendDomain: org.resendDomain ?? "",
         planTier: org.planTier,
         slug: org.slug,
+        logoUrl: org.logoUrl ?? null,
       }}
       currentUserEmail={user.email ?? ""}
       currentUserRole={members[0].role}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -48,12 +49,14 @@ interface SidebarProps {
   orgName: string;
   orgSlug: string;
   userEmail: string;
+  logoUrl?: string | null;
 }
 
 function SidebarContent({
   orgName,
   orgSlug,
   userEmail,
+  logoUrl,
   onNavigate,
 }: SidebarProps & { onNavigate?: () => void }) {
   const pathname = usePathname();
@@ -71,24 +74,22 @@ function SidebarContent({
 
   return (
     <div className="flex h-full flex-col bg-black border-r border-white/[0.06]">
-      {/* Logo */}
-      <div className="flex h-16 items-center px-6 border-b border-white/[0.06]">
-        <Link href="/dashboard" className="flex items-center gap-2.5" onClick={onNavigate}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#316ee0] shadow-[0_0_16px_rgba(49,110,224,0.4)]">
-            <KeyRound className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-base font-semibold text-white tracking-wide" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
-            KeySherpa
+      {/* Header — org logo when set, KeySherpa branding when not */}
+      <div className="flex h-16 items-center px-5 border-b border-white/[0.06]">
+        <Link href="/dashboard" className="flex items-center gap-3 min-w-0" onClick={onNavigate}>
+          {logoUrl ? (
+            <div className="relative h-8 w-8 flex-shrink-0 rounded-lg overflow-hidden bg-white/[0.06]">
+              <Image src={logoUrl} alt={orgName} fill className="object-contain p-0.5" unoptimized />
+            </div>
+          ) : (
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#316ee0] shadow-[0_0_16px_rgba(49,110,224,0.4)]">
+              <KeyRound className="h-4 w-4 text-white" />
+            </div>
+          )}
+          <span className="text-sm font-semibold text-white truncate" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
+            {logoUrl ? orgName : "KeySherpa"}
           </span>
         </Link>
-      </div>
-
-      {/* Org name */}
-      <div className="px-4 py-3 border-b border-white/[0.06]">
-        <div className="px-3 py-2">
-          <p className="text-xs text-white/30 uppercase tracking-widest mb-0.5">Organization</p>
-          <p className="text-sm font-medium text-white/80 truncate">{orgName}</p>
-        </div>
       </div>
 
       {/* Navigation */}
@@ -121,6 +122,18 @@ function SidebarContent({
         </ul>
       </nav>
 
+      {/* Powered by — only shown when org has a custom logo */}
+      {logoUrl && (
+        <div className="px-6 pb-1 pt-2">
+          <Link href="https://keysherpa.io" target="_blank" className="flex items-center gap-1.5 opacity-30 hover:opacity-50 transition-opacity">
+            <KeyRound className="h-3 w-3 text-white" />
+            <span className="text-[10px] text-white tracking-wide" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
+              Powered by KeySherpa
+            </span>
+          </Link>
+        </div>
+      )}
+
       {/* User Menu */}
       <div className="border-t border-white/[0.06] p-4 space-y-1">
         <a
@@ -152,7 +165,7 @@ function SidebarContent({
   );
 }
 
-export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
+export function Sidebar({ orgName, orgSlug, userEmail, logoUrl }: SidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
@@ -164,16 +177,24 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
     <>
       {/* Desktop sidebar */}
       <aside className="hidden md:flex h-full w-64 flex-col flex-shrink-0">
-        <SidebarContent orgName={orgName} orgSlug={orgSlug} userEmail={userEmail} />
+        <SidebarContent orgName={orgName} orgSlug={orgSlug} userEmail={userEmail} logoUrl={logoUrl} />
       </aside>
 
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex h-14 items-center justify-between bg-black border-b border-white/[0.06] px-4">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#316ee0]">
-            <KeyRound className="h-3.5 w-3.5 text-white" />
-          </div>
-          <span className="text-base font-semibold text-white tracking-wide">KeySherpa</span>
+          {logoUrl ? (
+            <div className="relative h-7 w-7 rounded-lg overflow-hidden bg-white/[0.06]">
+              <Image src={logoUrl} alt={orgName} fill className="object-contain p-0.5" unoptimized />
+            </div>
+          ) : (
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#316ee0]">
+              <KeyRound className="h-3.5 w-3.5 text-white" />
+            </div>
+          )}
+          <span className="text-base font-semibold text-white tracking-wide">
+            {logoUrl ? orgName : "KeySherpa"}
+          </span>
         </Link>
         <button
           onClick={() => setMobileOpen(true)}
@@ -195,6 +216,7 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
               orgName={orgName}
               orgSlug={orgSlug}
               userEmail={userEmail}
+              logoUrl={logoUrl}
               onNavigate={() => setMobileOpen(false)}
             />
             <button
