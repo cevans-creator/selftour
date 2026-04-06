@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db/client";
 import { organizations, properties, tours } from "@/server/db/schema";
 import { eq, and, gte, sql } from "drizzle-orm";
+import { withCors, corsOptions } from "@/lib/cors";
+
+export async function OPTIONS() {
+  return corsOptions();
+}
 
 export async function GET(
   _req: NextRequest,
@@ -17,7 +22,7 @@ export async function GET(
       .limit(1);
 
     if (!org) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+      return withCors(NextResponse.json({ error: "Not found" }, { status: 404 }));
     }
 
     const [property] = await db
@@ -33,7 +38,7 @@ export async function GET(
       .limit(1);
 
     if (!property) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
+      return withCors(NextResponse.json({ error: "Not found" }, { status: 404 }));
     }
 
     // Get existing bookings for conflict detection in the slot picker
@@ -51,7 +56,7 @@ export async function GET(
         )
       );
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
       property,
       org: {
         name: org.name,
@@ -60,9 +65,9 @@ export async function GET(
         slug: org.slug,
       },
       bookings,
-    });
+    }));
   } catch (err) {
     console.error("[Tour Property API] Error:", err);
-    return NextResponse.json({ error: "Failed to load property" }, { status: 500 });
+    return withCors(NextResponse.json({ error: "Failed to load property" }, { status: 500 }));
   }
 }

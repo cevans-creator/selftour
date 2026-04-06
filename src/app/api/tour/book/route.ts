@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db/client";
+import { withCors, corsOptions } from "@/lib/cors";
+
+export async function OPTIONS() {
+  return corsOptions();
+}
 import {
   tours,
   properties,
@@ -44,7 +49,7 @@ export async function POST(req: NextRequest) {
       .limit(1);
 
     if (!org) {
-      return NextResponse.json({ error: "Organization not found" }, { status: 404 });
+      return withCors(NextResponse.json({ error: "Organization not found" }, { status: 404 }));
     }
 
     // Look up property
@@ -61,7 +66,7 @@ export async function POST(req: NextRequest) {
       .limit(1);
 
     if (!property) {
-      return NextResponse.json({ error: "Property not found or inactive" }, { status: 404 });
+      return withCors(NextResponse.json({ error: "Property not found or inactive" }, { status: 404 }));
     }
 
     const scheduledDate = new Date(scheduledAt);
@@ -84,10 +89,10 @@ export async function POST(req: NextRequest) {
       .limit(1);
 
     if (conflicts.length > 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { error: "This time slot is no longer available. Please choose another time." },
         { status: 409 }
-      );
+      ));
     }
 
     const phone = normalizePhone(visitorPhone);
@@ -140,7 +145,7 @@ export async function POST(req: NextRequest) {
       .returning();
 
     if (!tour) {
-      return NextResponse.json({ error: "Failed to create tour" }, { status: 500 });
+      return withCors(NextResponse.json({ error: "Failed to create tour" }, { status: 500 }));
     }
 
     const accessUrl = buildAccessUrl(org.slug, tour.id);
@@ -169,9 +174,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ tourId: tour.id, accessUrl });
+    return withCors(NextResponse.json({ tourId: tour.id, accessUrl }));
   } catch (err) {
     console.error("[Tour Book] Error:", err);
-    return NextResponse.json({ error: "Booking failed" }, { status: 500 });
+    return withCors(NextResponse.json({ error: "Booking failed" }, { status: 500 }));
   }
 }
