@@ -97,7 +97,7 @@ function CancelButton({ tourId }: { tourId: string }) {
     <Button
       size="sm"
       variant="outline"
-      className={`h-7 px-2 text-xs gap-1 ${confirming ? "border-red-500/50 text-red-400 hover:bg-red-500/10" : "text-white/30 hover:text-red-400 hover:border-red-500/40 border-white/10"}`}
+      className={`h-7 px-2 text-xs gap-1 ${confirming ? "border-red-400 text-red-600 hover:bg-red-50" : "text-gray-500 hover:text-red-600 hover:border-red-300"}`}
       onClick={(e) => { e.stopPropagation(); void handleCancel(); }}
       disabled={loading}
     >

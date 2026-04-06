@@ -83,7 +83,7 @@ export function PropertyCard({
 
           {/* Lock status indicator */}
           {hasLock && (
-            <div className={cn("absolute right-3 top-3 rounded-full bg-black/60 p-1.5", lockColor)}>
+            <div className={cn("absolute right-3 top-3 rounded-full bg-white/90 p-1.5", lockColor)}>
               <LockIcon className="h-3.5 w-3.5" />
             </div>
           )}

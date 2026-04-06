@@ -41,6 +41,7 @@ export function AddTourDialog({ properties }: AddTourDialogProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          // Convert local datetime string to UTC ISO so server parses correctly
           scheduledAt: new Date(form.scheduledAt).toISOString(),
         }),
       });
@@ -67,67 +68,67 @@ export function AddTourDialog({ properties }: AddTourDialogProps) {
     }
   };
 
-  const inputClass = "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#316ee0]/50 focus:border-[#316ee0]/60";
-  const labelClass = "block text-sm font-medium text-white/60 mb-1";
-
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="gap-1.5 bg-[#316ee0] hover:bg-[#2558c8] text-white">
+      <Button onClick={() => setOpen(true)} className="gap-1.5 bg-violet-600 hover:bg-violet-700">
         <Plus className="h-4 w-4" />
         Add Tour
       </Button>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !isSubmitting && setOpen(false)} />
-          <div className="relative w-full max-w-md rounded-2xl bg-[#111111] border border-white/10 shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-bold text-white">Book a Tour</h3>
-            <p className="text-sm text-white/40 mt-1">Manually schedule a tour for a visitor.</p>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => !isSubmitting && setOpen(false)} />
+          <div className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-bold text-gray-900">Book a Tour</h3>
+            <p className="text-sm text-gray-500 mt-1">Manually schedule a tour for a visitor.</p>
 
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+              {/* Property */}
               <div>
-                <label className={labelClass}>Property</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Property</label>
                 <select
-                  className={inputClass}
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                   value={form.propertyId}
                   onChange={(e) => setForm({ ...form, propertyId: e.target.value })}
                   required
                 >
                   {properties.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-[#111111]">
+                    <option key={p.id} value={p.id}>
                       {p.address}, {p.city}, {p.state}
                     </option>
                   ))}
                 </select>
               </div>
 
+              {/* Date & Time */}
               <div>
-                <label className={labelClass}>Date & Time</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Date & Time</label>
                 <input
                   type="datetime-local"
-                  className={inputClass}
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                   value={form.scheduledAt}
                   onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })}
                   required
                 />
               </div>
 
+              {/* Visitor Name */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelClass}>First Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
                   <input
                     type="text"
-                    className={inputClass}
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                     value={form.visitorFirstName}
                     onChange={(e) => setForm({ ...form, visitorFirstName: e.target.value })}
                     required
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Last Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
                   <input
                     type="text"
-                    className={inputClass}
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                     value={form.visitorLastName}
                     onChange={(e) => setForm({ ...form, visitorLastName: e.target.value })}
                     required
@@ -135,23 +136,25 @@ export function AddTourDialog({ properties }: AddTourDialogProps) {
                 </div>
               </div>
 
+              {/* Email */}
               <div>
-                <label className={labelClass}>Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
                   type="email"
-                  className={inputClass}
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                   value={form.visitorEmail}
                   onChange={(e) => setForm({ ...form, visitorEmail: e.target.value })}
                   required
                 />
               </div>
 
+              {/* Phone */}
               <div>
-                <label className={labelClass}>Phone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                 <input
                   type="tel"
                   placeholder="+1 (555) 000-0000"
-                  className={inputClass}
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                   value={form.visitorPhone}
                   onChange={(e) => setForm({ ...form, visitorPhone: e.target.value })}
                   required
@@ -162,7 +165,7 @@ export function AddTourDialog({ properties }: AddTourDialogProps) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="flex-1 border-white/10 text-white/60 hover:bg-white/[0.04] hover:text-white bg-transparent"
+                  className="flex-1"
                   onClick={() => setOpen(false)}
                   disabled={isSubmitting}
                 >
@@ -170,7 +173,7 @@ export function AddTourDialog({ properties }: AddTourDialogProps) {
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-[#316ee0] hover:bg-[#2558c8] text-white"
+                  className="flex-1 bg-violet-600 hover:bg-violet-700"
                   disabled={isSubmitting}
                 >
                   {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

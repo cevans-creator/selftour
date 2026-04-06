@@ -65,43 +65,43 @@ export function SupportChat() {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
       {open && (
-        <div className="w-80 sm:w-96 rounded-2xl bg-[#111111] shadow-2xl border border-white/10 flex flex-col overflow-hidden">
+        <div className="w-80 sm:w-96 rounded-2xl bg-white shadow-2xl border border-gray-100 flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-[#0a0a0a] border-b border-white/[0.06]">
+          <div className="flex items-center justify-between px-4 py-3 bg-slate-950 border-b border-slate-800">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#316ee0] shadow-lg shadow-[#316ee0]/30">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-600 shadow-lg shadow-violet-500/30">
                 <Sparkles className="h-3.5 w-3.5 text-white" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-white leading-tight">KeySherpa Assistant</p>
-                <p className="text-xs text-white/35">Setup & support help</p>
+                <p className="text-xs text-slate-400">Setup & support help</p>
               </div>
             </div>
             <button
               onClick={() => setOpen(false)}
-              className="text-white/30 hover:text-white/70 transition-colors"
+              className="text-slate-500 hover:text-slate-300 transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-80 bg-[#0d0d0d]">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-80 bg-gray-50/50">
             {messages.map((msg, i) => (
               <div
                 key={i}
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {msg.role === "assistant" && (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#316ee0]/15 flex-shrink-0 mr-2 mt-0.5">
-                    <Sparkles className="h-3 w-3 text-[#316ee0]" />
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-violet-100 flex-shrink-0 mr-2 mt-0.5">
+                    <Sparkles className="h-3 w-3 text-violet-600" />
                   </div>
                 )}
                 <div
                   className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                     msg.role === "user"
-                      ? "bg-[#316ee0] text-white rounded-tr-sm"
-                      : "bg-white/[0.06] text-white/80 border border-white/[0.06] rounded-tl-sm"
+                      ? "bg-violet-600 text-white rounded-tr-sm"
+                      : "bg-white text-gray-800 shadow-sm border border-gray-100 rounded-tl-sm"
                   }`}
                 >
                   {msg.content}
@@ -110,11 +110,11 @@ export function SupportChat() {
             ))}
             {isSending && (
               <div className="flex justify-start">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#316ee0]/15 flex-shrink-0 mr-2 mt-0.5">
-                  <Sparkles className="h-3 w-3 text-[#316ee0]" />
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-violet-100 flex-shrink-0 mr-2 mt-0.5">
+                  <Sparkles className="h-3 w-3 text-violet-600" />
                 </div>
-                <div className="bg-white/[0.06] rounded-2xl rounded-tl-sm px-3.5 py-2.5 border border-white/[0.06]">
-                  <Loader2 className="h-4 w-4 animate-spin text-[#316ee0]" />
+                <div className="bg-white rounded-2xl rounded-tl-sm px-3.5 py-2.5 shadow-sm border border-gray-100">
+                  <Loader2 className="h-4 w-4 animate-spin text-violet-400" />
                 </div>
               </div>
             )}
@@ -123,12 +123,12 @@ export function SupportChat() {
 
           {/* Quick prompts */}
           {messages.length === 1 && (
-            <div className="px-3 py-2 flex gap-2 flex-wrap border-t border-white/[0.06] bg-[#0d0d0d]">
+            <div className="px-3 py-2 flex gap-2 flex-wrap border-t border-gray-100 bg-white">
               {["How do I connect my lock?", "Lock is offline", "Set up a property"].map((prompt) => (
                 <button
                   key={prompt}
                   onClick={() => { setInput(prompt); }}
-                  className="rounded-full border border-[#316ee0]/30 bg-[#316ee0]/10 px-3 py-1 text-xs text-[#316ee0] hover:bg-[#316ee0]/20 transition-colors"
+                  className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs text-violet-700 hover:bg-violet-100 transition-colors"
                 >
                   {prompt}
                 </button>
@@ -137,19 +137,19 @@ export function SupportChat() {
           )}
 
           {/* Input */}
-          <div className="border-t border-white/[0.06] p-3 flex gap-2 bg-[#111111]">
+          <div className="border-t border-gray-100 p-3 flex gap-2 bg-white">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") void send(); }}
               placeholder="Ask anything..."
-              className="flex-1 text-sm px-3 py-2 rounded-xl border border-white/10 bg-white/[0.04] text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#316ee0]/40 focus:border-[#316ee0]/50"
+              className="flex-1 text-sm px-3 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 bg-gray-50"
             />
             <button
               onClick={() => void send()}
               disabled={isSending || !input.trim()}
-              className="p-2 rounded-xl bg-[#316ee0] disabled:opacity-40 hover:bg-[#2558c8] transition-colors shadow-sm shadow-[#316ee0]/20"
+              className="p-2 rounded-xl bg-violet-600 disabled:opacity-40 hover:bg-violet-700 transition-colors shadow-sm shadow-violet-500/20"
             >
               <Send className="h-4 w-4 text-white" />
             </button>
@@ -160,10 +160,10 @@ export function SupportChat() {
       {/* FAB */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="relative h-14 w-14 rounded-full bg-[#316ee0] flex items-center justify-center
-          shadow-[0_0_20px_2px_rgba(49,110,224,0.5)]
-          hover:shadow-[0_0_28px_4px_rgba(49,110,224,0.65)]
-          hover:bg-[#2558c8] hover:scale-105
+        className="relative h-14 w-14 rounded-full bg-violet-600 flex items-center justify-center
+          shadow-[0_0_20px_2px_rgba(139,92,246,0.5)]
+          hover:shadow-[0_0_28px_4px_rgba(139,92,246,0.65)]
+          hover:bg-violet-500 hover:scale-105
           transition-all duration-200"
       >
         {open ? (
@@ -171,7 +171,7 @@ export function SupportChat() {
         ) : (
           <>
             <MessageCircle className="h-5 w-5 text-white" />
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#0a0a0a]">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-white">
               <span className="text-[8px] font-bold text-white">AI</span>
             </span>
           </>
