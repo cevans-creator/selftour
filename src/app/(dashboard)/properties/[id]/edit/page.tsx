@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PropertyImageUploader } from "@/components/dashboard/property-image-uploader";
 
 const DAY_OPTIONS = [
   { label: "Sun", value: 0 },
@@ -21,6 +22,11 @@ const DAY_OPTIONS = [
   { label: "Fri", value: 5 },
   { label: "Sat", value: 6 },
 ];
+
+interface PropertyData {
+  [key: string]: unknown;
+  imageUrls?: string[];
+}
 
 interface PropertyForm {
   name: string;
@@ -49,6 +55,7 @@ export default function EditPropertyPage() {
   const id = params.id as string;
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [form, setForm] = useState<PropertyForm>({
     name: "",
     address: "",
@@ -83,7 +90,8 @@ export default function EditPropertyPage() {
         router.push("/properties");
         return;
       }
-      const data = await res.json() as Record<string, unknown>;
+      const data = await res.json() as PropertyData;
+      setImageUrls(Array.isArray(data.imageUrls) ? data.imageUrls : []);
       setForm({
         name: String(data.name ?? ""),
         address: String(data.address ?? ""),
@@ -302,6 +310,13 @@ export default function EditPropertyPage() {
               <Input id="bufferMinutes" name="bufferMinutes" type="number" min="0" max="60" step="5" value={form.bufferMinutes} onChange={handleChange} />
             </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader><CardTitle>Photos</CardTitle></CardHeader>
+          <CardContent>
+            <PropertyImageUploader propertyId={id} initialUrls={imageUrls} />
           </CardContent>
         </Card>
 
