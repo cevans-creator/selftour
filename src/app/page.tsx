@@ -1,56 +1,50 @@
+"use client";
+
 import Link from "next/link";
-import {
-  KeyRound,
-  Smartphone,
-  Brain,
-  BarChart3,
-  Check,
-  ArrowRight,
-  Zap,
-  Shield,
-  ChevronRight,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { useRef } from "react";
+import { KeyRound, ArrowRight, Check } from "lucide-react";
+
+// ─── Data ──────────────────────────────────────────────────────────────────
 
 const FEATURES = [
   {
-    icon: KeyRound,
+    tag: "01",
     title: "Smart Lock Integration",
-    description:
-      "Connects with SmartThings, Schlage, and 150+ lock brands via Seam. Time-locked codes generate automatically before each tour.",
+    description: "Connects with SmartThings, Schlage, and 150+ lock brands via Seam. Time-locked codes generate automatically before each tour.",
   },
   {
-    icon: Smartphone,
+    tag: "02",
     title: "Automated SMS Journey",
-    description:
-      "From booking confirmation to 72-hour nurture follow-ups, every touchpoint is handled automatically so your team can focus on closing.",
+    description: "From booking confirmation to 72-hour nurture follow-ups, every touchpoint is handled automatically.",
   },
   {
-    icon: Brain,
+    tag: "03",
     title: "AI On-Tour Assistant",
-    description:
-      "Visitors ask questions during their tour and get instant, accurate answers from your custom knowledge base — powered by Claude.",
+    description: "Visitors ask questions during their tour and get instant, accurate answers from your custom knowledge base.",
   },
   {
-    icon: BarChart3,
+    tag: "04",
     title: "Real-Time Dashboard",
-    description:
-      "See who's touring right now, track conversion rates, manage your property portfolio, and monitor lock health — all in one place.",
+    description: "See who's touring right now, track conversion rates, manage your property portfolio, and monitor lock health.",
   },
   {
-    icon: Shield,
+    tag: "05",
     title: "Identity Verification",
-    description:
-      "Optional Stripe Identity integration for ID verification before access codes are issued. Keep your properties secure.",
+    description: "Optional Stripe Identity integration for ID verification before access codes are issued.",
   },
   {
-    icon: Zap,
+    tag: "06",
     title: "White-Label Ready",
-    description:
-      "Custom branding, your domain, your colors. Visitor-facing tour pages look like your brand, not ours.",
+    description: "Custom branding, your domain, your colors. Visitor-facing tour pages look like your brand, not ours.",
   },
+];
+
+const STEPS = [
+  { n: "01", title: "Connect your smart lock", body: "Link your existing lock in minutes via our Seam integration. No hardware changes needed." },
+  { n: "02", title: "Add your properties", body: "Create listings with photos, descriptions, and tour availability windows." },
+  { n: "03", title: "Share your tour link", body: "Drop your unique URL on Zillow, your site, or a QR code sign. Visitors self-book." },
+  { n: "04", title: "KeySherpa handles the rest", body: "Confirmations, reminders, door codes, AI Q&A, and follow-ups run on autopilot." },
 ];
 
 const PRICING = [
@@ -59,349 +53,410 @@ const PRICING = [
     price: "$0",
     period: "forever",
     description: "Perfect for trying it out",
-    features: [
-      "2 active properties",
-      "20 tours per month",
-      "1 team member",
-      "Basic SMS automation",
-      "AI assistant",
-    ],
+    features: ["2 active properties", "20 tours / month", "1 team member", "Basic SMS automation", "AI assistant"],
     cta: "Start Free",
     href: "/signup",
-    highlighted: false,
+    highlight: false,
   },
   {
     name: "Starter",
     price: "$99",
     period: "per month",
     description: "For small teams",
-    features: [
-      "10 active properties",
-      "100 tours per month",
-      "3 team members",
-      "Full SMS + email automation",
-      "AI assistant with knowledge base",
-      "Identity verification",
-      "Analytics dashboard",
-    ],
+    features: ["10 active properties", "100 tours / month", "3 team members", "Full SMS + email automation", "AI knowledge base", "Identity verification", "Analytics"],
     cta: "Start Free Trial",
     href: "/signup",
-    highlighted: true,
+    highlight: true,
   },
   {
     name: "Growth",
     price: "$299",
     period: "per month",
     description: "For growing portfolios",
-    features: [
-      "50 active properties",
-      "500 tours per month",
-      "10 team members",
-      "Everything in Starter",
-      "White-label branding",
-      "Priority support",
-      "Custom integrations",
-    ],
+    features: ["50 active properties", "500 tours / month", "10 team members", "Everything in Starter", "White-label branding", "Priority support", "Custom integrations"],
     cta: "Start Free Trial",
     href: "/signup",
-    highlighted: false,
+    highlight: false,
   },
 ];
 
-export default function LandingPage() {
+// ─── Animation helpers ──────────────────────────────────────────────────────
+
+function FadeUp({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
-    <div className="min-h-screen bg-white">
-      {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <motion.div ref={ref} className={className}
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay, ease: [0.25, 1, 0.5, 1] }}>
+      {children}
+    </motion.div>
+  );
+}
+
+function StaggerList({ children, className }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  return (
+    <motion.div ref={ref} className={className}
+      initial="hidden" animate={inView ? "visible" : "hidden"}
+      variants={{ visible: { transition: { staggerChildren: 0.08 } }, hidden: {} }}>
+      {children}
+    </motion.div>
+  );
+}
+
+const item = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] } },
+};
+
+// ─── Page ───────────────────────────────────────────────────────────────────
+
+export default function LandingPage() {
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  return (
+    <div className="min-h-screen bg-black text-white overflow-x-hidden" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+
+      {/* ── Nav ─────────────────────────────────────────────────────── */}
+      <motion.header
+        className="fixed top-0 z-50 w-full"
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+      >
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-white shadow-sm shadow-violet-500/30">
-              <KeyRound className="h-4 w-4" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#316ee0]">
+              <KeyRound className="h-3.5 w-3.5 text-white" />
             </div>
-            <span className="text-lg font-bold tracking-tight">KeySherpa</span>
+            <span className="text-sm font-semibold tracking-wide">KeySherpa</span>
           </div>
+
           <nav className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              Features
-            </a>
-            <a href="#pricing" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              Pricing
-            </a>
-            <Link href="/login" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              Sign in
+            <a href="#features" className="text-sm text-white/40 hover:text-white transition-colors duration-200 tracking-wide">Features</a>
+            <a href="#pricing" className="text-sm text-white/40 hover:text-white transition-colors duration-200 tracking-wide">Pricing</a>
+            <Link href="/login" className="text-sm text-white/40 hover:text-white transition-colors duration-200 tracking-wide">Sign in</Link>
+            <Link href="/signup"
+              className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+              Get started
             </Link>
-            <Button asChild size="sm" className="bg-violet-600 hover:bg-violet-700 shadow-sm shadow-violet-500/20">
-              <Link href="/signup">Get started free</Link>
-            </Button>
           </nav>
-          <Button asChild size="sm" className="md:hidden bg-violet-600 hover:bg-violet-700">
-            <Link href="/signup">Get started</Link>
-          </Button>
+
+          <Link href="/signup" className="md:hidden rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-medium text-white">
+            Get started
+          </Link>
         </div>
-      </header>
 
-      <main>
-        {/* Hero */}
-        <section className="relative overflow-hidden bg-slate-950 py-24 sm:py-36">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/40 via-slate-950 to-slate-950" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-indigo-900/20 via-transparent to-transparent" />
+        {/* Glass blur bar */}
+        <div className="absolute inset-0 -z-10 border-b border-white/[0.04] bg-black/60 backdrop-blur-xl" />
+      </motion.header>
 
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-3xl text-center">
-              <Badge className="mb-6 bg-violet-500/10 text-violet-300 border-violet-500/20 hover:bg-violet-500/10">
-                Smart Lock · AI · Automation
-              </Badge>
-              <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-7xl leading-[1.05]">
-                Home tours that
-                <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent"> run themselves</span>
-              </h1>
-              <p className="mt-6 text-xl text-slate-400 leading-relaxed">
-                Let buyers and renters tour your properties 24/7 — with smart lock access
-                codes, AI-powered Q&A, and automated follow-ups that convert.
-              </p>
-              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <a
-                  href="/signup"
-                  className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white transition-all duration-200
-                    bg-violet-600/90 backdrop-blur-sm
-                    border border-violet-400/40
-                    shadow-[0_0_24px_4px_rgba(139,92,246,0.45),inset_0_1px_0_rgba(255,255,255,0.15)]
-                    hover:shadow-[0_0_36px_8px_rgba(139,92,246,0.6),inset_0_1px_0_rgba(255,255,255,0.2)]
-                    hover:bg-violet-500/90 hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  Start for free
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="#features"
-                  className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white/90 transition-all duration-200
-                    bg-white/5 backdrop-blur-sm
-                    border border-white/15
-                    shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_1px_3px_rgba(0,0,0,0.3)]
-                    hover:bg-white/10 hover:border-white/25 hover:text-white hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  See how it works
-                </a>
-              </div>
-              <p className="mt-4 text-sm text-slate-500">
-                No credit card required · Free plan available
-              </p>
-            </div>
-          </div>
+      {/* ── Hero ────────────────────────────────────────────────────── */}
+      <section ref={heroRef} className="relative flex min-h-screen items-center justify-center overflow-hidden">
 
-          {/* Mock dashboard preview */}
-          <div className="relative mx-auto mt-20 max-w-5xl px-4 sm:px-6 lg:px-8">
-            <div className="overflow-hidden rounded-2xl border border-slate-800 shadow-2xl shadow-black/50 ring-1 ring-white/5">
-              <div className="flex items-center gap-2 border-b border-slate-800 bg-slate-900 px-4 py-3">
-                <div className="h-3 w-3 rounded-full bg-red-500/70" />
-                <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
-                <div className="h-3 w-3 rounded-full bg-green-500/70" />
-                <div className="ml-3 flex-1 rounded-md bg-slate-800 px-3 py-1 text-xs text-slate-500">
-                  app.keysherpa.io/dashboard
-                </div>
-              </div>
-              <div className="grid grid-cols-4 gap-4 bg-slate-900/80 p-6">
-                {[
-                  { label: "Tours Today", value: "12", color: "text-violet-400" },
-                  { label: "This Week", value: "47", color: "text-indigo-400" },
-                  { label: "Conversion", value: "68%", color: "text-emerald-400" },
-                  { label: "No-Show Rate", value: "8%", color: "text-orange-400" },
-                ].map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-xl bg-slate-800/80 p-4 ring-1 ring-white/5"
-                  >
-                    <p className="text-xs text-slate-500">{stat.label}</p>
-                    <p className={`mt-1 text-2xl font-bold ${stat.color}`}>
-                      {stat.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Grid background */}
+        <div className="absolute inset-0"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundSize: "72px 72px",
+          }}
+        />
 
-        {/* Features */}
-        <section id="features" className="py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-                Everything you need
-              </h2>
-              <p className="mt-4 text-lg text-gray-500 leading-relaxed">
-                From smart lock provisioning to post-tour nurture sequences — KeySherpa
-                handles the whole lifecycle so your team doesn't have to.
-              </p>
-            </div>
-            <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {FEATURES.map((feature) => (
-                <Card key={feature.title} className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
-                      <feature.icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="mt-4 font-semibold text-gray-900">{feature.title}</h3>
-                    <p className="mt-2 text-sm text-gray-500 leading-relaxed">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Blue glow orb */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full opacity-20"
+          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 70%)" }}
+        />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full opacity-15"
+          style={{ background: "radial-gradient(circle, #60a5fa 0%, transparent 70%)" }}
+        />
 
-        {/* How it works */}
-        <section className="bg-gray-50 py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-4xl font-bold text-gray-900">How it works</h2>
-              <p className="mt-4 text-lg text-gray-500">Up and running in under an hour.</p>
-            </div>
-            <div className="mx-auto mt-16 max-w-3xl">
-              <div className="space-y-6">
-                {[
-                  {
-                    step: "01",
-                    title: "Connect your smart lock",
-                    description:
-                      "Link your existing SmartThings or Schlage lock in minutes via our Seam integration. No hardware changes needed.",
-                  },
-                  {
-                    step: "02",
-                    title: "Add your properties",
-                    description:
-                      "Create property listings with photos, descriptions, and tour availability windows. Assign a lock to each property.",
-                  },
-                  {
-                    step: "03",
-                    title: "Share your tour link",
-                    description:
-                      "Copy your unique URL, add it to Zillow, your website, or a QR code sign. Visitors book themselves.",
-                  },
-                  {
-                    step: "04",
-                    title: "KeySherpa handles the rest",
-                    description:
-                      "Confirmations, reminders, access codes, AI Q&A, and follow-ups run automatically. You just close deals.",
-                  },
-                ].map((item, i) => (
-                  <div key={item.step} className="flex gap-6 items-start">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white">
-                      {item.step}
-                    </div>
-                    <div className="pt-2">
-                      <h3 className="font-semibold text-gray-900 text-lg">{item.title}</h3>
-                      <p className="mt-1 text-gray-500">{item.description}</p>
-                    </div>
-                    {i < 3 && (
-                      <ChevronRight className="ml-auto mt-3 h-5 w-5 text-gray-300 flex-shrink-0 hidden sm:block" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Vignette */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60 pointer-events-none" />
 
-        {/* Pricing */}
-        <section id="pricing" className="py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-4xl font-bold text-gray-900">
-                Simple, transparent pricing
-              </h2>
-              <p className="mt-4 text-lg text-gray-500">
-                Start free. Upgrade when you need to.
-              </p>
-            </div>
-            <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 sm:grid-cols-3">
-              {PRICING.map((plan) => (
-                <Card
-                  key={plan.name}
-                  className={
-                    plan.highlighted
-                      ? "border-violet-600 shadow-xl shadow-violet-500/10 ring-2 ring-violet-600 relative"
-                      : "border-gray-100 shadow-sm"
-                  }
-                >
-                  {plan.highlighted && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-violet-600 text-white shadow-sm px-3">
-                        Most popular
-                      </Badge>
-                    </div>
-                  )}
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-bold">{plan.name}</h3>
-                    <p className="mt-1 text-sm text-gray-500">{plan.description}</p>
-                    <div className="mt-4">
-                      <span className="text-4xl font-extrabold">{plan.price}</span>
-                      <span className="ml-1 text-gray-500 text-sm">/{plan.period}</span>
-                    </div>
-                    <ul className="mt-6 space-y-3">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2.5 text-sm">
-                          <Check className="h-4 w-4 flex-shrink-0 text-violet-600" />
-                          <span className="text-gray-600">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      asChild
-                      className={`mt-8 w-full ${plan.highlighted ? "bg-violet-600 hover:bg-violet-700 shadow-sm shadow-violet-500/20" : ""}`}
-                      variant={plan.highlighted ? "default" : "outline"}
-                    >
-                      <Link href={plan.href}>{plan.cta}</Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
+        <motion.div style={{ y: heroY, opacity: heroOpacity }}
+          className="relative z-10 mx-auto max-w-5xl px-6 text-center">
 
-        {/* CTA */}
-        <section className="bg-slate-950 py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/30 via-transparent to-transparent" />
-          <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-bold text-white">
-              Ready to automate your tours?
-            </h2>
-            <p className="mt-4 text-xl text-slate-400">
-              Join hundreds of builders and property managers using KeySherpa.
-            </p>
-            <a
-              href="/signup"
-              className="mt-8 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white transition-all duration-200
-                bg-violet-600/90 backdrop-blur-sm
-                border border-violet-400/40
-                shadow-[0_0_24px_4px_rgba(139,92,246,0.45),inset_0_1px_0_rgba(255,255,255,0.15)]
-                hover:shadow-[0_0_36px_8px_rgba(139,92,246,0.6),inset_0_1px_0_rgba(255,255,255,0.2)]
-                hover:bg-violet-500/90 hover:scale-[1.02] active:scale-[0.98]"
+          {/* Tag */}
+          <motion.p
+            initial={{ opacity: 0, letterSpacing: "0.3em" }}
+            animate={{ opacity: 1, letterSpacing: "0.2em" }}
+            transition={{ duration: 1, ease: [0.25, 1, 0.5, 1] }}
+            className="mb-8 font-mono text-xs uppercase text-white/30 tracking-[0.2em]"
+          >
+            // Intelligent Tour Automation
+          </motion.p>
+
+          {/* Headline */}
+          <div className="overflow-hidden">
+            <motion.h1
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
+              className="text-[clamp(3rem,10vw,8rem)] font-light leading-[0.95] tracking-tight text-white"
             >
-              Get started free
-              <ArrowRight className="h-4 w-4" />
-            </a>
+              Home tours
+            </motion.h1>
           </div>
-        </section>
-      </main>
+          <div className="overflow-hidden">
+            <motion.h1
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.9, delay: 0.08, ease: [0.25, 1, 0.5, 1] }}
+              className="text-[clamp(3rem,10vw,8rem)] font-light leading-[0.95] tracking-tight"
+              style={{ color: "transparent", WebkitTextStroke: "1px rgba(255,255,255,0.25)" }}
+            >
+              that run
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden">
+            <motion.h1
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.9, delay: 0.16, ease: [0.25, 1, 0.5, 1] }}
+              className="text-[clamp(3rem,10vw,8rem)] font-light leading-[0.95] tracking-tight text-white"
+            >
+              themselves.
+            </motion.h1>
+          </div>
 
-      <footer className="border-t border-gray-100 py-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 1, 0.5, 1] }}
+            className="mx-auto mt-10 max-w-xl text-base leading-relaxed text-white/40 tracking-wide"
+          >
+            Smart lock access codes, AI-powered Q&A, and automated follow-ups — so buyers and renters can tour 24/7 while your team stays focused on closing.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.65, ease: [0.25, 1, 0.5, 1] }}
+            className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+          >
+            <Link href="/signup"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-[#316ee0] px-8 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_rgba(49,110,224,0.4)] hover:shadow-[0_0_60px_rgba(49,110,224,0.6)] hover:bg-[#2558c8] transition-all duration-300"
+            >
+              Start for free
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+            <a href="#features"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-8 py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
+            >
+              See how it works
+            </a>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.9 }}
+            className="mt-5 font-mono text-xs text-white/20 tracking-widest"
+          >
+            NO CREDIT CARD · FREE PLAN AVAILABLE
+          </motion.p>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4, duration: 1 }}
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/20">Scroll</span>
+          <motion.div
+            className="h-8 w-px bg-gradient-to-b from-white/30 to-transparent"
+            animate={{ scaleY: [1, 0.3, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.div>
+      </section>
+
+      {/* ── Live stats bar ─────────────────────────────────────────── */}
+      <FadeUp>
+        <div className="border-y border-white/[0.05] bg-white/[0.01]">
+          <div className="mx-auto max-w-7xl px-6 py-6">
+            <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+              {[
+                { label: "Tours automated daily", value: "2,400+" },
+                { label: "Avg. booking time", value: "< 90s" },
+                { label: "Lock brands supported", value: "150+" },
+                { label: "Conversion lift", value: "3.2×" },
+              ].map((s) => (
+                <div key={s.label} className="text-center">
+                  <p className="text-2xl font-light text-white tabular-nums">{s.value}</p>
+                  <p className="mt-1 font-mono text-xs text-white/25 uppercase tracking-widest">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </FadeUp>
+
+      {/* ── Features ───────────────────────────────────────────────── */}
+      <section id="features" className="py-32 sm:py-40">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <FadeUp className="mb-20">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25 mb-4">// Capabilities</p>
+            <h2 className="text-4xl font-light leading-tight text-white sm:text-6xl max-w-2xl">
+              Everything the tour needs.
+              <span className="text-white/20"> Nothing it doesn't.</span>
+            </h2>
+          </FadeUp>
+
+          <StaggerList className="grid grid-cols-1 divide-y divide-white/[0.05] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-3">
+            {FEATURES.map((f) => (
+              <motion.div key={f.tag} variants={item}
+                className="group relative py-10 sm:px-8 sm:py-10 border-white/[0.05] hover:bg-white/[0.02] transition-colors duration-300 sm:border-l first:border-l-0 lg:first:border-l-0 lg:[&:nth-child(4)]:border-l-0"
+              >
+                <p className="font-mono text-xs text-white/20 mb-4 tracking-widest">{f.tag}</p>
+                <h3 className="text-base font-medium text-white mb-3 leading-snug">{f.title}</h3>
+                <p className="text-sm text-white/35 leading-relaxed">{f.description}</p>
+              </motion.div>
+            ))}
+          </StaggerList>
+        </div>
+      </section>
+
+      {/* ── How it works ───────────────────────────────────────────── */}
+      <section className="py-32 sm:py-40 relative overflow-hidden">
+        {/* Subtle glow */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[500px] w-[500px] opacity-[0.07] rounded-full"
+          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 70%)" }} />
+
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <FadeUp className="mb-20">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25 mb-4">// Process</p>
+            <h2 className="text-4xl font-light text-white sm:text-6xl">Up in under an hour.</h2>
+          </FadeUp>
+
+          <StaggerList className="max-w-3xl space-y-0 divide-y divide-white/[0.05]">
+            {STEPS.map((s) => (
+              <motion.div key={s.n} variants={item} className="group flex items-start gap-10 py-10">
+                <span className="font-mono text-5xl font-light text-white/[0.07] group-hover:text-white/15 transition-colors duration-500 flex-shrink-0 leading-none mt-1">
+                  {s.n}
+                </span>
+                <div>
+                  <h3 className="text-lg font-medium text-white mb-2">{s.title}</h3>
+                  <p className="text-sm text-white/35 leading-relaxed max-w-md">{s.body}</p>
+                </div>
+              </motion.div>
+            ))}
+          </StaggerList>
+        </div>
+      </section>
+
+      {/* ── Pricing ────────────────────────────────────────────────── */}
+      <section id="pricing" className="py-32 sm:py-40 border-t border-white/[0.05]">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <FadeUp className="mb-20 text-center">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25 mb-4">// Pricing</p>
+            <h2 className="text-4xl font-light text-white sm:text-6xl">Simple. Transparent.</h2>
+            <p className="mt-4 text-white/30 text-base tracking-wide">Start free. Upgrade when you're ready.</p>
+          </FadeUp>
+
+          <StaggerList className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3">
+            {PRICING.map((plan) => (
+              <motion.div key={plan.name} variants={item}
+                className={`relative rounded-2xl border p-8 transition-all duration-300 ${plan.highlight
+                  ? "border-[#316ee0]/40 bg-[#316ee0]/[0.05] shadow-[0_0_60px_rgba(49,110,224,0.12)]"
+                  : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]"
+                  }`}
+              >
+                {plan.highlight && (
+                  <div className="absolute -top-px left-1/2 -translate-x-1/2 h-px w-32 bg-gradient-to-r from-transparent via-[#316ee0] to-transparent" />
+                )}
+
+                <div className="mb-8">
+                  <p className="font-mono text-xs uppercase tracking-widest text-white/30 mb-1">{plan.name}</p>
+                  <p className="text-xs text-white/20 mb-6">{plan.description}</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-light text-white">{plan.price}</span>
+                    <span className="text-xs text-white/25 font-mono">/{plan.period}</span>
+                  </div>
+                </div>
+
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-center gap-3 text-sm text-white/40">
+                      <Check className="h-3.5 w-3.5 flex-shrink-0 text-[#316ee0]" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href={plan.href}
+                  className={`block w-full rounded-full py-3 text-center text-sm font-medium transition-all duration-300 ${plan.highlight
+                    ? "bg-[#316ee0] text-white hover:bg-[#2558c8] shadow-[0_0_20px_rgba(49,110,224,0.3)] hover:shadow-[0_0_30px_rgba(49,110,224,0.5)]"
+                    : "border border-white/10 text-white/50 hover:text-white hover:border-white/20 hover:bg-white/[0.04]"
+                    }`}
+                >
+                  {plan.cta}
+                </Link>
+              </motion.div>
+            ))}
+          </StaggerList>
+        </div>
+      </section>
+
+      {/* ── CTA ─────────────────────────────────────────────────────── */}
+      <section className="relative py-40 overflow-hidden border-t border-white/[0.05]">
+        <div className="absolute inset-0"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
+            backgroundSize: "72px 72px",
+          }}
+        />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full opacity-15"
+          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 70%)" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none" />
+
+        <FadeUp className="relative z-10 mx-auto max-w-3xl px-6 text-center">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/20 mb-8">// Get started</p>
+          <h2 className="text-4xl font-light text-white sm:text-6xl leading-tight mb-6">
+            Ready to automate<br />your tours?
+          </h2>
+          <p className="text-white/30 mb-12 text-base leading-relaxed max-w-md mx-auto">
+            Join property managers and builders who've removed scheduling from their to-do list entirely.
+          </p>
+          <Link href="/signup"
+            className="group inline-flex items-center gap-2.5 rounded-full bg-[#316ee0] px-10 py-4 text-sm font-semibold text-white shadow-[0_0_40px_rgba(49,110,224,0.4)] hover:shadow-[0_0_70px_rgba(49,110,224,0.65)] hover:bg-[#2558c8] transition-all duration-300"
+          >
+            Start for free — no card required
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </FadeUp>
+      </section>
+
+      {/* ── Footer ──────────────────────────────────────────────────── */}
+      <footer className="border-t border-white/[0.05] py-10">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-violet-600 text-white">
-                <KeyRound className="h-3.5 w-3.5" />
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#316ee0]">
+                <KeyRound className="h-3 w-3 text-white" />
               </div>
-              <span className="font-semibold tracking-tight">KeySherpa</span>
+              <span className="text-sm font-medium tracking-wide text-white/60">KeySherpa</span>
             </div>
-            <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} KeySherpa. All rights reserved.
-            </p>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy" className="font-mono text-xs text-white/20 hover:text-white/40 transition-colors tracking-wide">Privacy</Link>
+              <Link href="/terms" className="font-mono text-xs text-white/20 hover:text-white/40 transition-colors tracking-wide">Terms</Link>
+              <p className="font-mono text-xs text-white/15 tracking-wide">© {new Date().getFullYear()} KeySherpa</p>
+            </div>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
