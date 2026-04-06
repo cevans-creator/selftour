@@ -36,7 +36,9 @@ export function TourReminderEmail({
   orgPrimaryColor = "#2563eb",
 }: TourReminderEmailProps) {
   const reminderLabel =
-    hoursUntilTour >= 20 ? "Tomorrow" : `In ${hoursUntilTour} hour${hoursUntilTour !== 1 ? "s" : ""}`;
+    hoursUntilTour >= 20 ? "Tomorrow" :
+    hoursUntilTour >= 4 ? "Today" :
+    `In ${hoursUntilTour} hour${hoursUntilTour !== 1 ? "s" : ""}`;
 
   return (
     <Html>

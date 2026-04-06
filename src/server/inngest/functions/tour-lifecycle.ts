@@ -107,17 +107,19 @@ export const tourLifecycle = inngest.createFunction(
         console.warn("[SMS] Skipping 24h reminder SMS:", err instanceof Error ? err.message : err);
       }
 
+      const hoursUntil24h = Math.max(1, Math.round((scheduledDate.getTime() - Date.now()) / (60 * 60 * 1000)));
+      const isToday24h = scheduledDate.toDateString() === new Date().toDateString();
       const resend24h = getResendClient();
       if (resend24h) await resend24h.emails.send({
         from: EMAIL_FROM,
         to: visitorEmail,
-        subject: `Reminder: Tour Tomorrow — ${propertyAddress}`,
+        subject: `Reminder: Tour ${isToday24h ? "Today" : "Tomorrow"} — ${propertyAddress}`,
         react: React.createElement(TourReminderEmail, {
           visitorFirstName,
           propertyAddress,
           tourDate: formatDate(scheduledDate),
           tourTime: formatTime(scheduledDate),
-          hoursUntilTour: 24,
+          hoursUntilTour: hoursUntil24h,
           accessUrl,
           orgName,
           orgLogoUrl: orgLogoUrl ?? undefined,
