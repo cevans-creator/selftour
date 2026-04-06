@@ -59,7 +59,7 @@ function EventRow({ event }: { event: LockEvent }) {
 }
 
 function DeviceGroup({ deviceName, propertyName, events }: { deviceName: string; propertyName: string | null; events: LockEvent[] }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="rounded-xl border border-white/[0.07] overflow-hidden">
