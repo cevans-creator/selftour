@@ -121,7 +121,7 @@ export default function LandingPage() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <div className="min-h-screen bg-black text-white overflow-x-hidden uppercase" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
 
       {/* ── Nav ─────────────────────────────────────────────────────── */}
       <motion.header
@@ -168,12 +168,19 @@ export default function LandingPage() {
           }}
         />
 
-        {/* Blue glow orb */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full opacity-20"
-          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 70%)" }}
+        {/* Blue glow orb — outer pulse */}
+        <motion.div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[900px] w-[900px] rounded-full"
+          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
+          animate={{ opacity: [0.18, 0.28, 0.18], scale: [1, 1.08, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full opacity-15"
-          style={{ background: "radial-gradient(circle, #60a5fa 0%, transparent 70%)" }}
+        {/* Inner bright core pulse */}
+        <motion.div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] rounded-full"
+          style={{ background: "radial-gradient(circle, #93c5fd 0%, #316ee0 30%, transparent 70%)" }}
+          animate={{ opacity: [0.2, 0.35, 0.2], scale: [1, 1.12, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
         />
 
         {/* Vignette */}
@@ -184,10 +191,10 @@ export default function LandingPage() {
 
           {/* Tag */}
           <motion.p
-            initial={{ opacity: 0, letterSpacing: "0.3em" }}
-            animate={{ opacity: 1, letterSpacing: "0.2em" }}
-            transition={{ duration: 1, ease: [0.25, 1, 0.5, 1] }}
-            className="mb-8 font-mono text-xs uppercase text-white/30 tracking-[0.2em]"
+            initial={{ opacity: 0, letterSpacing: "0.5em" }}
+            animate={{ opacity: 1, letterSpacing: "0.3em" }}
+            transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
+            className="mb-8 text-[10px] text-white/25 tracking-[0.3em]"
           >
             // Intelligent Tour Automation
           </motion.p>
@@ -198,18 +205,32 @@ export default function LandingPage() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
-              className="text-[clamp(3rem,10vw,8rem)] font-light leading-[0.95] tracking-tight text-white"
+              className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white"
             >
-              Home tours
+              Home Tours
             </motion.h1>
           </div>
-          <div className="overflow-hidden">
+          {/* "that run" — powers on slowly like a light turning on */}
+          <div className="overflow-hidden relative">
             <motion.h1
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.9, delay: 0.08, ease: [0.25, 1, 0.5, 1] }}
-              className="text-[clamp(3rem,10vw,8rem)] font-light leading-[0.95] tracking-tight"
-              style={{ color: "transparent", WebkitTextStroke: "1px rgba(255,255,255,0.25)" }}
+              className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none"
+              initial={{ color: "rgba(0,0,0,0)", WebkitTextStroke: "1px rgba(255,255,255,0)", filter: "blur(8px)" }}
+              animate={{
+                color: "rgba(0,0,0,0)",
+                WebkitTextStroke: "1px rgba(255,255,255,0.28)",
+                filter: "blur(0px)",
+                textShadow: [
+                  "0 0 0px rgba(49,110,224,0)",
+                  "0 0 40px rgba(49,110,224,0.6), 0 0 80px rgba(49,110,224,0.2)",
+                  "0 0 20px rgba(49,110,224,0.25), 0 0 60px rgba(49,110,224,0.1)",
+                ],
+              }}
+              transition={{
+                delay: 1.1,
+                duration: 2.4,
+                ease: [0.16, 1, 0.3, 1],
+                textShadow: { duration: 3, delay: 1.1, ease: "easeOut" },
+              }}
             >
               that run
             </motion.h1>
@@ -219,9 +240,9 @@ export default function LandingPage() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.9, delay: 0.16, ease: [0.25, 1, 0.5, 1] }}
-              className="text-[clamp(3rem,10vw,8rem)] font-light leading-[0.95] tracking-tight text-white"
+              className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white"
             >
-              themselves.
+              Themselves.
             </motion.h1>
           </div>
 
@@ -416,8 +437,11 @@ export default function LandingPage() {
             backgroundSize: "72px 72px",
           }}
         />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full opacity-15"
-          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 70%)" }}
+        <motion.div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full"
+          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
+          animate={{ opacity: [0.14, 0.24, 0.14], scale: [1, 1.07, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none" />
 

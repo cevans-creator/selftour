@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -17,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={montserrat.variable}>
       <body className="min-h-screen bg-background font-sans antialiased">
         {children}
         <Toaster richColors position="top-right" />
