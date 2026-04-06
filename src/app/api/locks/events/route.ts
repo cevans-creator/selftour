@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const seam = getSeamClient();
+    const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
     const events = await seam.events.list({
       ...(deviceId ? { device_id: deviceId } : {}),
       event_types: [
@@ -31,6 +32,7 @@ export async function GET(req: NextRequest) {
         "access_code.created",
         "access_code.deleted",
       ],
+      since,
       limit: 50,
     });
 

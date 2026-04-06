@@ -129,12 +129,17 @@ export const hubHealthCheck = inngest.createFunction(
             })
             .join("\n");
 
-          await getResendClient()?.emails.send({
-            from: EMAIL_FROM,
-            to: EMAIL_FROM, // In production this would be the org's admin email
-            subject: `[KeySherpa Alert] ${orgIssues.length} lock issue${orgIssues.length !== 1 ? "s" : ""} detected`,
-            text: `Hub Health Check Alert\n\nThe following issues were detected for ${org.name}:\n\n${issueLines}\n\nPlease review your Integrations dashboard and resolve these issues to avoid disruption to self-guided tours.\n\n— KeySherpa`,
-          });
+          try {
+            await getResendClient()?.emails.send({
+              from: EMAIL_FROM,
+              to: EMAIL_FROM, // In production this would be the org's admin email
+              subject: `[KeySherpa Alert] ${orgIssues.length} lock issue${orgIssues.length !== 1 ? "s" : ""} detected`,
+              text: `Hub Health Check Alert\n\nThe following issues were detected for ${org.name}:\n\n${issueLines}\n\nPlease review your Integrations dashboard and resolve these issues to avoid disruption to self-guided tours.\n\n— KeySherpa`,
+            });
+          } catch (emailErr) {
+            logger.error("Failed to send health check alert email:", emailErr);
+            // Don't throw — email failure should not fail the health check function
+          }
         }
       });
     }
