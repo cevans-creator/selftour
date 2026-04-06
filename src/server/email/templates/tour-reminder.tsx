@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Head,
-  Heading,
   Html,
   Img,
   Preview,
@@ -39,7 +38,7 @@ export function TourReminderEmail({
 }: TourReminderEmailProps) {
   const reminderLabel =
     hoursUntilTour >= 20 ? "Tomorrow" :
-    hoursUntilTour >= 4 ? "Today" :
+    hoursUntilTour >= 4  ? "Today" :
     `In ${hoursUntilTour} hour${hoursUntilTour !== 1 ? "s" : ""}`;
 
   return (
@@ -48,68 +47,129 @@ export function TourReminderEmail({
       <Preview>
         {reminderLabel}: Your tour of {propertyAddress} at {tourTime}
       </Preview>
-      <Body style={main}>
-        <Container style={container}>
-          {orgLogoUrl ? (
-            <Section style={{ ...header, backgroundColor: "#ffffff", borderTop: `4px solid ${orgPrimaryColor}` }}>
-              <Img src={orgLogoUrl} alt={orgName} height={44} style={{ maxWidth: 200, display: "block", margin: "0 auto" }} />
-            </Section>
-          ) : (
-            <Section style={{ ...header, backgroundColor: orgPrimaryColor }}>
-              <Text style={headerTitle}>{orgName}</Text>
-            </Section>
-          )}
+      <Body style={body}>
+        <Container style={wrapper}>
 
+          {/* ── Color stripe ── */}
+          <Section style={{ ...stripe, backgroundColor: orgPrimaryColor }} />
+
+          {/* ── Logo / org name ── */}
+          <Section style={logoSection}>
+            {orgLogoUrl ? (
+              <Img
+                src={orgLogoUrl}
+                alt={orgName}
+                height={48}
+                style={{ maxWidth: 180, display: "block", margin: "0 auto" }}
+              />
+            ) : (
+              <Text style={{ ...orgNameText, color: orgPrimaryColor }}>{orgName}</Text>
+            )}
+          </Section>
+
+          {/* ── Hero ── */}
+          <Section style={{ ...hero, backgroundColor: orgPrimaryColor }}>
+            <Text style={heroEyebrow}>Self-Guided Tour Reminder</Text>
+            <Text style={heroHeading}>{reminderLabel}: Your Tour</Text>
+            <Text style={heroSub}>Hi {visitorFirstName} — your tour is coming up soon.</Text>
+          </Section>
+
+          {/* ── Tour details card ── */}
+          <Section style={card}>
+            {/* Address row */}
+            <Section style={detailRow}>
+              <table width="100%" cellPadding="0" cellSpacing="0">
+                <tbody>
+                  <tr>
+                    <td width="36" valign="top">
+                      <div style={{ ...iconBox, backgroundColor: orgPrimaryColor + "18" }}>
+                        <Text style={{ ...iconText, color: orgPrimaryColor }}>📍</Text>
+                      </div>
+                    </td>
+                    <td style={{ paddingLeft: 12 }}>
+                      <Text style={detailLabel}>Property</Text>
+                      <Text style={detailValue}>{propertyAddress}</Text>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Section>
+
+            <div style={divider} />
+
+            {/* Date/time row */}
+            <Section style={detailRow}>
+              <table width="100%" cellPadding="0" cellSpacing="0">
+                <tbody>
+                  <tr>
+                    <td width="36" valign="top">
+                      <div style={{ ...iconBox, backgroundColor: orgPrimaryColor + "18" }}>
+                        <Text style={{ ...iconText, color: orgPrimaryColor }}>🗓</Text>
+                      </div>
+                    </td>
+                    <td style={{ paddingLeft: 12 }}>
+                      <Text style={detailLabel}>Date &amp; Time</Text>
+                      <Text style={detailValue}>{tourDate}</Text>
+                      <Text style={detailSub}>{tourTime}</Text>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Section>
+          </Section>
+
+          {/* ── What to expect ── */}
           <Section style={content}>
-            <Heading style={h1}>
-              {reminderLabel}: Your Tour
-            </Heading>
+            <Text style={sectionHeading}>What to expect</Text>
 
-            <Text style={paragraph}>
-              Hi {visitorFirstName}! Just a reminder that your self-guided tour
-              is coming up.
-            </Text>
+            <table width="100%" cellPadding="0" cellSpacing="0">
+              <tbody>
+                {[
+                  ["15 min before", "You'll receive a text with your 4-digit door access code."],
+                  ["At the door", "Enter your code on the keypad to unlock — no agent needed."],
+                  ["During the tour", "Text any question to our AI assistant and get an instant answer."],
+                ].map(([label, desc], i) => (
+                  <tr key={i}>
+                    <td width="28" valign="top" style={{ paddingBottom: 14 }}>
+                      <div style={{ ...stepBadge, backgroundColor: orgPrimaryColor }}>
+                        <span style={stepNum}>{i + 1}</span>
+                      </div>
+                    </td>
+                    <td style={{ paddingLeft: 12, paddingBottom: 14 }}>
+                      <Text style={stepLabel}>{label}</Text>
+                      <Text style={stepDesc}>{desc}</Text>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-            <Section style={highlightBox}>
-              <Text style={highlightAddress}>{propertyAddress}</Text>
-              <Text style={highlightTime}>
-                {tourDate} at {tourTime}
-              </Text>
+            {/* CTA */}
+            <Section style={{ textAlign: "center" as const, margin: "28px 0 8px" }}>
+              <Button
+                href={accessUrl}
+                style={{ ...ctaButton, backgroundColor: orgPrimaryColor }}
+              >
+                View Your Tour Page →
+              </Button>
             </Section>
-
-            <Text style={paragraph}>
-              Your door access code will be texted to you{" "}
-              <strong>15 minutes before</strong> your tour starts.
-              You can also ask questions via text during your tour.
-            </Text>
-
-            <Button
-              href={accessUrl}
-              style={{ ...button, backgroundColor: orgPrimaryColor }}
-            >
-              View Tour Details
-            </Button>
 
             {manageUrl && (
               <Text style={manageText}>
                 Need to cancel or reschedule?{" "}
-                <a href={manageUrl} style={manageLink}>
-                  Manage your tour here
+                <a href={manageUrl} style={{ color: orgPrimaryColor }}>
+                  Manage your tour
                 </a>
               </Text>
             )}
-
-            <Text style={paragraph}>
-              Need to reschedule? Reply to this email or call the leasing
-              office.
-            </Text>
           </Section>
 
+          {/* ── Footer ── */}
           <Section style={footer}>
-            <Text style={footerText}>
-              © {new Date().getFullYear()} {orgName}
-            </Text>
+            <Text style={footerText}>© {new Date().getFullYear()} {orgName}</Text>
+            <Text style={footerText}>You received this because you booked a self-guided tour.</Text>
           </Section>
+
         </Container>
       </Body>
     </Html>
@@ -118,104 +178,196 @@ export function TourReminderEmail({
 
 export default TourReminderEmail;
 
-const main: React.CSSProperties = {
-  backgroundColor: "#f6f9fc",
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+// ── Styles ────────────────────────────────────────────────────────────────────
+
+const body: React.CSSProperties = {
+  backgroundColor: "#f0f2f5",
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif',
+  margin: 0,
+  padding: "32px 0",
 };
 
-const container: React.CSSProperties = {
+const wrapper: React.CSSProperties = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
-  maxWidth: "600px",
-  borderRadius: "8px",
+  maxWidth: "580px",
+  borderRadius: "12px",
   overflow: "hidden",
-  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
 };
 
-const header: React.CSSProperties = {
-  padding: "24px 32px",
+const stripe: React.CSSProperties = {
+  height: "5px",
+  lineHeight: "5px",
+  fontSize: "1px",
+};
+
+const logoSection: React.CSSProperties = {
+  backgroundColor: "#ffffff",
+  padding: "28px 32px 24px",
   textAlign: "center" as const,
 };
 
-const headerTitle: React.CSSProperties = {
+const orgNameText: React.CSSProperties = {
+  fontSize: "22px",
+  fontWeight: "800",
+  margin: 0,
+  letterSpacing: "-0.3px",
+};
+
+const hero: React.CSSProperties = {
+  padding: "32px 36px 28px",
+  textAlign: "center" as const,
+};
+
+const heroEyebrow: React.CSSProperties = {
+  color: "rgba(255,255,255,0.75)",
+  fontSize: "12px",
+  fontWeight: "600",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase" as const,
+  margin: "0 0 8px",
+};
+
+const heroHeading: React.CSSProperties = {
   color: "#ffffff",
-  fontSize: "24px",
+  fontSize: "32px",
+  fontWeight: "800",
+  margin: "0 0 8px",
+  lineHeight: "1.15",
+  letterSpacing: "-0.5px",
+};
+
+const heroSub: React.CSSProperties = {
+  color: "rgba(255,255,255,0.85)",
+  fontSize: "16px",
+  margin: 0,
+};
+
+const card: React.CSSProperties = {
+  margin: "24px 28px",
+  backgroundColor: "#f8fafc",
+  borderRadius: "10px",
+  border: "1px solid #e8ecf0",
+  padding: "4px 0",
+  overflow: "hidden",
+};
+
+const detailRow: React.CSSProperties = {
+  padding: "16px 20px",
+};
+
+const divider: React.CSSProperties = {
+  borderTop: "1px solid #e8ecf0",
+  margin: "0 20px",
+};
+
+const iconBox: React.CSSProperties = {
+  width: 36,
+  height: 36,
+  borderRadius: 8,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const iconText: React.CSSProperties = {
+  fontSize: "18px",
+  margin: 0,
+  lineHeight: "36px",
+  textAlign: "center" as const,
+  width: 36,
+};
+
+const detailLabel: React.CSSProperties = {
+  color: "#8896a7",
+  fontSize: "11px",
   fontWeight: "700",
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.07em",
+  margin: "0 0 3px",
+};
+
+const detailValue: React.CSSProperties = {
+  color: "#0f1724",
+  fontSize: "16px",
+  fontWeight: "600",
   margin: "0",
+  lineHeight: "1.4",
+};
+
+const detailSub: React.CSSProperties = {
+  color: "#5a6880",
+  fontSize: "14px",
+  margin: "2px 0 0",
 };
 
 const content: React.CSSProperties = {
-  padding: "32px",
+  padding: "8px 32px 32px",
 };
 
-const h1: React.CSSProperties = {
-  color: "#1a1a1a",
-  fontSize: "28px",
+const sectionHeading: React.CSSProperties = {
+  color: "#0f1724",
+  fontSize: "16px",
   fontWeight: "700",
-  margin: "0 0 16px",
+  margin: "0 0 18px",
 };
 
-const paragraph: React.CSSProperties = {
-  color: "#444444",
-  fontSize: "16px",
+const stepBadge: React.CSSProperties = {
+  width: 24,
+  height: 24,
+  borderRadius: "50%",
+  textAlign: "center" as const,
   lineHeight: "24px",
-  margin: "0 0 16px",
+  display: "inline-block",
 };
 
-const highlightBox: React.CSSProperties = {
-  backgroundColor: "#f0f7ff",
-  borderLeft: "4px solid #2563eb",
-  borderRadius: "4px",
-  padding: "16px 20px",
-  margin: "24px 0",
+const stepNum: React.CSSProperties = {
+  color: "#ffffff",
+  fontSize: "12px",
+  fontWeight: "700",
 };
 
-const highlightAddress: React.CSSProperties = {
-  color: "#1a1a1a",
-  fontSize: "18px",
-  fontWeight: "600",
-  margin: "0 0 4px",
+const stepLabel: React.CSSProperties = {
+  color: "#0f1724",
+  fontSize: "13px",
+  fontWeight: "700",
+  margin: "0 0 1px",
 };
 
-const highlightTime: React.CSSProperties = {
-  color: "#2563eb",
-  fontSize: "16px",
-  fontWeight: "500",
-  margin: "0",
+const stepDesc: React.CSSProperties = {
+  color: "#5a6880",
+  fontSize: "13px",
+  margin: 0,
+  lineHeight: "1.5",
 };
 
-const button: React.CSSProperties = {
+const ctaButton: React.CSSProperties = {
   display: "inline-block",
   color: "#ffffff",
-  fontSize: "16px",
-  fontWeight: "600",
+  fontSize: "15px",
+  fontWeight: "700",
   textDecoration: "none",
-  textAlign: "center" as const,
-  borderRadius: "6px",
-  padding: "12px 24px",
-  margin: "16px 0",
+  borderRadius: "8px",
+  padding: "14px 32px",
 };
 
 const manageText: React.CSSProperties = {
-  color: "#64748b",
-  fontSize: "14px",
-  margin: "0 0 16px",
-};
-
-const manageLink: React.CSSProperties = {
-  color: "#7c3aed",
-  textDecoration: "underline",
+  color: "#8896a7",
+  fontSize: "13px",
+  textAlign: "center" as const,
+  margin: "14px 0 0",
 };
 
 const footer: React.CSSProperties = {
   backgroundColor: "#f8fafc",
-  borderTop: "1px solid #e2e8f0",
-  padding: "24px 32px",
+  borderTop: "1px solid #e8ecf0",
+  padding: "20px 32px",
   textAlign: "center" as const,
 };
 
 const footerText: React.CSSProperties = {
-  color: "#94a3b8",
+  color: "#aab4c0",
   fontSize: "12px",
-  margin: "0",
+  margin: "0 0 3px",
 };
