@@ -6,6 +6,7 @@ import { eq, and, sql } from "drizzle-orm";
 import { inngest } from "@/server/inngest/client";
 import { addMinutes } from "date-fns";
 import { buildAccessUrl, buildManageUrl, normalizePhone } from "@/lib/utils";
+import { createTourAccessCode, generateAccessCode } from "@/server/seam/locks";
 
 export async function POST(req: NextRequest) {
   const supabase = await createSupabaseServerClient();
@@ -127,6 +128,31 @@ export async function POST(req: NextRequest) {
 
   const accessUrl = buildAccessUrl(org.slug, tour.id);
   const manageUrl = buildManageUrl(org.slug, tour.id);
+
+  // If tour starts within 30 minutes, provision access code immediately
+  // (Inngest lifecycle can't reliably handle past/immediate sleep targets)
+  const minutesUntilStart = (scheduledDate.getTime() - Date.now()) / 60000;
+  if (minutesUntilStart <= 30) {
+    const code = generateAccessCode();
+    let accessCodeId: string | null = null;
+
+    if (property.seamDeviceId) {
+      try {
+        const codeStartsAt = new Date(Math.min(scheduledDate.getTime(), Date.now()) - 5 * 60 * 1000);
+        const codeEndsAt = new Date(Math.max(endsAt.getTime(), Date.now() + 30 * 60 * 1000));
+        accessCodeId = await createTourAccessCode(property.seamDeviceId, code, codeStartsAt, codeEndsAt);
+      } catch (err) {
+        console.warn("[Admin Book] Could not provision Seam code:", err);
+      }
+    }
+
+    await db.update(tours).set({
+      accessCode: code,
+      seamAccessCodeId: accessCodeId,
+      status: "access_sent",
+      updatedAt: new Date(),
+    }).where(eq(tours.id, tour.id));
+  }
 
   // Fire Inngest lifecycle
   await inngest.send({
