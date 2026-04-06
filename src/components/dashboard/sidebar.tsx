@@ -71,22 +71,24 @@ function SidebarContent({
   };
 
   return (
-    <div className="flex h-full flex-col bg-slate-950">
+    <div className="flex h-full flex-col bg-black border-r border-white/[0.06]">
       {/* Logo */}
-      <div className="flex h-16 items-center px-6 border-b border-slate-800">
+      <div className="flex h-16 items-center px-6 border-b border-white/[0.06]">
         <Link href="/dashboard" className="flex items-center gap-2.5" onClick={onNavigate}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-white shadow-lg shadow-violet-500/30">
-            <KeyRound className="h-4 w-4" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#316ee0] shadow-[0_0_16px_rgba(49,110,224,0.4)]">
+            <KeyRound className="h-4 w-4 text-white" />
           </div>
-          <span className="text-lg font-bold text-white tracking-tight">KeySherpa</span>
+          <span className="text-base font-semibold text-white tracking-wide" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
+            KeySherpa
+          </span>
         </Link>
       </div>
 
       {/* Org Switcher */}
-      <div className="px-4 py-3 border-b border-slate-800">
-        <button className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-slate-800/60 transition-colors">
-          <span className="font-medium text-slate-200 truncate">{orgName}</span>
-          <ChevronDown className="h-4 w-4 text-slate-500 flex-shrink-0" />
+      <div className="px-4 py-3 border-b border-white/[0.06]">
+        <button className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-white/[0.04] transition-colors">
+          <span className="font-medium text-white/80 truncate">{orgName}</span>
+          <ChevronDown className="h-4 w-4 text-white/30 flex-shrink-0" />
         </button>
       </div>
 
@@ -105,13 +107,13 @@ function SidebarContent({
                   href={item.href}
                   onClick={onNavigate}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-violet-600 text-white shadow-sm shadow-violet-500/20"
-                      : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-100"
+                      ? "bg-[#316ee0]/15 text-white border border-[#316ee0]/25 shadow-[0_0_12px_rgba(49,110,224,0.1)]"
+                      : "text-white/45 hover:bg-white/[0.04] hover:text-white/80 border border-transparent"
                   )}
                 >
-                  <Icon className="h-4 w-4 flex-shrink-0" />
+                  <Icon className={cn("h-4 w-4 flex-shrink-0", isActive ? "text-[#316ee0]" : "")} />
                   {item.label}
                 </Link>
               </li>
@@ -121,26 +123,26 @@ function SidebarContent({
       </nav>
 
       {/* User Menu */}
-      <div className="border-t border-slate-800 p-4 space-y-1">
+      <div className="border-t border-white/[0.06] p-4 space-y-1">
         <a
           href={`/tour/${orgSlug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-colors"
+          className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-white/35 hover:text-white/70 hover:bg-white/[0.04] transition-colors"
         >
           <ExternalLink className="h-3.5 w-3.5" />
           View tour page
         </a>
         <div className="flex items-center gap-3 rounded-lg px-3 py-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-violet-600/20 text-violet-400 text-xs font-semibold ring-1 ring-violet-500/30">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#316ee0]/15 text-[#316ee0] text-xs font-semibold ring-1 ring-[#316ee0]/25">
             {userEmail.slice(0, 2).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium text-slate-300">{userEmail}</p>
+            <p className="truncate text-xs font-medium text-white/50">{userEmail}</p>
           </div>
           <button
             onClick={handleSignOut}
-            className="rounded-md p-1 text-slate-500 hover:text-red-400 transition-colors"
+            className="rounded-md p-1 text-white/25 hover:text-red-400 transition-colors"
             title="Sign out"
           >
             <LogOut className="h-3.5 w-3.5" />
@@ -155,7 +157,6 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close drawer on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
@@ -168,16 +169,16 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
       </aside>
 
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex h-14 items-center justify-between bg-slate-950 border-b border-slate-800 px-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex h-14 items-center justify-between bg-black border-b border-white/[0.06] px-4">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-600 text-white">
-            <KeyRound className="h-3.5 w-3.5" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#316ee0]">
+            <KeyRound className="h-3.5 w-3.5 text-white" />
           </div>
-          <span className="text-base font-bold text-white tracking-tight">KeySherpa</span>
+          <span className="text-base font-semibold text-white tracking-wide">KeySherpa</span>
         </Link>
         <button
           onClick={() => setMobileOpen(true)}
-          className="p-2 text-slate-400 hover:text-white transition-colors"
+          className="p-2 text-white/40 hover:text-white transition-colors"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -187,7 +188,7 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
           <div className="relative w-72 flex-shrink-0">
@@ -199,7 +200,7 @@ export function Sidebar({ orgName, orgSlug, userEmail }: SidebarProps) {
             />
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white transition-colors"
+              className="absolute top-4 right-4 p-1.5 text-white/40 hover:text-white transition-colors"
             >
               <X className="h-5 w-5" />
             </button>

@@ -37,14 +37,21 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen overflow-hidden bg-black">
       <Sidebar
         orgName={membership.org.name}
         orgSlug={membership.org.slug}
         userEmail={user.email ?? ""}
       />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-7xl p-4 pt-16 md:pt-6 md:p-6">{children}</div>
+      <main className="flex-1 overflow-y-auto relative">
+        {/* Subtle grid */}
+        <div className="pointer-events-none fixed inset-0 z-0"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+            backgroundSize: "72px 72px",
+          }}
+        />
+        <div className="relative z-10 mx-auto max-w-7xl p-4 pt-16 md:pt-6 md:p-6">{children}</div>
       </main>
       <SupportChat />
     </div>
