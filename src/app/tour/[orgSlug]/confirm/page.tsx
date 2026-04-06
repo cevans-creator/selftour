@@ -66,7 +66,7 @@ export default async function ConfirmPage({
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
               <div>
-                <p className="font-medium">{property.address}</p>
+                <p className="font-medium text-gray-900">{property.address}</p>
                 <p className="text-sm text-gray-500">
                   {property.city}, {property.state} {property.zip}
                 </p>
@@ -75,7 +75,7 @@ export default async function ConfirmPage({
             <div className="flex items-center gap-3">
               <Calendar className="h-5 w-5 flex-shrink-0 text-gray-400" />
               <div>
-                <p className="font-medium">{formatDate(tour.scheduledAt)}</p>
+                <p className="font-medium text-gray-900">{formatDate(tour.scheduledAt)}</p>
                 <p className="text-sm text-gray-500">
                   {formatTime(tour.scheduledAt)} – {formatTime(tour.endsAt)}
                 </p>
@@ -84,8 +84,8 @@ export default async function ConfirmPage({
             <div className="flex items-center gap-3">
               <Smartphone className="h-5 w-5 flex-shrink-0 text-gray-400" />
               <div>
-                <p className="text-sm text-gray-600">Confirmation sent to</p>
-                <p className="font-medium">{visitor.email}</p>
+                <p className="text-sm text-gray-500">Confirmation sent to</p>
+                <p className="font-medium text-gray-900">{visitor.email}</p>
               </div>
             </div>
           </div>
