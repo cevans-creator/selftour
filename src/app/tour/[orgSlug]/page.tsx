@@ -71,10 +71,10 @@ export default async function TourBrowsePage({
       </header>
 
       {/* Content */}
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Browse Available Homes</h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-gray-500">
             Schedule a self-guided tour at your convenience — no agent required.
           </p>
         </div>
