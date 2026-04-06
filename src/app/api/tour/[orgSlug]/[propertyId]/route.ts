@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db/client";
 import { organizations, properties, tours } from "@/server/db/schema";
-import { eq, and, gte } from "drizzle-orm";
+import { eq, and, gte, notInArray } from "drizzle-orm";
 
 export async function GET(
   _req: NextRequest,
@@ -46,7 +46,8 @@ export async function GET(
       .where(
         and(
           eq(tours.propertyId, property.id),
-          gte(tours.scheduledAt, new Date())
+          gte(tours.scheduledAt, new Date()),
+          notInArray(tours.status, ["cancelled", "no_show"])
         )
       );
 

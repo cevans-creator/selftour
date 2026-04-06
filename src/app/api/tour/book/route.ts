@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
       .where(
         and(
           eq(tours.propertyId, property.id),
+          sql`${tours.status} NOT IN ('cancelled', 'no_show')`,
           sql`${tours.scheduledAt} < ${bufferEnd.toISOString()} AND ${tours.endsAt} > ${bufferStart.toISOString()}`
         )
       )
