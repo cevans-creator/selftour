@@ -159,7 +159,17 @@ export default function LandingPage() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const orbOpacity = useTransform(scrollYProgress, [0.5, 1], [1, 0.12]);
+
+  // Global scroll for orb fade — fades out right after hero on both mobile and desktop
+  const { scrollY } = useScroll();
+  const orbOpacity = useTransform(scrollY, (y) => {
+    const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    const start = vh * 0.75;
+    const end = vh * 1.1;
+    if (y <= start) return 1;
+    if (y >= end) return 0.1;
+    return 1 - 0.9 * ((y - start) / (end - start));
+  });
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden uppercase" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
