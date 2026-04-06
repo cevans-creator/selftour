@@ -142,7 +142,7 @@ function NeonLine() {
 
   return (
     <motion.h1
-      className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none"
+      className="text-[clamp(2.2rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none whitespace-nowrap"
       style={{ color: "transparent", willChange: "text-shadow" }}
       initial={{ filter: "blur(10px)", WebkitTextStroke: "1px rgba(255,255,255,0)", textShadow: "none" }}
       animate={controls}
@@ -203,7 +203,7 @@ export default function LandingPage() {
         {/* Grid background */}
         <div className="absolute inset-0"
           style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)",
             backgroundSize: "72px 72px",
           }}
         />
@@ -212,6 +212,7 @@ export default function LandingPage() {
         <motion.div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[900px] w-[900px] rounded-full"
           style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
+          initial={{ opacity: 0.18 }}
           animate={{ opacity: [0.18, 0.28, 0.18], scale: [1, 1.08, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -219,6 +220,7 @@ export default function LandingPage() {
         <motion.div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] rounded-full"
           style={{ background: "radial-gradient(circle, #93c5fd 0%, #316ee0 30%, transparent 70%)" }}
+          initial={{ opacity: 0.2 }}
           animate={{ opacity: [0.2, 0.35, 0.2], scale: [1, 1.12, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
         />
@@ -245,7 +247,7 @@ export default function LandingPage() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
-              className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white"
+              className="text-[clamp(2.2rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white whitespace-nowrap"
             >
               Home Tours
             </motion.h1>
@@ -257,7 +259,7 @@ export default function LandingPage() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.9, delay: 0.16, ease: [0.25, 1, 0.5, 1] }}
-              className="text-[clamp(3rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white"
+              className="text-[clamp(2.2rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white whitespace-nowrap"
             >
               Themselves.
             </motion.h1>
