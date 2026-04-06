@@ -21,16 +21,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Inngest requires this to handle long-running functions
   async headers() {
     return [
+      // Inngest requires no caching
       {
         source: "/api/webhooks/inngest",
+        headers: [{ key: "Cache-Control", value: "no-store" }],
+      },
+      // CORS for embed widget — allow any site to call the public tour API
+      {
+        source: "/api/tour/:path*",
         headers: [
-          {
-            key: "Cache-Control",
-            value: "no-store",
-          },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Access-Control-Allow-Methods", value: "GET, POST, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type" },
         ],
       },
     ];
