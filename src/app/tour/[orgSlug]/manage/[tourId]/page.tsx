@@ -42,6 +42,7 @@ export default function ManageTourPage() {
   const [cancelled, setCancelled] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
+  const [confirmingReschedule, setConfirmingReschedule] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -91,20 +92,22 @@ export default function ManageTourPage() {
 
   const handleReschedule = async () => {
     if (!details) return;
-    // Cancel first if not already cancelled
-    if (!cancelled) {
-      setCancelling(true);
-      const res = await fetch("/api/tour/visitor-cancel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tourId }),
-      });
-      if (!res.ok) {
-        const data = await res.json() as { error?: string };
-        setError(data.error ?? "Failed to cancel tour.");
-        setCancelling(false);
-        return;
-      }
+    if (!confirmingReschedule) {
+      setConfirmingReschedule(true);
+      return;
+    }
+    setCancelling(true);
+    setConfirmingReschedule(false);
+    const res = await fetch("/api/tour/visitor-cancel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tourId }),
+    });
+    if (!res.ok) {
+      const data = await res.json() as { error?: string };
+      setError(data.error ?? "Failed to cancel tour.");
+      setCancelling(false);
+      return;
     }
     router.push(`/tour/${orgSlug}/${details.property.id}`);
   };
@@ -234,15 +237,41 @@ export default function ManageTourPage() {
                 <h2 className="font-semibold text-gray-900">Need to make a change?</h2>
 
                 {/* Reschedule */}
-                <Button
-                  className="w-full gap-2"
-                  style={{ backgroundColor: primaryColor }}
-                  onClick={handleReschedule}
-                  disabled={cancelling}
-                >
-                  {cancelling ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarCheck className="h-4 w-4" />}
-                  Reschedule Tour
-                </Button>
+                {!confirmingReschedule ? (
+                  <Button
+                    className="w-full gap-2"
+                    style={{ backgroundColor: primaryColor }}
+                    onClick={handleReschedule}
+                    disabled={cancelling}
+                  >
+                    <CalendarCheck className="h-4 w-4" />
+                    Reschedule Tour
+                  </Button>
+                ) : (
+                  <div className="rounded-xl border p-4 space-y-3" style={{ borderColor: primaryColor + "40", backgroundColor: primaryColor + "08" }}>
+                    <p className="text-sm font-medium text-gray-800">This will cancel your current tour and take you to the booking page.</p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        className="flex-1 text-sm"
+                        onClick={() => setConfirmingReschedule(false)}
+                        disabled={cancelling}
+                      >
+                        <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+                        Go Back
+                      </Button>
+                      <Button
+                        className="flex-1 text-sm"
+                        style={{ backgroundColor: primaryColor }}
+                        onClick={handleReschedule}
+                        disabled={cancelling}
+                      >
+                        {cancelling ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : null}
+                        Yes, Reschedule
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Cancel */}
                 {!confirming ? (
