@@ -130,20 +130,22 @@ export default function AccessPage() {
     <div className="min-h-screen bg-gray-50 text-gray-900">
 
       {/* ── Header + Hero ── */}
-      <div style={{ backgroundColor: primary }} className="pb-12">
-        {/* Logo bar */}
-        <div className="mx-auto max-w-lg px-4 pt-5 pb-6 flex items-center gap-3">
+      {/* Color stripe */}
+      <div className="h-1.5" style={{ backgroundColor: primary }} />
+      {/* Logo bar — white background so logos render cleanly */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="mx-auto max-w-lg px-4 py-4 flex items-center">
           {org.logoUrl ? (
-            <div className="rounded-lg bg-white/15 px-3 py-1.5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={org.logoUrl} alt={org.name} className="h-7 w-auto object-contain" />
-            </div>
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={org.logoUrl} alt={org.name} className="h-9 w-auto object-contain" />
           ) : (
-            <span className="font-bold text-white text-lg">{org.name}</span>
+            <span className="font-bold text-lg" style={{ color: primary }}>{org.name}</span>
           )}
         </div>
-        {/* Hero text */}
-        <div className="mx-auto max-w-lg px-4">
+      </div>
+      {/* Hero band */}
+      <div style={{ backgroundColor: primary }} className="pb-12">
+        <div className="mx-auto max-w-lg px-4 pt-7">
           <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Self-Guided Tour</p>
           <h1 className="text-white text-2xl font-bold">Hi {tour.visitorFirstName}!</h1>
           <p className="text-white/80 text-sm mt-1">Here are your tour details.</p>
