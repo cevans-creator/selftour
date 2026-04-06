@@ -50,13 +50,15 @@ export function TourReminderEmail({
       </Preview>
       <Body style={main}>
         <Container style={container}>
-          <Section style={{ ...header, backgroundColor: orgPrimaryColor }}>
-            {orgLogoUrl ? (
-              <Img src={orgLogoUrl} alt={orgName} width={140} height={40} />
-            ) : (
+          {orgLogoUrl ? (
+            <Section style={{ ...header, backgroundColor: "#ffffff", borderTop: `4px solid ${orgPrimaryColor}` }}>
+              <Img src={orgLogoUrl} alt={orgName} height={44} style={{ maxWidth: 200, display: "block", margin: "0 auto" }} />
+            </Section>
+          ) : (
+            <Section style={{ ...header, backgroundColor: orgPrimaryColor }}>
               <Text style={headerTitle}>{orgName}</Text>
-            )}
-          </Section>
+            </Section>
+          )}
 
           <Section style={content}>
             <Heading style={h1}>
