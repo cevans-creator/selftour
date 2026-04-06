@@ -176,6 +176,12 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
                 value={form.name}
                 onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
               />
+              <p className="text-xs text-white/30">
+                Booking URL:{" "}
+                <span className="font-mono text-white/50">
+                  keysherpa.io/tour/{form.name.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-") || "…"}
+                </span>
+              </p>
             </div>
 
             <div className="space-y-2">

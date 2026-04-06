@@ -34,10 +34,18 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
+  const slug = parsed.data.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+
   await db
     .update(organizations)
     .set({
       name: parsed.data.name,
+      slug,
       ...(parsed.data.primaryColor ? { primaryColor: parsed.data.primaryColor } : {}),
       twilioPhoneNumber: parsed.data.twilioPhoneNumber ?? null,
       resendDomain: parsed.data.resendDomain ?? null,
@@ -45,5 +53,5 @@ export async function PATCH(req: NextRequest) {
     })
     .where(eq(organizations.id, membership.orgId));
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, slug });
 }
