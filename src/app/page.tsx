@@ -181,9 +181,9 @@ export default function LandingPage() {
           </div>
 
           <nav className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm text-white/40 hover:text-white transition-colors duration-200 tracking-wide">Features</a>
-            <a href="#pricing" className="text-sm text-white/40 hover:text-white transition-colors duration-200 tracking-wide">Pricing</a>
-            <Link href="/login" className="text-sm text-white/40 hover:text-white transition-colors duration-200 tracking-wide">Sign in</Link>
+            <a href="#features" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Features</a>
+            <a href="#pricing" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Pricing</a>
+            <Link href="/login" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Sign in</Link>
             <Link href="/signup"
               className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-200">
               Get started
@@ -236,7 +236,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, letterSpacing: "0.5em" }}
             animate={{ opacity: 1, letterSpacing: "0.3em" }}
             transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
-            className="mb-8 text-[10px] text-white/25 tracking-[0.3em]"
+            className="mb-8 text-xs text-white/55 tracking-[0.3em]"
           >
             // Intelligent Tour Automation
           </motion.p>
@@ -270,7 +270,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 1, 0.5, 1] }}
-            className="mx-auto mt-10 max-w-xl text-base leading-relaxed text-white/40 tracking-wide"
+            className="mx-auto mt-10 max-w-xl text-base leading-relaxed text-white/65 tracking-wide"
           >
             Smart lock access codes, AI-powered Q&A, and automated follow-ups — so buyers and renters can tour 24/7 while your team stays focused on closing.
           </motion.p>
@@ -299,7 +299,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.9 }}
-            className="mt-5 font-mono text-xs text-white/20 tracking-widest"
+            className="mt-5 font-mono text-xs text-white/40 tracking-widest"
           >
             NO CREDIT CARD · FREE PLAN AVAILABLE
           </motion.p>
@@ -312,7 +312,7 @@ export default function LandingPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4, duration: 1 }}
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/20">Scroll</span>
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/40">Scroll</span>
           <motion.div
             className="h-8 w-px bg-gradient-to-b from-white/30 to-transparent"
             animate={{ scaleY: [1, 0.3, 1], opacity: [0.5, 1, 0.5] }}
@@ -334,7 +334,7 @@ export default function LandingPage() {
               ].map((s) => (
                 <div key={s.label} className="text-center">
                   <p className="text-2xl font-light text-white tabular-nums">{s.value}</p>
-                  <p className="mt-1 font-mono text-xs text-white/25 uppercase tracking-widest">{s.label}</p>
+                  <p className="mt-1 font-mono text-xs text-white/50 uppercase tracking-widest">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -346,10 +346,10 @@ export default function LandingPage() {
       <section id="features" className="py-32 sm:py-40">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <FadeUp className="mb-20">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25 mb-4">// Capabilities</p>
-            <h2 className="text-4xl font-light leading-tight text-white sm:text-6xl max-w-2xl">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-4">// Capabilities</p>
+            <h2 className="text-3xl font-light leading-tight text-white sm:text-5xl lg:text-6xl max-w-2xl">
               Everything the tour needs.
-              <span className="text-white/20"> Nothing it doesn't.</span>
+              <span className="text-white/45"> Nothing it doesn't.</span>
             </h2>
           </FadeUp>
 
@@ -358,9 +358,9 @@ export default function LandingPage() {
               <motion.div key={f.tag} variants={item}
                 className="group relative py-10 sm:px-8 sm:py-10 border-white/[0.05] hover:bg-white/[0.02] transition-colors duration-300 sm:border-l first:border-l-0 lg:first:border-l-0 lg:[&:nth-child(4)]:border-l-0"
               >
-                <p className="font-mono text-xs text-white/20 mb-4 tracking-widest">{f.tag}</p>
-                <h3 className="text-base font-medium text-white mb-3 leading-snug">{f.title}</h3>
-                <p className="text-sm text-white/35 leading-relaxed">{f.description}</p>
+                <p className="font-mono text-xs text-white/45 mb-4 tracking-widest">{f.tag}</p>
+                <h3 className="text-base font-semibold text-white mb-3 leading-snug">{f.title}</h3>
+                <p className="text-sm sm:text-base text-white/65 leading-relaxed">{f.description}</p>
               </motion.div>
             ))}
           </StaggerList>
@@ -375,19 +375,19 @@ export default function LandingPage() {
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <FadeUp className="mb-20">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25 mb-4">// Process</p>
-            <h2 className="text-4xl font-light text-white sm:text-6xl">Up in under an hour.</h2>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-4">// Process</p>
+            <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl">Up in under an hour.</h2>
           </FadeUp>
 
           <StaggerList className="max-w-3xl space-y-0 divide-y divide-white/[0.05]">
             {STEPS.map((s) => (
               <motion.div key={s.n} variants={item} className="group flex items-start gap-10 py-10">
-                <span className="font-mono text-5xl font-light text-white/[0.07] group-hover:text-white/15 transition-colors duration-500 flex-shrink-0 leading-none mt-1">
+                <span className="font-mono text-5xl font-light text-white/20 group-hover:text-white/40 transition-colors duration-500 flex-shrink-0 leading-none mt-1">
                   {s.n}
                 </span>
                 <div>
-                  <h3 className="text-lg font-medium text-white mb-2">{s.title}</h3>
-                  <p className="text-sm text-white/35 leading-relaxed max-w-md">{s.body}</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
+                  <p className="text-sm sm:text-base text-white/65 leading-relaxed max-w-md">{s.body}</p>
                 </div>
               </motion.div>
             ))}
@@ -399,9 +399,9 @@ export default function LandingPage() {
       <section id="pricing" className="py-32 sm:py-40 border-t border-white/[0.05]">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <FadeUp className="mb-20 text-center">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25 mb-4">// Pricing</p>
-            <h2 className="text-4xl font-light text-white sm:text-6xl">Simple. Transparent.</h2>
-            <p className="mt-4 text-white/30 text-base tracking-wide">Start free. Upgrade when you're ready.</p>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-4">// Pricing</p>
+            <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl">Simple. Transparent.</h2>
+            <p className="mt-4 text-white/55 text-base tracking-wide">Start free. Upgrade when you're ready.</p>
           </FadeUp>
 
           <StaggerList className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3">
@@ -430,17 +430,17 @@ export default function LandingPage() {
                 )}
 
                 <div className="mb-8">
-                  <p className="font-mono text-xs uppercase tracking-widest text-white/30 mb-1">{plan.name}</p>
-                  <p className="text-xs text-white/20 mb-6">{plan.description}</p>
+                  <p className="font-mono text-xs uppercase tracking-widest text-white/55 mb-1">{plan.name}</p>
+                  <p className="text-sm text-white/55 mb-6">{plan.description}</p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-light text-white">{plan.price}</span>
-                    <span className="text-xs text-white/25 font-mono">/{plan.period}</span>
+                    <span className="text-xs text-white/50 font-mono">/{plan.period}</span>
                   </div>
                 </div>
 
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-3 text-sm text-white/40">
+                    <li key={f} className="flex items-center gap-3 text-sm sm:text-base text-white/70">
                       <Check className="h-3.5 w-3.5 flex-shrink-0 text-[#316ee0]" />
                       {f}
                     </li>
@@ -450,7 +450,7 @@ export default function LandingPage() {
                 <Link href={plan.href}
                   className={`block w-full rounded-full py-3 text-center text-sm font-medium transition-all duration-300 ${plan.highlight
                     ? "bg-[#316ee0] text-white hover:bg-[#2558c8] shadow-[0_0_20px_rgba(49,110,224,0.3)] hover:shadow-[0_0_30px_rgba(49,110,224,0.5)]"
-                    : "border border-white/10 text-white/50 hover:text-white hover:border-white/20 hover:bg-white/[0.04]"
+                    : "border border-white/10 text-white/70 hover:text-white hover:border-white/20 hover:bg-white/[0.04]"
                     }`}
                 >
                   {plan.cta}
@@ -479,10 +479,10 @@ export default function LandingPage() {
 
         <FadeUp className="relative z-10 mx-auto max-w-3xl px-6 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/20 mb-8">// Get started</p>
-          <h2 className="text-4xl font-light text-white sm:text-6xl leading-tight mb-6">
+          <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl leading-tight mb-6">
             Ready to automate<br />your tours?
           </h2>
-          <p className="text-white/30 mb-12 text-base leading-relaxed max-w-md mx-auto">
+          <p className="text-white/55 mb-12 text-base leading-relaxed max-w-md mx-auto">
             Join property managers and builders who've removed scheduling from their to-do list entirely.
           </p>
           <Link href="/signup"
