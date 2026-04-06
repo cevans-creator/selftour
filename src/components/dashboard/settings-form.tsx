@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Save, CreditCard, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
     resendDomain: org.resendDomain,
   });
   const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter();
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +45,7 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
       });
       if (!res.ok) throw new Error();
       toast.success("Settings saved");
+      router.refresh(); // re-fetches server layout so sidebar name updates
     } catch {
       toast.error("Failed to save settings");
     } finally {

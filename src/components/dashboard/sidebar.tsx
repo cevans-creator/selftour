@@ -12,7 +12,6 @@ import {
   Plug,
   Settings,
   LogOut,
-  ChevronDown,
   KeyRound,
   ExternalLink,
   Menu,
@@ -84,12 +83,12 @@ function SidebarContent({
         </Link>
       </div>
 
-      {/* Org Switcher */}
+      {/* Org name */}
       <div className="px-4 py-3 border-b border-white/[0.06]">
-        <button className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-white/[0.04] transition-colors">
-          <span className="font-medium text-white/80 truncate">{orgName}</span>
-          <ChevronDown className="h-4 w-4 text-white/30 flex-shrink-0" />
-        </button>
+        <div className="px-3 py-2">
+          <p className="text-xs text-white/30 uppercase tracking-widest mb-0.5">Organization</p>
+          <p className="text-sm font-medium text-white/80 truncate">{orgName}</p>
+        </div>
       </div>
 
       {/* Navigation */}
