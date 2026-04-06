@@ -8,6 +8,7 @@ import { PropertyCard } from "@/components/dashboard/property-card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { getLockStatus } from "@/server/seam/locks";
+import { PageEnter, Stagger, StaggerItem, LiftCard, FadeUp } from "@/components/ui/motion";
 
 export default async function PropertiesPage() {
   const supabase = await createSupabaseServerClient();
@@ -56,8 +57,8 @@ export default async function PropertiesPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <PageEnter className="space-y-6">
+      <FadeUp className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Properties</h1>
           <p className="text-muted-foreground">{rows.length} total properties</p>
@@ -68,34 +69,39 @@ export default async function PropertiesPage() {
             Add Property
           </Link>
         </Button>
-      </div>
+      </FadeUp>
 
       {rows.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-20 text-center">
-          <h3 className="text-lg font-semibold">No properties yet</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Add your first property to start offering self-guided tours.
-          </p>
-          <Button asChild className="mt-4">
-            <Link href="/properties/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add your first property
-            </Link>
-          </Button>
-        </div>
+        <FadeUp delay={0.1}>
+          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-20 text-center">
+            <h3 className="text-lg font-semibold">No properties yet</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Add your first property to start offering self-guided tours.
+            </p>
+            <Button asChild className="mt-4">
+              <Link href="/properties/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add your first property
+              </Link>
+            </Button>
+          </div>
+        </FadeUp>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map(({ property, community }, i) => (
-            <PropertyCard
-              key={property.id}
-              property={property}
-              lockStatus={lockStatuses[i]}
-              upcomingTourCount={tourCountMap.get(property.id) ?? 0}
-              communityName={community?.name}
-            />
+            <StaggerItem key={property.id}>
+              <LiftCard>
+                <PropertyCard
+                  property={property}
+                  lockStatus={lockStatuses[i]}
+                  upcomingTourCount={tourCountMap.get(property.id) ?? 0}
+                  communityName={community?.name}
+                />
+              </LiftCard>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       )}
-    </div>
+    </PageEnter>
   );
 }

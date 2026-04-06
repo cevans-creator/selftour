@@ -9,6 +9,7 @@ import { AddTourDialog } from "@/components/dashboard/add-tour-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { TourStatus } from "@/types";
+import { PageEnter, FadeUp } from "@/components/ui/motion";
 
 export default async function ToursPage() {
   const supabase = await createSupabaseServerClient();
@@ -79,8 +80,8 @@ export default async function ToursPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
+    <PageEnter className="space-y-6">
+      <FadeUp className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Tours</h1>
           <div className="mt-1 flex items-center gap-3">
@@ -94,50 +95,56 @@ export default async function ToursPage() {
           </div>
         </div>
         <AddTourDialog properties={orgProperties} />
-      </div>
+      </FadeUp>
 
       {/* Today */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Today's Schedule</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <TourTable
-            tours={mapTours(todayTours)}
-            emptyMessage="No tours scheduled for today."
-            allowCancel
-          />
-        </CardContent>
-      </Card>
-
-      {/* Upcoming */}
-      {upcomingTours.length > 0 && (
+      <FadeUp delay={0.08}>
         <Card>
           <CardHeader>
-            <CardTitle>Upcoming (Next 30 Days)</CardTitle>
+            <CardTitle>Today&apos;s Schedule</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <TourTable
-              tours={mapTours(upcomingTours)}
-              emptyMessage="No upcoming tours."
+              tours={mapTours(todayTours)}
+              emptyMessage="No tours scheduled for today."
               allowCancel
             />
           </CardContent>
         </Card>
+      </FadeUp>
+
+      {/* Upcoming */}
+      {upcomingTours.length > 0 && (
+        <FadeUp delay={0.14}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Upcoming (Next 30 Days)</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <TourTable
+                tours={mapTours(upcomingTours)}
+                emptyMessage="No upcoming tours."
+                allowCancel
+              />
+            </CardContent>
+          </Card>
+        </FadeUp>
       )}
 
       {/* Recent history */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent History (Last 30 Days)</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <TourTable
-            tours={mapTours(recentTours)}
-            emptyMessage="No recent tour history."
-          />
-        </CardContent>
-      </Card>
-    </div>
+      <FadeUp delay={0.2}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent History (Last 30 Days)</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <TourTable
+              tours={mapTours(recentTours)}
+              emptyMessage="No recent tour history."
+            />
+          </CardContent>
+        </Card>
+      </FadeUp>
+    </PageEnter>
   );
 }

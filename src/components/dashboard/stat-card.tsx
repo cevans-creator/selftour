@@ -1,7 +1,10 @@
+"use client";
+
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { CountUp } from "@/components/ui/motion";
 
 interface StatCardProps {
   title: string;
@@ -32,7 +35,9 @@ export function StatCard({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="mt-1 text-3xl font-bold tracking-tight">{value}</p>
+            <p className="mt-1 text-3xl font-bold tracking-tight">
+              {typeof value === "number" ? <CountUp to={value} /> : value}
+            </p>
             {description && (
               <p className="mt-1 text-sm text-muted-foreground">{description}</p>
             )}

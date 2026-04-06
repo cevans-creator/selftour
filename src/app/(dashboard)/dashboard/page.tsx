@@ -16,6 +16,7 @@ import { TourTable } from "@/components/dashboard/tour-table";
 import { LiveTourFeed } from "@/components/dashboard/live-tour-feed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Users, Home, TrendingUp } from "lucide-react";
+import { PageEnter, Stagger, StaggerItem, FadeUp } from "@/components/ui/motion";
 import type { TourStatus } from "@/types";
 
 export default async function DashboardPage() {
@@ -82,44 +83,34 @@ export default async function DashboardPage() {
     .limit(10);
 
   return (
-    <div className="space-y-6">
-      <div>
+    <PageEnter className="space-y-6">
+      <FadeUp>
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground">Welcome back to {org.name}</p>
-      </div>
+      </FadeUp>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Tours Today"
-          value={toursTodayRow?.count ?? 0}
-          icon={<Calendar className="h-5 w-5" />}
-        />
-        <StatCard
-          title="Tours This Week"
-          value={toursWeekRow?.count ?? 0}
-          icon={<TrendingUp className="h-5 w-5" />}
-        />
-        <StatCard
-          title="Conversion Rate"
-          value={`${conversionRate}%`}
-          description="Completed tours"
-          icon={<Home className="h-5 w-5" />}
-        />
-        <StatCard
-          title="Total Visitors"
-          value={visitorsRow?.count ?? 0}
-          description={`${activePropsRow?.count ?? 0} active properties`}
-          icon={<Users className="h-5 w-5" />}
-        />
-      </div>
+      <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StaggerItem>
+          <StatCard title="Tours Today" value={toursTodayRow?.count ?? 0} icon={<Calendar className="h-5 w-5" />} />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard title="Tours This Week" value={toursWeekRow?.count ?? 0} icon={<TrendingUp className="h-5 w-5" />} />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard title="Conversion Rate" value={`${conversionRate}%`} description="Completed tours" icon={<Home className="h-5 w-5" />} />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard title="Total Visitors" value={visitorsRow?.count ?? 0} description={`${activePropsRow?.count ?? 0} active properties`} icon={<Users className="h-5 w-5" />} />
+        </StaggerItem>
+      </Stagger>
 
       {/* Today's Schedule + Live Feed */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <FadeUp delay={0.15} className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Today's Tours</CardTitle>
+              <CardTitle>Today&apos;s Tours</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <TourTable
@@ -137,7 +128,7 @@ export default async function DashboardPage() {
         <div>
           <LiveTourFeed organizationId={org.id} />
         </div>
-      </div>
-    </div>
+      </FadeUp>
+    </PageEnter>
   );
 }
