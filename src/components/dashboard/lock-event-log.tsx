@@ -19,7 +19,7 @@ interface LockEventLogProps {
 const EVENT_META: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   "lock.locked": { label: "Locked", icon: Lock, color: "text-blue-600 bg-blue-50" },
   "lock.unlocked": { label: "Unlocked", icon: Unlock, color: "text-orange-500 bg-orange-50" },
-  "access_code.used": { label: "Code Used", icon: KeyRound, color: "text-violet-600 bg-violet-50" },
+  "access_code.set_on_device": { label: "Code Active", icon: KeyRound, color: "text-violet-600 bg-violet-50" },
   "access_code.created": { label: "Code Added", icon: Plus, color: "text-green-600 bg-green-50" },
   "access_code.deleted": { label: "Code Removed", icon: Minus, color: "text-gray-500 bg-gray-100" },
 };

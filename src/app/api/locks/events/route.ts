@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
       event_types: [
         "lock.locked",
         "lock.unlocked",
-        "access_code.used",
+        "access_code.set_on_device",
         "access_code.created",
         "access_code.deleted",
       ],
