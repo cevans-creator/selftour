@@ -39,7 +39,11 @@ export function AddTourDialog({ properties }: AddTourDialogProps) {
       const res = await fetch("/api/tours/admin-book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          // Convert local datetime string to UTC ISO so server parses correctly
+          scheduledAt: new Date(form.scheduledAt).toISOString(),
+        }),
       });
       const data = await res.json() as { error?: string; tourId?: string };
       if (!res.ok) {

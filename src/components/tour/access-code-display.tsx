@@ -47,13 +47,18 @@ export function AccessCodeDisplay({
         <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Your Door Code
         </p>
-        <div className="mt-2 flex items-center justify-center gap-3">
-          <span
-            className="text-6xl font-bold tracking-[0.25em]"
-            style={{ color: primaryColor }}
-          >
-            {accessCode.split("").join(" ")}
-          </span>
+        <div className="mt-2 flex items-center justify-center gap-2">
+          <div className="flex items-center gap-1.5">
+            {accessCode.split("").map((digit, i) => (
+              <span
+                key={i}
+                className="flex h-14 w-10 items-center justify-center rounded-lg text-3xl font-bold"
+                style={{ color: primaryColor, backgroundColor: primaryColor + "15" }}
+              >
+                {digit}
+              </span>
+            ))}
+          </div>
           <button
             onClick={handleCopy}
             className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
