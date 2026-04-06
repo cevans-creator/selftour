@@ -130,23 +130,14 @@ export default function AccessPage() {
     <div className="min-h-screen bg-gray-50 text-gray-900">
 
       {/* ── Header + Hero ── */}
-      {/* Color stripe */}
-      <div className="h-1.5" style={{ backgroundColor: primary }} />
-      {/* Logo bar — white background so logos render cleanly */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="mx-auto max-w-lg px-4 py-4 flex items-center">
-          {org.logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={org.logoUrl} alt={org.name} className="h-9 w-auto object-contain" />
-          ) : (
-            <span className="font-bold text-lg" style={{ color: primary }}>{org.name}</span>
-          )}
-        </div>
-      </div>
-      {/* Hero band */}
       <div style={{ backgroundColor: primary }} className="pb-12">
-        <div className="mx-auto max-w-lg px-4 pt-7">
-          <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Self-Guided Tour</p>
+        {/* Org name + label bar */}
+        <div className="mx-auto max-w-lg px-4 pt-5 pb-5 flex items-center justify-between">
+          <span className="font-bold text-white text-base">{org.name}</span>
+          <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Self-Guided Tour</span>
+        </div>
+        {/* Greeting */}
+        <div className="mx-auto max-w-lg px-4">
           <h1 className="text-white text-2xl font-bold">Hi {tour.visitorFirstName}!</h1>
           <p className="text-white/80 text-sm mt-1">Here are your tour details.</p>
         </div>
@@ -162,10 +153,15 @@ export default function AccessPage() {
             <div className="h-1.5" style={{ backgroundColor: primary }} />
             <div className="p-6 text-center">
               <div
-                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full"
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full overflow-hidden"
                 style={{ backgroundColor: primary + "15" }}
               >
-                <Home className="h-8 w-8" style={{ color: primary }} />
+                {org.logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={org.logoUrl} alt={org.name} className="h-10 w-10 object-contain" />
+                ) : (
+                  <Home className="h-8 w-8" style={{ color: primary }} />
+                )}
               </div>
               <h2 className="text-lg font-bold text-gray-900">Tour Confirmed!</h2>
               <p className="mt-2 text-sm text-gray-500 leading-relaxed">
