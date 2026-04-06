@@ -46,13 +46,13 @@ export default async function IntegrationsPage() {
       </div>
 
       {/* Setup Guide */}
-      <Card className="border-violet-200 bg-gradient-to-r from-violet-50 to-indigo-50">
+      <Card className="border-[#316ee0]/20 bg-[#316ee0]/[0.06]">
         <CardContent className="p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
-                <BookOpen className="h-5 w-5 text-violet-600" />
-                <h3 className="font-semibold text-gray-900">Lock Setup Guide</h3>
+                <BookOpen className="h-5 w-5 text-[#316ee0]" />
+                <h3 className="font-semibold text-white">Lock Setup Guide</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 {[
@@ -63,11 +63,11 @@ export default async function IntegrationsPage() {
                 ].map((step) => (
                   <div key={step.label} className="flex items-center gap-2 text-sm">
                     {step.done ? (
-                      <CheckCircle2 className="h-4 w-4 text-violet-600 flex-shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 text-[#316ee0] flex-shrink-0" />
                     ) : (
-                      <Circle className="h-4 w-4 text-gray-300 flex-shrink-0" />
+                      <Circle className="h-4 w-4 text-white/20 flex-shrink-0" />
                     )}
-                    <span className={step.done ? "text-gray-500 line-through" : "text-gray-700"}>{step.label}</span>
+                    <span className={step.done ? "text-white/30 line-through" : "text-white/60"}>{step.label}</span>
                   </div>
                 ))}
               </div>
@@ -75,7 +75,7 @@ export default async function IntegrationsPage() {
             <Link
               href="/docs/lock-setup"
               target="_blank"
-              className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 transition-colors"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-[#316ee0] px-4 py-2 text-sm font-medium text-white hover:bg-[#2558c8] transition-colors"
             >
               View Full Guide →
             </Link>
