@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { addDays, format, startOfDay, isSameDay, addMinutes, parseISO } from "date-fns";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SLOT_LOOKAHEAD_DAYS } from "@/lib/constants";
 
@@ -64,17 +63,16 @@ export function TimeSlotPicker({
   return (
     <div className="space-y-4">
       {/* Week navigation */}
-      <div className="flex items-center justify-between">
-        <Button
-          variant="outline"
-          size="icon"
+      <div className="flex items-center justify-between gap-1">
+        <button
           onClick={() => setWeekOffset((w) => Math.max(0, w - 1))}
           disabled={weekOffset === 0}
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
-        </Button>
+        </button>
 
-        <div className="flex gap-1">
+        <div className="flex gap-1 overflow-hidden min-w-0">
           {calendarDays.map((day) => {
             const available = isDayAvailable(day);
             const isSelected = isSameDay(day, selectedDate);
@@ -86,8 +84,8 @@ export function TimeSlotPicker({
                 disabled={!available}
                 className={cn(
                   "flex flex-col items-center rounded-lg p-2 text-center transition-colors min-w-[44px]",
-                  !available && "opacity-30 cursor-not-allowed",
-                  available && !isSelected && "hover:bg-muted",
+                  !available && "opacity-30 cursor-not-allowed text-gray-400",
+                  available && !isSelected && "text-gray-700 hover:bg-gray-100",
                   isSelected && "text-white"
                 )}
                 style={isSelected ? { backgroundColor: primaryColor } : {}}
@@ -99,18 +97,17 @@ export function TimeSlotPicker({
           })}
         </div>
 
-        <Button
-          variant="outline"
-          size="icon"
+        <button
           onClick={() => setWeekOffset((w) => Math.min(Math.floor(SLOT_LOOKAHEAD_DAYS / 7), w + 1))}
           disabled={weekOffset >= Math.floor(SLOT_LOOKAHEAD_DAYS / 7)}
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           <ChevronRight className="h-4 w-4" />
-        </Button>
+        </button>
       </div>
 
       {/* Date header */}
-      <h3 className="text-sm font-medium text-muted-foreground">
+      <h3 className="text-sm font-medium text-gray-500">
         {format(selectedDate, "EEEE, MMMM d")} — {tourDurationMinutes}-minute slots
       </h3>
 
@@ -133,9 +130,9 @@ export function TimeSlotPicker({
                 onClick={() => slot.available && onSelect(slot)}
                 disabled={!slot.available}
                 className={cn(
-                  "rounded-md border py-2 text-sm font-medium transition-colors",
-                  !slot.available && "opacity-40 cursor-not-allowed bg-muted",
-                  slot.available && !isSelected && "border-border hover:border-primary hover:bg-primary/5",
+                  "rounded-md border py-2 text-sm font-semibold transition-colors",
+                  !slot.available && "opacity-40 cursor-not-allowed bg-gray-50 border-gray-200 text-gray-400",
+                  slot.available && !isSelected && "border-gray-300 text-gray-800 bg-white hover:bg-gray-50",
                   isSelected && "text-white border-transparent"
                 )}
                 style={isSelected ? { backgroundColor: primaryColor } : {}}
