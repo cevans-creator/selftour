@@ -6,7 +6,7 @@ import { eq, and, sql } from "drizzle-orm";
 import { inngest } from "@/server/inngest/client";
 import { addMinutes } from "date-fns";
 import { buildAccessUrl, buildManageUrl, normalizePhone } from "@/lib/utils";
-import { createTourAccessCode, generateAccessCode } from "@/server/seam/locks";
+import { createTourAccessCode, generateAccessCode } from "@/server/locks";
 
 export async function POST(req: NextRequest) {
   const supabase = await createSupabaseServerClient();

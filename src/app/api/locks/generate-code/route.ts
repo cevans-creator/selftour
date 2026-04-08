@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
 import { orgMembers, organizations } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { createTourAccessCode, deleteTourAccessCode, generateAccessCode } from "@/server/seam/locks";
+import { createTourAccessCode, deleteTourAccessCode, generateAccessCode } from "@/server/locks";
 
 export async function POST(req: NextRequest) {
   const supabase = await createSupabaseServerClient();

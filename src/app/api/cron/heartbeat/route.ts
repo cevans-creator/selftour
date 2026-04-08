@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listDevices } from "@/server/seam/locks";
+import { listDevices } from "@/server/locks";
 import { db } from "@/server/db/client";
 import { properties, organizations } from "@/server/db/schema";
 import { isNotNull, eq } from "drizzle-orm";
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
       if (!prop.seamDeviceId) continue;
 
       try {
-        const { getLockStatus } = await import("@/server/seam/locks");
+        const { getLockStatus } = await import("@/server/locks");
         const status = await getLockStatus(prop.seamDeviceId);
         results.devicesChecked++;
 

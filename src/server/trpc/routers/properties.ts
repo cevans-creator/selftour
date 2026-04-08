@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure, adminProcedure } from "../trpc";
 import { properties, communities, tours } from "@/server/db/schema";
 import { eq, and, count, gte } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
-import { getLockStatus } from "@/server/seam/locks";
+import { getLockStatus } from "@/server/locks";
 
 const propertyInputSchema = z.object({
   name: z.string().min(1).max(255),

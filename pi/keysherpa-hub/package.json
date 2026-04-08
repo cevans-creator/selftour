@@ -1,0 +1,21 @@
+{
+  "name": "keysherpa-hub",
+  "version": "1.0.0",
+  "description": "KeySherpa Pi hub client — polls backend for lock commands and executes via Z-Wave",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "zwave-js": "^13.0.0",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0"
+  }
+}

@@ -3,7 +3,7 @@ import { db } from "@/server/db/client";
 import { tours } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { inngest } from "@/server/inngest/client";
-import { deleteTourAccessCode } from "@/server/seam/locks";
+import { deleteTourAccessCode } from "@/server/locks";
 
 export async function POST(req: NextRequest) {
   const { tourId } = (await req.json()) as { tourId: string };
