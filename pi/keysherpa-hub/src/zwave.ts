@@ -39,6 +39,7 @@ export class ZWaveClient {
       case "get_status": return this.getStatus(payload);
       case "lock": return this.setLock(payload, true);
       case "unlock": return this.setLock(payload, false);
+      case "pair_lock": return this.pairLock();
       default: throw new Error("Unknown command: " + commandType);
     }
   }
@@ -98,6 +99,28 @@ export class ZWaveClient {
     const node = this.getNode(nodeId);
     await node.commandClasses["Door Lock"].set(lock ? 0x01 : 0x00);
     return { success: true };
+  }
+
+  private async pairLock(): Promise<Record<string, unknown>> {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.driver.controller.stopInclusion();
+        reject(new Error("Pairing timed out — lock was not detected within 90 seconds"));
+      }, 90_000);
+
+      this.driver.controller.on("node added", (node: any) => {
+        clearTimeout(timeout);
+        console.log("[ZWave] Lock paired! Node ID:", node.id);
+        resolve({ nodeId: node.id });
+      });
+
+      this.driver.controller.beginInclusion({ strategy: 2 }).catch((err: any) => {
+        clearTimeout(timeout);
+        reject(err);
+      });
+
+      console.log("[ZWave] Inclusion mode active — waiting for lock...");
+    });
   }
 
   async stop(): Promise<void> {

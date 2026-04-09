@@ -17,6 +17,7 @@ import {
   ExternalLink,
   Menu,
   X,
+  Router,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createBrowserClient } from "@supabase/ssr";
@@ -32,6 +33,7 @@ const ICON_MAP = {
   Brain,
   Plug,
   Settings,
+  Router,
 };
 
 const NAV_ITEMS = [
@@ -41,6 +43,7 @@ const NAV_ITEMS = [
   { label: "Visitors", href: "/visitors", icon: "Users" },
   { label: "Messaging", href: "/messaging", icon: "MessageSquare" },
   { label: "AI Knowledge", href: "/ai-knowledge", icon: "Brain" },
+  { label: "Hubs", href: "/hubs", icon: "Router" },
   { label: "Integrations", href: "/integrations", icon: "Plug" },
   { label: "Settings", href: "/settings", icon: "Settings" },
 ] as const;
