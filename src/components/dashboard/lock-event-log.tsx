@@ -179,7 +179,7 @@ export function LockEventLog({ deviceId }: LockEventLogProps) {
         </div>
       ) : error ? (
         <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
-          Could not load lock events. Check your Seam API key in Settings.
+          Could not load lock events.
         </div>
       ) : events.length === 0 ? (
         <div className="flex h-24 items-center justify-center text-sm text-white/30">
