@@ -1,135 +1,102 @@
-import { Driver, UserIDStatus } from "zwave-js";
+const { Driver } = require("zwave-js");
+
+const UserIDStatus = { Available: 0, Enabled: 1 } as const;
 
 export class ZWaveClient {
-  private driver: Driver;
+  private driver: any;
   private ready = false;
 
   constructor(private serialPort: string) {
     this.driver = new Driver(serialPort, {
       logConfig: { enabled: false },
       storage: { cacheDir: "/var/lib/keysherpa-hub/cache" },
-      interview: { queryAllUserCodes: false },
+      securityKeys: {
+        S0_Legacy: Buffer.from('0102030405060708090a0b0c0d0e0f10', 'hex'),
+        S2_Unauthenticated: Buffer.from('1112131415161718191a1b1c1d1e1f20', 'hex'),
+        S2_Authenticated: Buffer.from('2122232425262728292a2b2c2d2e2f30', 'hex'),
+      },
     });
-
-    this.driver.on("error", (err) => {
+    this.driver.on("error", (err: unknown) => {
       console.error("[ZWave] Driver error:", err);
     });
   }
 
   async start(): Promise<void> {
-    await this.driver.start();
     await new Promise<void>((resolve) => {
-      this.driver.controller.on("inclusion started", () => {});
       this.driver.once("driver ready", () => {
         this.ready = true;
         resolve();
       });
+      this.driver.start();
     });
   }
 
-  async execute(
-    commandType: string,
-    payload: Record<string, unknown>
-  ): Promise<Record<string, unknown>> {
+  async execute(commandType: string, payload: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (!this.ready) throw new Error("Z-Wave driver not ready");
-
     switch (commandType) {
-      case "create_code":
-        return this.createCode(payload);
-      case "delete_code":
-        return this.deleteCode(payload);
-      case "get_status":
-        return this.getStatus(payload);
-      case "lock":
-        return this.setLock(payload, true);
-      case "unlock":
-        return this.setLock(payload, false);
-      default:
-        throw new Error(`Unknown command type: ${commandType}`);
+      case "create_code": return this.createCode(payload);
+      case "delete_code": return this.deleteCode(payload);
+      case "get_status": return this.getStatus(payload);
+      case "lock": return this.setLock(payload, true);
+      case "unlock": return this.setLock(payload, false);
+      default: throw new Error("Unknown command: " + commandType);
     }
   }
 
   private getNode(nodeId: number) {
     const node = this.driver.controller.nodes.get(nodeId);
-    if (!node) throw new Error(`Z-Wave node ${nodeId} not found`);
+    if (!node) throw new Error("Z-Wave node " + nodeId + " not found");
     return node;
   }
 
   private async findFreeSlot(nodeId: number): Promise<number> {
     const node = this.getNode(nodeId);
-    const userCodeCC = node.commandClasses["User Code"];
-    const usersCount = await userCodeCC.getUsersCount();
-    for (let slot = 1; slot <= usersCount; slot++) {
-      const user = await userCodeCC.get(slot);
-      if (user?.userIdStatus === UserIDStatus.Available || !user) {
-        return slot;
-      }
+    const cc = node.commandClasses["User Code"];
+    const count = await cc.getUsersCount();
+    for (let i = 1; i <= count; i++) {
+      const u = await cc.get(i);
+      if (!u || u.userIdStatus === UserIDStatus.Available) return i;
     }
-    throw new Error("No free user code slots available");
+    throw new Error("No free user code slots");
   }
 
-  private async createCode(payload: Record<string, unknown>): Promise<Record<string, unknown>> {
-    const nodeId = payload.nodeId as number;
-    const code = payload.code as string;
-    const node = this.getNode(nodeId);
-    const userCodeCC = node.commandClasses["User Code"];
+  private async createCode(p: Record<string, unknown>): Promise<Record<string, unknown>> {
+    const nodeId = p.nodeId as number;
+    const code = p.code as string;
     const slot = await this.findFreeSlot(nodeId);
-    await userCodeCC.set(slot, UserIDStatus.Enabled, code);
+    const node = this.getNode(nodeId);
+    await node.commandClasses["User Code"].set(slot, 1, code);
     return { slot, nodeId };
   }
 
-  private async deleteCode(payload: Record<string, unknown>): Promise<Record<string, unknown>> {
-    const nodeId = payload.nodeId as number;
-    const slot = payload.slot as number;
+  private async deleteCode(p: Record<string, unknown>): Promise<Record<string, unknown>> {
+    const nodeId = p.nodeId as number;
+    const slot = p.slot as number;
     const node = this.getNode(nodeId);
-    const userCodeCC = node.commandClasses["User Code"];
-    await userCodeCC.set(slot, UserIDStatus.Available, "");
+    await node.commandClasses["User Code"].clear(slot);
     return { deleted: true, slot };
   }
 
-  private async getStatus(payload: Record<string, unknown>): Promise<Record<string, unknown>> {
-    const nodeId = payload.nodeId as number;
+  private async getStatus(p: Record<string, unknown>): Promise<Record<string, unknown>> {
+    const nodeId = p.nodeId as number;
     const node = this.getNode(nodeId);
-
     let locked: boolean | null = null;
     let battery: number | null = null;
-
     try {
-      const lockCC = node.commandClasses["Door Lock"];
-      const report = await lockCC.get();
-      locked = report !== undefined ? report.currentMode !== 0 : null;
-    } catch {
-      // Node may not support Door Lock CC directly
-    }
-
+      const r = await node.commandClasses["Door Lock"].get();
+      locked = r !== undefined ? r.currentMode !== 0 : null;
+    } catch {}
     try {
-      const batteryCC = node.commandClasses["Battery"];
-      const batteryReport = await batteryCC.get();
-      battery = batteryReport !== undefined ? batteryReport.level / 100 : null;
-    } catch {
-      // Battery CC may not be supported
-    }
-
-    return {
-      locked,
-      battery,
-      online: node.isAlive ?? true,
-      nodeId,
-    };
+      const b = await node.commandClasses["Battery"].get();
+      battery = b !== undefined ? b.level / 100 : null;
+    } catch {}
+    return { locked, battery, online: node.isAlive ?? true, nodeId };
   }
 
-  private async setLock(
-    payload: Record<string, unknown>,
-    lock: boolean
-  ): Promise<Record<string, unknown>> {
-    const nodeId = payload.nodeId as number;
+  private async setLock(p: Record<string, unknown>, lock: boolean): Promise<Record<string, unknown>> {
+    const nodeId = p.nodeId as number;
     const node = this.getNode(nodeId);
-    const lockCC = node.commandClasses["Door Lock"];
-    if (lock) {
-      await lockCC.set(0x01); // Secured
-    } else {
-      await lockCC.set(0x00); // Unsecured
-    }
+    await node.commandClasses["Door Lock"].set(lock ? 0x01 : 0x00);
     return { success: true };
   }
 
