@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
 import { properties, tours, visitors, orgMembers, organizations } from "@/server/db/schema";
 import { eq, and, gte, desc } from "drizzle-orm";
-import { getLockStatus } from "@/server/seam/locks";
+import { getLockStatus } from "@/server/locks";
 import { buildTourUrl } from "@/lib/utils";
 import { formatDate, formatTime } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";

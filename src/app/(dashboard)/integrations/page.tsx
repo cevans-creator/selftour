@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
 import { orgMembers, organizations } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { listDevices } from "@/server/seam/locks";
+import { listDevices } from "@/server/locks";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

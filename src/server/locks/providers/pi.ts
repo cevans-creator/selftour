@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "@/server/db/client";
 import { hubCommands, hubs, properties } from "@/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import type { LockProvider, LockStatus, LockDevice } from "../types";
 
 const COMMAND_TIMEOUT_MS = 30_000;
@@ -76,12 +76,34 @@ export const piProvider: LockProvider = {
   },
 
   async getLockStatus(deviceId): Promise<LockStatus> {
-    const { hubId, nodeId } = parseDeviceId(deviceId);
-    const result = await issueCommand(hubId, "get_status", { nodeId });
+    const { hubId } = parseDeviceId(deviceId);
+
+    // Check hub online status from last_seen_at (no round-trip to Pi)
+    const [hub] = await db.select().from(hubs).where(eq(hubs.id, hubId)).limit(1);
+    const online = hub?.lastSeenAt
+      ? Date.now() - hub.lastSeenAt.getTime() < 60_000
+      : false;
+
+    // Get last completed get_status result from hub_commands (cached)
+    const [lastStatus] = await db
+      .select()
+      .from(hubCommands)
+      .where(
+        and(
+          eq(hubCommands.hubId, hubId),
+          eq(hubCommands.commandType, "get_status"),
+          eq(hubCommands.status, "completed"),
+        )
+      )
+      .orderBy(desc(hubCommands.completedAt))
+      .limit(1);
+
+    const result = (lastStatus?.result as Record<string, unknown>) ?? {};
+
     return {
-      locked: result.locked as boolean | null,
-      battery: result.battery as number | null,
-      online: (result.online as boolean) ?? true,
+      locked: (result.locked as boolean | null) ?? null,
+      battery: (result.battery as number | null) ?? null,
+      online,
     };
   },
 

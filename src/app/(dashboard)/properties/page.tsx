@@ -7,7 +7,7 @@ import { eq, and, gte, count } from "drizzle-orm";
 import { PropertyCard } from "@/components/dashboard/property-card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { getLockStatus } from "@/server/seam/locks";
+import { getLockStatus } from "@/server/locks";
 import { PageEnter, Stagger, StaggerItem, LiftCard, FadeUp } from "@/components/ui/motion";
 
 export default async function PropertiesPage() {
