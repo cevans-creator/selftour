@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
 import { hubs, properties, orgMembers, organizations } from "@/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { HubList } from "@/components/dashboard/hub-list";
 
 export default async function HubsPage() {
@@ -60,7 +60,6 @@ export default async function HubsPage() {
     <HubList
       hubs={hubData}
       properties={allProperties}
-      orgId={org.id}
     />
   );
 }

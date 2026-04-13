@@ -174,14 +174,17 @@ export const properties = pgTable("properties", {
 
 export const hubs = pgTable("hubs", {
   id: uuid("id").defaultRandom().primaryKey(),
-  organizationId: uuid("organization_id")
-    .notNull()
-    .references(() => organizations.id, { onDelete: "cascade" }),
+  organizationId: uuid("organization_id").references(() => organizations.id, {
+    onDelete: "cascade",
+  }),
   propertyId: uuid("property_id").references(() => properties.id, {
     onDelete: "set null",
   }),
   name: varchar("name", { length: 255 }).notNull(),
   authTokenHash: varchar("auth_token_hash", { length: 64 }).notNull(), // SHA-256 hex of auth token
+  claimCode: varchar("claim_code", { length: 10 }).unique(),
+  claimedAt: timestamp("claimed_at", { withTimezone: true }),
+  hostname: varchar("hostname", { length: 100 }),
   lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
   firmwareVersion: varchar("firmware_version", { length: 50 }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

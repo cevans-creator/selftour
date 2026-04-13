@@ -10,8 +10,6 @@ import {
   Plus,
   Wifi,
   WifiOff,
-  Copy,
-  Check,
   Trash2,
   Link as LinkIcon,
   Radio,
@@ -38,62 +36,49 @@ interface Property {
 interface HubListProps {
   hubs: Hub[];
   properties: Property[];
-  orgId: string;
 }
 
-export function HubList({ hubs, properties, orgId }: HubListProps) {
+export function HubList({ hubs, properties }: HubListProps) {
   const router = useRouter();
-  const [showRegister, setShowRegister] = useState(false);
-  const [registerName, setRegisterName] = useState("");
-  const [registerPropertyId, setRegisterPropertyId] = useState("");
-  const [registering, setRegistering] = useState(false);
-  const [newHub, setNewHub] = useState<{ hubId: string; authToken: string } | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [showClaim, setShowClaim] = useState(false);
+  const [claimCode, setClaimCode] = useState("");
+  const [claiming, setClaiming] = useState(false);
+  const [claimError, setClaimError] = useState("");
+  const [claimSuccess, setClaimSuccess] = useState("");
   const [assigning, setAssigning] = useState<string | null>(null);
   const [assignPropertyId, setAssignPropertyId] = useState("");
   const [pairing, setPairing] = useState<string | null>(null);
   const [pairResult, setPairResult] = useState<{ nodeId: number } | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  const handleRegister = async () => {
-    if (!registerName.trim()) return;
-    setRegistering(true);
+  const handleClaim = async () => {
+    if (!claimCode.trim()) return;
+    setClaiming(true);
+    setClaimError("");
+    setClaimSuccess("");
     try {
-      const res = await fetch("/api/hub/register", {
+      const res = await fetch("/api/hub/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: registerName,
-          propertyId: registerPropertyId || undefined,
-        }),
+        body: JSON.stringify({ claimCode }),
       });
       const data = await res.json();
       if (res.ok) {
-        setNewHub({ hubId: data.hubId, authToken: data.authToken });
+        setClaimSuccess(`Hub "${data.hubName}" added successfully!`);
+        setTimeout(() => {
+          setShowClaim(false);
+          setClaimCode("");
+          setClaimSuccess("");
+          router.refresh();
+        }, 1500);
       } else {
-        alert(data.error || "Failed to register hub");
+        setClaimError(data.error || "Invalid code. Check the code and try again.");
       }
     } catch {
-      alert("Failed to register hub");
+      setClaimError("Something went wrong. Please try again.");
     } finally {
-      setRegistering(false);
+      setClaiming(false);
     }
-  };
-
-  const handleCopyEnv = () => {
-    if (!newHub) return;
-    const env = `HUB_ID=${newHub.hubId}\nAUTH_TOKEN=${newHub.authToken}\nAPI_BASE=https://www.keysherpa.io\nZWAVE_DEVICE=/dev/zwave`;
-    navigator.clipboard.writeText(env);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleDoneRegister = () => {
-    setNewHub(null);
-    setShowRegister(false);
-    setRegisterName("");
-    setRegisterPropertyId("");
-    router.refresh();
   };
 
   const handleAssign = async (hubId: string) => {
@@ -185,90 +170,64 @@ export function HubList({ hubs, properties, orgId }: HubListProps) {
           </p>
         </div>
         <Button
-          onClick={() => setShowRegister(true)}
+          onClick={() => setShowClaim(true)}
           className="bg-[#316ee0] hover:bg-[#2860c9] text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Register Hub
+          Add Hub
         </Button>
       </div>
 
-      {/* Register Modal */}
-      {showRegister && (
+      {/* Claim Modal */}
+      {showClaim && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <Card className="w-full max-w-md bg-[#111] border-white/10">
             <CardContent className="p-6 space-y-4">
-              {!newHub ? (
-                <>
-                  <h2 className="text-lg font-semibold text-white">Register New Hub</h2>
-                  <div>
-                    <label className="text-xs text-white/50 font-medium">Hub Name</label>
-                    <input
-                      type="text"
-                      value={registerName}
-                      onChange={(e) => setRegisterName(e.target.value)}
-                      placeholder="e.g. 123 Main St Hub"
-                      className="mt-1 w-full rounded-lg bg-white/[0.06] border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-[#316ee0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-white/50 font-medium">Assign to Property (optional)</label>
-                    <select
-                      value={registerPropertyId}
-                      onChange={(e) => setRegisterPropertyId(e.target.value)}
-                      className="mt-1 w-full rounded-lg bg-white/[0.06] border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#316ee0]"
-                    >
-                      <option value="">None</option>
-                      {properties.map((p) => (
-                        <option key={p.id} value={p.id}>{p.name} — {p.address}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex gap-3 pt-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => { setShowRegister(false); setRegisterName(""); setRegisterPropertyId(""); }}
-                      className="flex-1 border-white/10 text-white/60 hover:text-white"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleRegister}
-                      disabled={registering || !registerName.trim()}
-                      className="flex-1 bg-[#316ee0] hover:bg-[#2860c9] text-white"
-                    >
-                      {registering ? "Registering..." : "Register"}
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <h2 className="text-lg font-semibold text-white">Hub Registered</h2>
-                  <p className="text-sm text-white/50">
-                    Save these credentials — the auth token will <strong className="text-white">not</strong> be shown again.
-                  </p>
-                  <div className="rounded-lg bg-black border border-white/10 p-4 space-y-2 font-mono text-xs text-white/80">
-                    <div>HUB_ID={newHub.hubId}</div>
-                    <div>AUTH_TOKEN={newHub.authToken}</div>
-                    <div>API_BASE=https://www.keysherpa.io</div>
-                    <div>ZWAVE_DEVICE=/dev/zwave</div>
-                  </div>
-                  <Button
-                    onClick={handleCopyEnv}
-                    variant="outline"
-                    className="w-full border-white/10 text-white/60 hover:text-white"
-                  >
-                    {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
-                    {copied ? "Copied!" : "Copy .env"}
-                  </Button>
-                  <Button
-                    onClick={handleDoneRegister}
-                    className="w-full bg-[#316ee0] hover:bg-[#2860c9] text-white"
-                  >
-                    Done
-                  </Button>
-                </>
+              <h2 className="text-lg font-semibold text-white">Add Hub</h2>
+              <p className="text-sm text-white/50">
+                Enter the claim code from the card included with your hub.
+              </p>
+              <div>
+                <input
+                  type="text"
+                  value={claimCode}
+                  onChange={(e) => {
+                    setClaimCode(e.target.value);
+                    setClaimError("");
+                  }}
+                  placeholder="e.g. KS-7F3A"
+                  className="w-full rounded-lg bg-white/[0.06] border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-[#316ee0] text-center text-lg tracking-widest uppercase"
+                  maxLength={10}
+                  onKeyDown={(e) => e.key === "Enter" && handleClaim()}
+                />
+              </div>
+              {claimError && (
+                <p className="text-sm text-red-400">{claimError}</p>
               )}
+              {claimSuccess && (
+                <p className="text-sm text-emerald-400">{claimSuccess}</p>
+              )}
+              <div className="flex gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowClaim(false);
+                    setClaimCode("");
+                    setClaimError("");
+                    setClaimSuccess("");
+                  }}
+                  className="flex-1 border-white/10 text-white/60 hover:text-white"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleClaim}
+                  disabled={claiming || !claimCode.trim()}
+                  className="flex-1 bg-[#316ee0] hover:bg-[#2860c9] text-white"
+                >
+                  {claiming ? "Adding..." : "Add Hub"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -279,8 +238,8 @@ export function HubList({ hubs, properties, orgId }: HubListProps) {
         <Card className="bg-white/[0.03] border-white/[0.06]">
           <CardContent className="py-16 text-center">
             <Router className="h-10 w-10 text-white/15 mx-auto mb-4" />
-            <h3 className="text-sm font-medium text-white/40">No hubs registered</h3>
-            <p className="text-xs text-white/25 mt-1">Register a Pi hub to start controlling Z-Wave locks.</p>
+            <h3 className="text-sm font-medium text-white/40">No hubs added yet</h3>
+            <p className="text-xs text-white/25 mt-1">Click "Add Hub" and enter the claim code from your hub's card.</p>
           </CardContent>
         </Card>
       ) : (
