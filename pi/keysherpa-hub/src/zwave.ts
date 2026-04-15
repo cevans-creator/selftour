@@ -115,12 +115,14 @@ export class ZWaveClient {
         resolve({ nodeId: node.id });
       });
 
-      this.driver.controller.beginInclusion({ strategy: 2 }).catch((err: any) => {
+      // strategy: 0 = Default (tries S2, falls back to S0, then insecure)
+      // Locks REQUIRE secure inclusion — they ignore strategy 2 (Insecure)
+      this.driver.controller.beginInclusion({ strategy: 0 }).catch((err: any) => {
         clearTimeout(timeout);
         reject(err);
       });
 
-      console.log("[ZWave] Inclusion mode active — waiting for lock...");
+      console.log("[ZWave] Inclusion mode active (Default strategy, S2/S0) — waiting for lock...");
     });
   }
 
