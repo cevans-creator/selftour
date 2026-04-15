@@ -41,7 +41,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, nodeId: useExistingNode, method: "linked_existing" });
   }
 
-  // ── Normal path: run inclusion on the hub ──
+  // ── Step 1: Clear any existing nodes on the controller for one-lock-per-hub ──
+  const [clearCmd] = await db.insert(hubCommands).values({
+    hubId,
+    commandType: "clear_all_nodes",
+    payload: {},
+    status: "pending",
+  }).returning();
+  if (clearCmd) {
+    const clearDeadline = Date.now() + 20_000;
+    while (Date.now() < clearDeadline) {
+      const [r] = await db.select().from(hubCommands).where(eq(hubCommands.id, clearCmd.id)).limit(1);
+      if (r?.status === "completed" || r?.status === "failed") break;
+      await new Promise((res) => setTimeout(res, 1000));
+    }
+  }
+  // Also clear the DB link since we're about to re-pair fresh
+  if (hub.propertyId) {
+    await db.update(properties).set({
+      seamDeviceId: null,
+      updatedAt: new Date(),
+    }).where(eq(properties.id, hub.propertyId));
+  }
+
+  // ── Step 2: Run inclusion on the hub ──
   const [cmd] = await db.insert(hubCommands).values({
     hubId,
     commandType: "pair_lock",

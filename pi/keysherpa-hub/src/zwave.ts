@@ -43,6 +43,7 @@ export class ZWaveClient {
       case "unpair_lock": return this.unpairLock(payload);
       case "list_nodes": return this.listNodes();
       case "remove_node": return this.removeNode(payload);
+      case "clear_all_nodes": return this.clearAllNodes();
       default: throw new Error("Unknown command: " + commandType);
     }
   }
@@ -216,6 +217,33 @@ export class ZWaveClient {
         reject(e);
       });
     });
+  }
+
+  private async clearAllNodes(): Promise<Record<string, unknown>> {
+    const ownId = this.driver.controller.ownNodeId;
+    const toRemove: number[] = [];
+    this.driver.controller.nodes.forEach((n: any) => {
+      if (n.id !== ownId) toRemove.push(n.id);
+    });
+
+    const removed: number[] = [];
+    const failed: Array<{ nodeId: number; error: string }> = [];
+
+    for (const nodeId of toRemove) {
+      try {
+        await this.driver.controller.removeFailedNode(nodeId);
+        removed.push(nodeId);
+        console.log("[ZWave] Force-removed node:", nodeId);
+      } catch (err: any) {
+        // removeFailedNode only works on unresponsive nodes. For alive nodes,
+        // we can't bypass the physical exclusion step — but we can mark them as
+        // failed by pinging until they timeout, then removing.
+        console.log(`[ZWave] Could not force-remove node ${nodeId}: ${err.message}`);
+        failed.push({ nodeId, error: err.message });
+      }
+    }
+
+    return { removed, failed, total: toRemove.length };
   }
 
   async stop(): Promise<void> {
