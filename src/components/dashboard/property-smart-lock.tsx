@@ -65,19 +65,22 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
     }
   };
 
-  const handleUnpair = async () => {
+  const handleUnpair = async (force = false) => {
     if (!hub) return;
-    if (!confirm("Unpair the lock from this hub? You'll need to pair it again to use it.")) return;
+    const msg = force
+      ? "Force clear the lock from this property? This only clears the database — use this if the normal unpair is stuck or the lock is unreachable."
+      : "Unpair the lock from this hub? You'll need to pair it again to use it.";
+    if (!confirm(msg)) return;
     setUnpairing(true);
     try {
       const res = await fetch("/api/hub/unpair", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hubId: hub.id }),
+        body: JSON.stringify({ hubId: hub.id, force }),
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success("Lock unpaired");
+        toast.success(force ? "Lock cleared" : "Lock unpaired");
         await load();
       } else {
         toast.error(data.error || "Unpair failed");
@@ -135,15 +138,26 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
             </div>
 
             {lockPaired ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleUnpair}
-                disabled={unpairing || !hub.online}
-              >
-                {unpairing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Unlink className="h-4 w-4 mr-2" />}
-                {unpairing ? "Unpairing..." : "Unpair Lock"}
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleUnpair(false)}
+                  disabled={unpairing || !hub.online}
+                >
+                  {unpairing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Unlink className="h-4 w-4 mr-2" />}
+                  {unpairing ? "Unpairing..." : "Unpair Lock"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => handleUnpair(true)}
+                  disabled={unpairing}
+                  className="text-muted-foreground"
+                >
+                  Force Clear
+                </Button>
+              </div>
             ) : (
               <div className="space-y-2">
                 <Button

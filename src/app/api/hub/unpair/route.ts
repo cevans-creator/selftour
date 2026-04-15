@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     .limit(1);
   if (!membership) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { hubId } = (await req.json()) as { hubId: string };
+  const { hubId, force } = (await req.json()) as { hubId: string; force?: boolean };
   if (!hubId) return NextResponse.json({ error: "Missing hubId" }, { status: 400 });
 
   // Verify hub belongs to this org
@@ -36,6 +36,17 @@ export async function POST(req: NextRequest) {
       const parsed = parseInt(p.seamDeviceId.split(":")[1]!, 10);
       if (!isNaN(parsed)) nodeId = parsed;
     }
+  }
+
+  // Force clear: wipe the DB entry without talking to the hub (for stale/ghost locks)
+  if (force) {
+    if (property) {
+      await db.update(properties).set({
+        seamDeviceId: null,
+        updatedAt: new Date(),
+      }).where(eq(properties.id, property.id));
+    }
+    return NextResponse.json({ success: true, forced: true });
   }
 
   // Send unpair command to hub
