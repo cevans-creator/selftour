@@ -8,7 +8,7 @@ export class ZWaveClient {
 
   constructor(private serialPort: string) {
     this.driver = new Driver(serialPort, {
-      logConfig: { enabled: true, level: "debug", logToFile: true, filename: "/var/log/keysherpa-zwave.log" },
+      logConfig: { enabled: false },
       storage: { cacheDir: "/var/lib/keysherpa-hub/cache" },
       securityKeys: {
         S0_Legacy: Buffer.from('0102030405060708090a0b0c0d0e0f10', 'hex'),
