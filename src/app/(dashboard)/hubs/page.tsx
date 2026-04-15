@@ -51,6 +51,7 @@ export default async function HubsPage() {
     propertyId: row.hub.propertyId,
     propertyName: row.property?.name ?? null,
     propertyAddress: row.property?.address ?? null,
+    lockPaired: row.property?.seamDeviceId?.startsWith(`${row.hub.id}:`) ?? false,
     online: row.hub.lastSeenAt
       ? Date.now() - row.hub.lastSeenAt.getTime() < 60_000
       : false,

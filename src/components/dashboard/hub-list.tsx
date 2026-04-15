@@ -13,6 +13,7 @@ import {
   Trash2,
   Link as LinkIcon,
   Radio,
+  Unlink,
 } from "lucide-react";
 
 interface Hub {
@@ -23,6 +24,7 @@ interface Hub {
   propertyId: string | null;
   propertyName: string | null;
   propertyAddress: string | null;
+  lockPaired: boolean;
   online: boolean;
 }
 
@@ -49,6 +51,7 @@ export function HubList({ hubs, properties }: HubListProps) {
   const [assignPropertyId, setAssignPropertyId] = useState("");
   const [pairing, setPairing] = useState<string | null>(null);
   const [pairResult, setPairResult] = useState<{ nodeId: number } | null>(null);
+  const [unpairing, setUnpairing] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
 
   const handleClaim = async () => {
@@ -124,6 +127,28 @@ export function HubList({ hubs, properties }: HubListProps) {
       alert("Pairing request failed");
     } finally {
       setPairing(null);
+    }
+  };
+
+  const handleUnpairLock = async (hubId: string) => {
+    if (!confirm("Unpair the lock from this hub? The lock will need to be paired again to be used.")) return;
+    setUnpairing(hubId);
+    try {
+      const res = await fetch("/api/hub/unpair", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hubId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        router.refresh();
+      } else {
+        alert(data.error || "Failed to unpair. Put the lock in pairing/exclusion mode and try again.");
+      }
+    } catch {
+      alert("Unpair request failed");
+    } finally {
+      setUnpairing(null);
     }
   };
 
@@ -303,6 +328,17 @@ export function HubList({ hubs, properties }: HubListProps) {
                         Assign
                       </Button>
                     </div>
+                  ) : hub.lockPaired ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleUnpairLock(hub.id)}
+                      disabled={unpairing === hub.id || !hub.online}
+                      className="border-white/10 text-white/60 hover:text-white text-xs"
+                    >
+                      <Unlink className="h-3 w-3 mr-1" />
+                      {unpairing === hub.id ? "Unpairing..." : "Unpair Lock"}
+                    </Button>
                   ) : (
                     <Button
                       size="sm"

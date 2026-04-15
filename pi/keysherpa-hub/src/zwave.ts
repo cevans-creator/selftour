@@ -40,6 +40,7 @@ export class ZWaveClient {
       case "lock": return this.setLock(payload, true);
       case "unlock": return this.setLock(payload, false);
       case "pair_lock": return this.pairLock();
+      case "unpair_lock": return this.unpairLock(payload);
       default: throw new Error("Unknown command: " + commandType);
     }
   }
@@ -120,6 +121,42 @@ export class ZWaveClient {
       });
 
       console.log("[ZWave] Inclusion mode active — waiting for lock...");
+    });
+  }
+
+  private async unpairLock(p: Record<string, unknown>): Promise<Record<string, unknown>> {
+    const nodeId = p.nodeId as number | undefined;
+
+    // If a nodeId is provided, try a hard remove (forces removal even if the lock isn't present)
+    if (nodeId) {
+      try {
+        await this.driver.controller.removeFailedNode(nodeId);
+        console.log("[ZWave] Force-removed node:", nodeId);
+        return { unpaired: true, nodeId, method: "force" };
+      } catch (err) {
+        console.log("[ZWave] Force-remove failed, falling back to exclusion:", err);
+      }
+    }
+
+    // Otherwise (or as a fallback), use standard exclusion — user must put lock in pair/exclude mode
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.driver.controller.stopExclusion();
+        reject(new Error("Unpairing timed out — lock was not detected within 90 seconds"));
+      }, 90_000);
+
+      this.driver.controller.on("node removed", (node: any) => {
+        clearTimeout(timeout);
+        console.log("[ZWave] Lock unpaired! Node ID:", node.id);
+        resolve({ unpaired: true, nodeId: node.id, method: "exclusion" });
+      });
+
+      this.driver.controller.beginExclusion().catch((err: any) => {
+        clearTimeout(timeout);
+        reject(err);
+      });
+
+      console.log("[ZWave] Exclusion mode active — waiting for lock...");
     });
   }
 
