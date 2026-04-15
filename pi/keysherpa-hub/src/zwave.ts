@@ -119,19 +119,18 @@ export class ZWaveClient {
       };
       this.driver.controller.on("node added", onNodeAdded);
 
-      // strategy: 2 = Insecure — matches the original dashboard pair_lock that worked.
-      // The Kwikset 620 pairs fine with insecure inclusion; ongoing commands still work
-      // because the production Driver has security keys loaded for whatever level the
-      // lock ends up negotiating.
+      // strategy: 3 = Security_S0 — required for Kwikset 620 and most Z-Wave locks
+      // to expose the User Code command class. Insecure (strategy 2) pairs the lock
+      // but doesn't grant access to code programming.
       this.driver.controller
-        .beginInclusion({ strategy: 2 })
+        .beginInclusion({ strategy: 3 })
         .catch((err: any) => {
           clearTimeout(timeout);
           this.driver.controller.removeListener("node added", onNodeAdded);
           reject(err);
         });
 
-      console.log("[ZWave] Inclusion mode active (Insecure) — press button on lock to pair...");
+      console.log("[ZWave] Inclusion mode active (S0 Security) — press the small A button on the lock...");
     });
   }
 

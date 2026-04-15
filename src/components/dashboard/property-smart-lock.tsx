@@ -71,7 +71,7 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
   const handlePair = async () => {
     if (!hub) return;
     setPairing(true);
-    toast.info("Press the button on your lock now (Kwikset: small A button).", { duration: 15000 });
+    toast.info("Press the SMALL A button on your lock now (single tap).", { duration: 15000 });
     try {
       const res = await fetch("/api/hub/pair", {
         method: "POST",
@@ -258,7 +258,7 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
                   {pairing ? "Pairing... press button on lock" : "Pair New Lock"}
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Click Pair, then press the small A button on the lock. The hub must be within a few feet of the lock. If the lock was previously paired elsewhere, factory reset it first.
+                  Click Pair, then press the <strong>small A button</strong> on the lock (single tap). Pairing uses S0 security and takes ~30 seconds. The hub must be within a few feet of the lock. If the lock was previously paired elsewhere, run "Remove Lock" first or factory reset the lock.
                 </p>
               </div>
             )}
