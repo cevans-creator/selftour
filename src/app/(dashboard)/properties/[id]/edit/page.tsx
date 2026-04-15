@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PropertyImageUploader } from "@/components/dashboard/property-image-uploader";
+import { PropertySmartLock } from "@/components/dashboard/property-smart-lock";
 
 const DAY_OPTIONS = [
   { label: "Sun", value: 0 },
@@ -251,14 +252,7 @@ export default function EditPropertyPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader><CardTitle>Smart Lock</CardTitle></CardHeader>
-          <CardContent className="space-y-2">
-            <Label htmlFor="seamDeviceId">Seam Device ID</Label>
-            <Input id="seamDeviceId" name="seamDeviceId" value={form.seamDeviceId} onChange={handleChange} placeholder="a5b06753-da6d-46e3-a91d-00d506f1c56b" className="font-mono text-sm" />
-            <p className="text-xs text-muted-foreground">The device ID from your Seam-connected lock. Found in Settings → Integrations.</p>
-          </CardContent>
-        </Card>
+        <PropertySmartLock propertyId={id} />
 
         <Card>
           <CardHeader><CardTitle>Tour Availability</CardTitle></CardHeader>
