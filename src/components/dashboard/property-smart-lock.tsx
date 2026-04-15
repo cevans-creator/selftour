@@ -34,6 +34,8 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
   const [pairing, setPairing] = useState(false);
   const [linking, setLinking] = useState(false);
   const [unpairing, setUnpairing] = useState(false);
+  const [showPairDialog, setShowPairDialog] = useState(false);
+  const [dskPin, setDskPin] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -71,16 +73,18 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
   const handlePair = async () => {
     if (!hub) return;
     setPairing(true);
+    setShowPairDialog(false);
     toast.info("Put your lock in pairing mode now. For Kwikset: press the A button once.", { duration: 15000 });
     try {
       const res = await fetch("/api/hub/pair", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hubId: hub.id }),
+        body: JSON.stringify({ hubId: hub.id, dskPin: dskPin || undefined }),
       });
       const data = await res.json();
       if (res.ok) {
         toast.success(`Lock paired! (Node ${data.nodeId})`);
+        setDskPin("");
         await load();
       } else {
         toast.error(data.error || "Pairing failed", { description: data.hint, duration: 10000 });
@@ -249,17 +253,66 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
                   </div>
                 )}
 
-                <Button
-                  type="button"
-                  onClick={handlePair}
-                  disabled={pairing || linking || !hub.online}
-                >
-                  {pairing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Radio className="h-4 w-4 mr-2" />}
-                  {pairing ? "Pairing... put lock in pair mode" : "Pair New Lock"}
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  Click Pair, then put your lock in pairing mode (Kwikset: press A button. Schlage: enter code + 0 + Schlage button). The hub must be within a few feet of the lock. If the lock was previously paired elsewhere, factory reset it first.
-                </p>
+                {!showPairDialog ? (
+                  <>
+                    <Button
+                      type="button"
+                      onClick={() => setShowPairDialog(true)}
+                      disabled={pairing || linking || !hub.online}
+                    >
+                      {pairing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Radio className="h-4 w-4 mr-2" />}
+                      {pairing ? "Pairing... put lock in pair mode" : "Pair New Lock"}
+                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      The hub must be within a few feet of the lock during pairing. If the lock was previously paired elsewhere, factory reset it first.
+                    </p>
+                  </>
+                ) : (
+                  <div className="rounded-lg border p-4 space-y-3 bg-background">
+                    <div>
+                      <label className="text-sm font-medium">Lock Security PIN (from lock's interior label)</label>
+                      <p className="text-xs text-muted-foreground mt-1 mb-2">
+                        Most modern locks (Kwikset 620, Yale Assure, Schlage Encode Plus) require a 5-digit PIN from a sticker on the inside of the lock. Look on the interior assembly label. If your lock doesn't have one, leave blank.
+                      </p>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={5}
+                        value={dskPin}
+                        onChange={(e) => setDskPin(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                        placeholder="12345"
+                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono tracking-widest text-center"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="text-xs text-muted-foreground space-y-1">
+                      <p className="font-medium text-foreground">When you click Start Pairing:</p>
+                      <p>1. The hub enters pair mode (90 second window)</p>
+                      <p>2. Within 5 seconds, press the small "A" button on the lock's interior</p>
+                      <p>3. Wait — pairing with S2 security takes 20-60 seconds</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        onClick={handlePair}
+                        disabled={pairing}
+                        className="flex-1"
+                      >
+                        {pairing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Radio className="h-4 w-4 mr-2" />}
+                        Start Pairing
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => { setShowPairDialog(false); setDskPin(""); }}
+                        disabled={pairing}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </>

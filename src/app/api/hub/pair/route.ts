@@ -17,9 +17,10 @@ export async function POST(req: NextRequest) {
     .limit(1);
   if (!membership) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { hubId, useExistingNode } = (await req.json()) as {
+  const { hubId, useExistingNode, dskPin } = (await req.json()) as {
     hubId: string;
     useExistingNode?: number; // if set, skip inclusion and just link this existing node to the property
+    dskPin?: string; // 5-digit PIN from lock's interior label (for S2 locks like Kwikset 620)
   };
   if (!hubId) return NextResponse.json({ error: "Missing hubId" }, { status: 400 });
 
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
   const [cmd] = await db.insert(hubCommands).values({
     hubId,
     commandType: "pair_lock",
-    payload: {},
+    payload: dskPin ? { dskPin } : {},
     status: "pending",
   }).returning();
   if (!cmd) return NextResponse.json({ error: "Failed to create command" }, { status: 500 });

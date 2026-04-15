@@ -39,7 +39,7 @@ export class ZWaveClient {
       case "get_status": return this.getStatus(payload);
       case "lock": return this.setLock(payload, true);
       case "unlock": return this.setLock(payload, false);
-      case "pair_lock": return this.pairLock();
+      case "pair_lock": return this.pairLock(payload);
       case "unpair_lock": return this.unpairLock(payload);
       case "list_nodes": return this.listNodes();
       case "remove_node": return this.removeNode(payload);
@@ -104,27 +104,54 @@ export class ZWaveClient {
     return { success: true };
   }
 
-  private async pairLock(): Promise<Record<string, unknown>> {
+  private async pairLock(payload: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
+    const dskPin = (payload.dskPin as string | undefined) ?? undefined;
+
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.driver.controller.stopInclusion();
         reject(new Error("Pairing timed out — lock was not detected within 90 seconds"));
       }, 90_000);
 
-      this.driver.controller.on("node added", (node: any) => {
+      const onNodeAdded = (node: any) => {
         clearTimeout(timeout);
+        this.driver.controller.removeListener("node added", onNodeAdded);
         console.log("[ZWave] Lock paired! Node ID:", node.id);
         resolve({ nodeId: node.id });
-      });
+      };
+      this.driver.controller.on("node added", onNodeAdded);
+
+      // S2 inclusion callbacks — required for Z-Wave Plus v2 locks (e.g. Kwikset 620)
+      const userCallbacks = {
+        grantSecurityClasses: async (req: any) => {
+          console.log("[ZWave] Granting security classes:", req.securityClasses);
+          return req.securityClasses; // grant all requested
+        },
+        validateDSKAndEnterPIN: async (dsk: string) => {
+          console.log("[ZWave] S2 inclusion requested DSK. First 5 digits of DSK should match lock's interior PIN label.");
+          if (dskPin) {
+            console.log("[ZWave] Using provided PIN for S2 authentication.");
+            // Replace the first 5 dashes with the provided PIN
+            return dskPin + dsk.slice(5);
+          }
+          console.log("[ZWave] No PIN provided — aborting S2. Will fall back if possible.");
+          return false;
+        },
+        abort: async () => {
+          console.log("[ZWave] S2 user abort");
+        },
+      };
 
       // strategy: 0 = Default (tries S2, falls back to S0, then insecure)
-      // Locks REQUIRE secure inclusion — they ignore strategy 2 (Insecure)
-      this.driver.controller.beginInclusion({ strategy: 0 }).catch((err: any) => {
-        clearTimeout(timeout);
-        reject(err);
-      });
+      this.driver.controller
+        .beginInclusion({ strategy: 0, userCallbacks })
+        .catch((err: any) => {
+          clearTimeout(timeout);
+          this.driver.controller.removeListener("node added", onNodeAdded);
+          reject(err);
+        });
 
-      console.log("[ZWave] Inclusion mode active (Default strategy, S2/S0) — waiting for lock...");
+      console.log(`[ZWave] Inclusion mode active (Default strategy, S2/S0)${dskPin ? " with DSK PIN" : " without PIN"} — waiting for lock...`);
     });
   }
 
