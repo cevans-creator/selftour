@@ -104,9 +104,7 @@ export class ZWaveClient {
     return { success: true };
   }
 
-  private async pairLock(payload: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
-    const dskPin = (payload.dskPin as string | undefined) ?? undefined;
-
+  private async pairLock(_payload: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.driver.controller.stopInclusion();
@@ -121,37 +119,17 @@ export class ZWaveClient {
       };
       this.driver.controller.on("node added", onNodeAdded);
 
-      // S2 inclusion callbacks — required for Z-Wave Plus v2 locks (e.g. Kwikset 620)
-      const userCallbacks = {
-        grantSecurityClasses: async (req: any) => {
-          console.log("[ZWave] Granting security classes:", req.securityClasses);
-          return req.securityClasses; // grant all requested
-        },
-        validateDSKAndEnterPIN: async (dsk: string) => {
-          console.log("[ZWave] S2 inclusion requested DSK. First 5 digits of DSK should match lock's interior PIN label.");
-          if (dskPin) {
-            console.log("[ZWave] Using provided PIN for S2 authentication.");
-            // Replace the first 5 dashes with the provided PIN
-            return dskPin + dsk.slice(5);
-          }
-          console.log("[ZWave] No PIN provided — aborting S2. Will fall back if possible.");
-          return false;
-        },
-        abort: async () => {
-          console.log("[ZWave] S2 user abort");
-        },
-      };
-
-      // strategy: 0 = Default (tries S2, falls back to S0, then insecure)
+      // Simple inclusion — matches the original pairing script that worked in production.
+      // No security keys required from user, no DSK PIN. Just press button on lock.
       this.driver.controller
-        .beginInclusion({ strategy: 0, userCallbacks })
+        .beginInclusion()
         .catch((err: any) => {
           clearTimeout(timeout);
           this.driver.controller.removeListener("node added", onNodeAdded);
           reject(err);
         });
 
-      console.log(`[ZWave] Inclusion mode active (Default strategy, S2/S0)${dskPin ? " with DSK PIN" : " without PIN"} — waiting for lock...`);
+      console.log("[ZWave] Inclusion mode active — press button on lock to pair...");
     });
   }
 
