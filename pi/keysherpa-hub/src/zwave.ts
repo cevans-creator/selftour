@@ -8,7 +8,7 @@ export class ZWaveClient {
 
   constructor(private serialPort: string) {
     this.driver = new Driver(serialPort, {
-      logConfig: { enabled: false },
+      logConfig: { enabled: true, level: "debug", logToFile: true, filename: "/var/log/keysherpa-zwave.log" },
       storage: { cacheDir: "/var/lib/keysherpa-hub/cache" },
       securityKeys: {
         S0_Legacy: Buffer.from('0102030405060708090a0b0c0d0e0f10', 'hex'),
@@ -41,6 +41,8 @@ export class ZWaveClient {
       case "unlock": return this.setLock(payload, false);
       case "pair_lock": return this.pairLock();
       case "unpair_lock": return this.unpairLock(payload);
+      case "list_nodes": return this.listNodes();
+      case "remove_node": return this.removeNode(payload);
       default: throw new Error("Unknown command: " + commandType);
     }
   }
@@ -159,6 +161,54 @@ export class ZWaveClient {
       });
 
       console.log("[ZWave] Exclusion mode active — waiting for lock...");
+    });
+  }
+
+  private async listNodes(): Promise<Record<string, unknown>> {
+    const nodes: Array<Record<string, unknown>> = [];
+    this.driver.controller.nodes.forEach((n: any) => {
+      // Skip the controller itself (ownNodeId)
+      if (n.id === this.driver.controller.ownNodeId) return;
+      nodes.push({
+        nodeId: n.id,
+        label: n.deviceConfig?.label ?? null,
+        manufacturer: n.deviceConfig?.manufacturer ?? null,
+        isAlive: n.isAlive ?? null,
+        status: n.status,
+      });
+    });
+    return { nodes };
+  }
+
+  private async removeNode(p: Record<string, unknown>): Promise<Record<string, unknown>> {
+    const nodeId = p.nodeId as number;
+    if (!nodeId) throw new Error("Missing nodeId");
+
+    // Try force-remove first (works on unresponsive/failed nodes)
+    try {
+      await this.driver.controller.removeFailedNode(nodeId);
+      console.log("[ZWave] Force-removed node:", nodeId);
+      return { removed: true, nodeId, method: "force" };
+    } catch (err) {
+      console.log("[ZWave] Force-remove failed:", err);
+    }
+
+    // Fall back to exclusion (requires lock in exclude mode)
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.driver.controller.stopExclusion();
+        reject(new Error("Exclusion timed out — put lock in exclude mode (Kwikset: hold A button 5 sec) or use Force Clear"));
+      }, 60_000);
+
+      this.driver.controller.on("node removed", (node: any) => {
+        clearTimeout(timeout);
+        resolve({ removed: true, nodeId: node.id, method: "exclusion" });
+      });
+
+      this.driver.controller.beginExclusion().catch((e: any) => {
+        clearTimeout(timeout);
+        reject(e);
+      });
     });
   }
 
