@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { toast } from "sonner";
-import { KeyRound, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { LogoFull } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,18 +50,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4">
-      <Link href="/" className="mb-8 flex items-center gap-2.5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-500/30">
-          <KeyRound className="h-4.5 w-4.5 h-[18px] w-[18px]" />
-        </div>
-        <span className="text-xl font-bold tracking-tight">KeySherpa</span>
+    <div className="flex min-h-screen flex-col items-center justify-center px-4" style={{ backgroundColor: "#F5F1EA" }}>
+      <Link href="/" className="mb-8">
+        <LogoFull height={36} color="#2C2A26" accentColor="#A0522D" />
       </Link>
 
-      <Card className="w-full max-w-md shadow-sm">
+      <Card className="w-full max-w-md border" style={{ backgroundColor: "rgba(255,255,255,0.6)", borderColor: "#D4C9B8", boxShadow: "0 8px 40px rgba(139,115,85,0.08)" }}>
         <CardHeader>
-          <CardTitle className="text-xl">Sign in to your account</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl" style={{ fontFamily: "var(--font-fraunces)", color: "#2C2A26" }}>Sign in to your account</CardTitle>
+          <CardDescription style={{ color: "#6B705C" }}>
             Enter your email and password to access your dashboard.
           </CardDescription>
         </CardHeader>
@@ -94,14 +92,14 @@ export default function LoginPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-3">
-            <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700" disabled={isLoading}>
+            <Button type="submit" className="w-full text-white" style={{ backgroundColor: "#A0522D" }} disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign in
             </Button>
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm" style={{ color: "#6B705C" }}>
               Don&apos;t have an account?{" "}
-              <Link href={redirect !== "/dashboard" ? `/signup?redirect=${encodeURIComponent(redirect)}` : "/signup"} className="font-medium text-violet-600 hover:underline">
-                Create one free
+              <Link href={redirect !== "/dashboard" ? `/signup?redirect=${encodeURIComponent(redirect)}` : "/signup"} className="font-medium hover:underline" style={{ color: "#A0522D" }}>
+                Create one
               </Link>
             </p>
           </CardFooter>

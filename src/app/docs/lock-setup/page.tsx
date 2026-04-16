@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { KeyRound, CheckCircle2, ExternalLink, Wifi, Smartphone, AlertTriangle } from "lucide-react";
+import { CheckCircle2, ExternalLink, Wifi, Smartphone, AlertTriangle } from "lucide-react";
+import { LogoFull } from "@/components/logo";
 
 export const metadata = {
   title: "Lock Setup Guide",
@@ -17,19 +18,14 @@ const COMPATIBLE_LOCKS = [
 
 export default function LockSetupPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: "#F5F1EA", color: "#3A3632", fontFamily: "var(--font-inter)" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 backdrop-blur-md" style={{ backgroundColor: "#F5F1EAe6", borderBottom: "1px solid #D4C9B8" }}>
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 text-white">
-              <KeyRound className="h-4 w-4" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">KeySherpa</span>
-          </Link>
+          <Link href="/"><LogoFull height={28} color="#2C2A26" accentColor="#A0522D" /></Link>
           <Link
             href="/dashboard"
-            className="text-sm font-medium text-violet-600 hover:underline"
+            className="text-sm font-medium text-[#A0522D] hover:underline"
           >
             Back to Dashboard →
           </Link>
@@ -39,7 +35,7 @@ export default function LockSetupPage() {
       <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
         {/* Title */}
         <div className="mb-12">
-          <span className="inline-block rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-600 mb-4">
+          <span className="inline-block rounded-full bg-[#A0522D]/10 px-3 py-1 text-xs font-semibold text-[#A0522D] mb-4">
             Setup Guide
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
@@ -61,7 +57,7 @@ export default function LockSetupPage() {
               "Your KeySherpa account with at least one property created",
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-sm text-gray-600">
-                <CheckCircle2 className="h-5 w-5 text-violet-600 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-5 w-5 text-[#A0522D] flex-shrink-0 mt-0.5" />
                 {item}
               </li>
             ))}
@@ -76,7 +72,7 @@ export default function LockSetupPage() {
             {/* Step 1 */}
             <div className="flex gap-6">
               <div className="flex-shrink-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#2C2A26] text-sm font-bold text-white">
                   01
                 </div>
               </div>
@@ -88,7 +84,7 @@ export default function LockSetupPage() {
                 <ol className="mt-4 space-y-2 text-sm text-gray-600">
                   <li className="flex items-start gap-2">
                     <span className="font-mono text-xs bg-gray-100 rounded px-1.5 py-0.5 mt-0.5">1</span>
-                    Go to <a href="https://console.seam.co" target="_blank" rel="noopener noreferrer" className="text-violet-600 hover:underline inline-flex items-center gap-1">console.seam.co <ExternalLink className="h-3 w-3" /></a> and sign up for a free account
+                    Go to <a href="https://console.seam.co" target="_blank" rel="noopener noreferrer" className="text-[#A0522D] hover:underline inline-flex items-center gap-1">console.seam.co <ExternalLink className="h-3 w-3" /></a> and sign up for a free account
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="font-mono text-xs bg-gray-100 rounded px-1.5 py-0.5 mt-0.5">2</span>
@@ -105,7 +101,7 @@ export default function LockSetupPage() {
             {/* Step 2 */}
             <div className="flex gap-6">
               <div className="flex-shrink-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#2C2A26] text-sm font-bold text-white">
                   02
                 </div>
               </div>
@@ -144,7 +140,7 @@ export default function LockSetupPage() {
             {/* Step 3 */}
             <div className="flex gap-6">
               <div className="flex-shrink-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#2C2A26] text-sm font-bold text-white">
                   03
                 </div>
               </div>
@@ -173,7 +169,7 @@ export default function LockSetupPage() {
             {/* Step 4 */}
             <div className="flex gap-6">
               <div className="flex-shrink-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#2C2A26] text-sm font-bold text-white">
                   04
                 </div>
               </div>
@@ -202,7 +198,7 @@ export default function LockSetupPage() {
             {/* Step 5 */}
             <div className="flex gap-6">
               <div className="flex-shrink-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-600 text-sm font-bold text-white shadow-lg shadow-violet-500/30">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#A0522D] text-sm font-bold text-white shadow-lg shadow-[#A0522D]/20">
                   ✓
                 </div>
               </div>
@@ -211,9 +207,9 @@ export default function LockSetupPage() {
                 <p className="mt-2 text-gray-500 text-sm leading-relaxed">
                   Book a test tour through your tour page. KeySherpa will automatically generate a PIN code 15 minutes before the tour starts and delete it when the tour ends. The visitor receives the code by SMS and on the tour access page.
                 </p>
-                <div className="mt-4 rounded-xl bg-violet-50 border border-violet-100 p-4 flex gap-3">
-                  <Wifi className="h-4 w-4 text-violet-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-violet-700">
+                <div className="mt-4 rounded-xl bg-[#A0522D]/10 border border-[#A0522D]/20 p-4 flex gap-3">
+                  <Wifi className="h-4 w-4 text-[#A0522D] flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-[#8B4513]">
                     <strong>Pro tip:</strong> Check <strong>Integrations</strong> in your dashboard to monitor lock status, battery level, and connectivity in real time.
                   </p>
                 </div>
@@ -228,8 +224,8 @@ export default function LockSetupPage() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {COMPATIBLE_LOCKS.map((lock) => (
               <div key={lock.brand} className="flex items-start gap-3 rounded-xl border border-gray-100 p-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 flex-shrink-0">
-                  <Smartphone className="h-4 w-4 text-violet-600" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#A0522D]/10 flex-shrink-0">
+                  <Smartphone className="h-4 w-4 text-[#A0522D]" />
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900 text-sm">{lock.brand}</p>
@@ -244,7 +240,7 @@ export default function LockSetupPage() {
               href="https://docs.seam.co/latest/device-guides"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-violet-600 hover:underline inline-flex items-center gap-1"
+              className="text-[#A0522D] hover:underline inline-flex items-center gap-1"
             >
               docs.seam.co <ExternalLink className="h-3 w-3" />
             </a>
@@ -282,7 +278,7 @@ export default function LockSetupPage() {
         </section>
 
         {/* Help */}
-        <div className="rounded-2xl bg-slate-950 p-8 text-center">
+        <div className="rounded-2xl bg-[#2C2A26] p-8 text-center">
           <h3 className="text-xl font-bold text-white">Still need help?</h3>
           <p className="mt-2 text-slate-400 text-sm">
             Reach out and we'll get your lock connected.
@@ -290,10 +286,10 @@ export default function LockSetupPage() {
           <a
             href="mailto:support@keysherpa.io"
             className="mt-4 inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-white
-              bg-violet-600/90 border border-violet-400/40
+              bg-[#A0522D]/90 border border-[#A0522D]/40
               shadow-[0_0_20px_2px_rgba(139,92,246,0.4)]
               hover:shadow-[0_0_28px_4px_rgba(139,92,246,0.55)]
-              hover:bg-violet-500/90 transition-all"
+              hover:bg-[#A0522D]/100/90 transition-all"
           >
             Contact Support
           </a>
