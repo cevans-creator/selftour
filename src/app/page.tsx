@@ -98,10 +98,10 @@ function DashboardMockup() {
           {/* Stat cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
             {[
-              { label: "Active Tours", value: "12", color: "#A0522D" },
-              { label: "Visitors Today", value: "34", color: "#6B705C" },
-              { label: "Completion Rate", value: "87%", color: "#6B705C" },
-              { label: "Hubs Online", value: "8/8", color: "#4a8c5c" },
+              { label: "Tours Today", value: "8" },
+              { label: "This Week", value: "47" },
+              { label: "Completion", value: "91%" },
+              { label: "Hubs Online", value: "12/12" },
             ].map((s) => (
               <div key={s.label} className="rounded-lg p-3" style={{ backgroundColor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
                 <p className="text-[10px] mb-1" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-mono)" }}>{s.label}</p>
@@ -116,11 +116,11 @@ function DashboardMockup() {
               <span className="text-[10px] font-medium" style={{ color: "rgba(255,255,255,0.5)", fontFamily: "var(--font-mono)" }}>UPCOMING TOURS</span>
             </div>
             {[
-              { name: "5010 Mimosa Ln", visitor: "Sarah Chen", time: "2:30 PM", status: "Access Sent", statusColor: "#A0522D" },
-              { name: "1240 Oak Valley", visitor: "James Park", time: "3:00 PM", status: "Scheduled", statusColor: "#6B705C" },
-              { name: "890 Sunset Blvd", visitor: "Maria Lopez", time: "4:15 PM", status: "Scheduled", statusColor: "#6B705C" },
+              { name: "The Aspen — Lot 42", visitor: "Sarah Chen", time: "2:30 PM", status: "Access Sent", statusColor: "#A0522D" },
+              { name: "Oakridge Model B", visitor: "James Park", time: "3:00 PM", status: "Scheduled", statusColor: "#6B705C" },
+              { name: "Sunset Collection #7", visitor: "Maria Lopez", time: "4:15 PM", status: "Scheduled", statusColor: "#6B705C" },
             ].map((t, i) => (
-              <div key={t.name} className="flex items-center justify-between px-3 py-2.5" style={{ borderTop: i > 0 ? "1px solid rgba(255,255,255,0.04)" : "1px solid rgba(255,255,255,0.04)" }}>
+              <div key={t.name} className="flex items-center justify-between px-3 py-2.5" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
                 <div>
                   <p className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>{t.name}</p>
                   <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>{t.visitor} &middot; {t.time}</p>
