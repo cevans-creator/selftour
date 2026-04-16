@@ -174,6 +174,10 @@ export default function LandingPage() {
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.025]"
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
 
+      {/* Blueprint grid — very faint, across whole page */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.035]"
+        style={{ backgroundImage: `linear-gradient(${C.accent}40 1px, transparent 1px), linear-gradient(90deg, ${C.accent}40 1px, transparent 1px)`, backgroundSize: "64px 64px" }} />
+
       {/* ── Nav ──────────────────────────────────────────────── */}
       <header className="fixed top-0 z-40 w-full backdrop-blur-md" style={{ backgroundColor: `${C.bg}e6`, borderBottom: `1px solid ${C.border}` }}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
@@ -377,36 +381,36 @@ export default function LandingPage() {
             </p>
           </Fade>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 items-stretch">
             {PLANS.map((plan, i) => (
               <Fade key={plan.name} delay={i * 0.08}>
                 <motion.div
-                  className="rounded-xl p-7 flex flex-col relative"
+                  className="rounded-xl p-7 flex flex-col h-full"
                   style={{
                     backgroundColor: plan.popular ? C.bgDark : C.cardBg,
                     boxShadow: plan.popular ? "0 16px 64px rgba(44,42,38,0.2)" : C.cardShadow,
-                    border: plan.popular ? "none" : `1px solid ${C.border}`,
+                    border: plan.popular ? `1px solid rgba(160,82,45,0.3)` : `1px solid ${C.border}`,
                   }}
                   whileHover={{ scale: 1.01 }}
                 >
                   {plan.popular && (
-                    <span className="absolute -top-3 left-6 text-[10px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full text-white"
+                    <span className="text-[10px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full text-white self-start mb-4"
                       style={{ backgroundColor: C.accent, fontFamily: "var(--font-mono)" }}>
                       Most popular
                     </span>
                   )}
-                  <h3 className="text-xl font-semibold mb-1"
+                  <h3 className="text-2xl font-semibold mb-1"
                     style={{ fontFamily: "var(--font-fraunces)", color: plan.popular ? C.textLight : C.text }}>
                     {plan.name}
                   </h3>
-                  <p className="text-xs mb-1" style={{ color: plan.popular ? "rgba(237,230,217,0.45)" : C.textMuted }}>
+                  <p className="text-sm mb-2" style={{ color: plan.popular ? "rgba(237,230,217,0.45)" : C.textMuted }}>
                     {plan.desc}
                   </p>
-                  <p className="text-sm font-medium mb-6" style={{ fontFamily: "var(--font-mono)", color: plan.popular ? `${C.accent}` : `${C.accent}99` }}>
+                  <p className="text-sm font-medium mb-6" style={{ fontFamily: "var(--font-mono)", color: C.accent }}>
                     Custom pricing
                   </p>
 
-                  <ul className="space-y-2.5 flex-1 mb-8">
+                  <ul className="space-y-3 flex-1">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-2.5 text-sm leading-snug"
                         style={{ color: plan.popular ? "rgba(237,230,217,0.6)" : C.textMuted }}>
@@ -417,7 +421,7 @@ export default function LandingPage() {
                   </ul>
 
                   <Link href="/pricing#contact"
-                    className="block w-full rounded-lg py-3 text-center text-sm font-medium transition-all duration-300"
+                    className="mt-8 block w-full rounded-lg py-3 text-center text-sm font-medium transition-all duration-300 hover:scale-[1.02]"
                     style={plan.popular
                       ? { backgroundColor: C.accent, color: "white" }
                       : { border: `1px solid ${C.border}`, color: C.text }
