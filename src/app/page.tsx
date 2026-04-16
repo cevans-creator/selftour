@@ -1,513 +1,397 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useScroll, useTransform, useInView, useAnimation } from "framer-motion";
-import { useRef, useEffect } from "react";
-import { KeyRound, ArrowRight, Check } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
-// ─── Data ──────────────────────────────────────────────────────────────────
+// ─── Animation helper ─────────────────────────────────────────────────────
+
+function Fade({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <motion.div ref={ref} className={className}
+      initial={{ opacity: 0, y: 16 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 1.2, delay, ease: [0.22, 1, 0.36, 1] }}>
+      {children}
+    </motion.div>
+  );
+}
+
+// ─── Data ─────────────────────────────────────────────────────────────────
 
 const FEATURES = [
   {
-    tag: "01",
     title: "Smart Lock Integration",
-    description: "Connects with SmartThings, Schlage, and 150+ lock brands via Seam. Time-locked codes generate automatically before each tour.",
+    body: "Connects with 150+ lock brands. Time-locked codes generate automatically before each tour and delete when it ends.",
   },
   {
-    tag: "02",
-    title: "Automated SMS Journey",
-    description: "From booking confirmation to 72-hour nurture follow-ups, every touchpoint is handled automatically.",
+    title: "Automated Communication",
+    body: "From booking confirmation to post-tour follow-ups, every touchpoint is handled. SMS, email, and AI chat included.",
   },
   {
-    tag: "03",
-    title: "AI On-Tour Assistant",
-    description: "Visitors ask questions during their tour and get instant, accurate answers from your custom knowledge base.",
+    title: "AI Tour Assistant",
+    body: "Visitors text questions during their tour and get instant answers from your custom knowledge base.",
   },
   {
-    tag: "04",
-    title: "Real-Time Dashboard",
-    description: "See who's touring right now, track conversion rates, manage your property portfolio, and monitor lock health.",
+    title: "Live Dashboard",
+    body: "See who's touring, track conversion rates, manage properties, and monitor lock health in real time.",
   },
   {
-    tag: "05",
     title: "Identity Verification",
-    description: "Optional Stripe Identity integration for ID verification before access codes are issued.",
+    body: "Verify visitors with photo ID or credit card before access codes are issued. Your properties stay secure.",
   },
   {
-    tag: "06",
-    title: "White-Label Ready",
-    description: "Custom branding, your domain, your colors. Visitor-facing tour pages look like your brand, not ours.",
+    title: "Your Brand, Not Ours",
+    body: "Custom colors, logo, and domain. Tour pages look like your company. Embed on your website seamlessly.",
   },
 ];
 
 const STEPS = [
-  { n: "01", title: "Connect your smart lock", body: "Link your existing lock in minutes via our Seam integration. No hardware changes needed." },
-  { n: "02", title: "Add your properties", body: "Create listings with photos, descriptions, and tour availability windows." },
-  { n: "03", title: "Share your tour link", body: "Drop your unique URL on Zillow, your site, or a QR code sign. Visitors self-book." },
-  { n: "04", title: "KeySherpa handles the rest", body: "Confirmations, reminders, door codes, AI Q&A, and follow-ups run on autopilot." },
+  { title: "Connect your lock", body: "Plug in a KeySherpa hub and pair your Z-Wave lock from the dashboard. Takes five minutes." },
+  { title: "Add your properties", body: "Create listings with photos, descriptions, and tour availability windows." },
+  { title: "Share your tour link", body: "Drop your URL on Zillow, your website, or a QR code sign at the property." },
+  { title: "We handle the rest", body: "Confirmations, reminders, door codes, AI Q&A, follow-ups, and reporting run on autopilot." },
 ];
 
-const PRICING = [
+const PLANS = [
   {
     name: "Rookie",
-    price: null,
-    period: null,
-    description: "For small teams getting started",
+    description: "Small teams getting started with self-guided tours.",
     features: ["Up to 10 properties", "200 tours / month", "5 team members", "Smart lock hub included", "Email + SMS automation", "AI visitor assistant", "Tour reporting"],
-    cta: "Get Pricing",
-    href: "/pricing#contact",
-    highlight: false,
   },
   {
     name: "Pro",
-    price: null,
-    period: null,
-    description: "For growing companies",
-    features: ["Up to 50 properties", "1,000 tours / month", "15 team members", "Everything in Rookie", "Advanced analytics", "Lead source tracking", "CRM integration", "Priority support"],
-    cta: "Get Pricing",
-    href: "/pricing#contact",
-    highlight: true,
+    description: "Growing companies scaling their tour program.",
+    features: ["Up to 50 properties", "1,000 tours / month", "15 team members", "Advanced analytics", "Lead source tracking", "CRM integration", "Priority support"],
   },
   {
     name: "Elite",
-    price: null,
-    period: null,
-    description: "For enterprise builders",
-    features: ["Unlimited properties", "Unlimited tours", "Unlimited team members", "Everything in Pro", "White-label branding", "Credit card verification", "Custom integrations / API", "Dedicated account manager"],
-    cta: "Contact Sales",
-    href: "/pricing#contact",
-    highlight: false,
+    description: "Enterprise builders with large-scale operations.",
+    features: ["Unlimited everything", "White-label branding", "Credit card verification", "Custom integrations & API", "Dedicated account manager"],
   },
 ];
 
-// ─── Animation helpers ──────────────────────────────────────────────────────
+// ─── Organic divider SVG ──────────────────────────────────────────────────
 
-function FadeUp({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+function OrganicLine({ className }: { className?: string }) {
   return (
-    <motion.div ref={ref} className={className}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.25, 1, 0.5, 1] }}>
-      {children}
-    </motion.div>
+    <svg viewBox="0 0 800 8" className={`w-full ${className ?? ""}`} preserveAspectRatio="none">
+      <path
+        d="M0 4 C150 2, 250 6, 400 4 S650 2, 800 4"
+        stroke="#C4B9A8"
+        strokeWidth="0.5"
+        fill="none"
+        opacity="0.5"
+      />
+    </svg>
   );
 }
 
-function StaggerList({ children, className }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-  return (
-    <motion.div ref={ref} className={className}
-      initial="hidden" animate={inView ? "visible" : "hidden"}
-      variants={{ visible: { transition: { staggerChildren: 0.08 } }, hidden: {} }}>
-      {children}
-    </motion.div>
-  );
-}
-
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] } },
-};
-
-// ─── Neon Line ──────────────────────────────────────────────────────────────
-
-function NeonLine() {
-  const controls = useAnimation();
-
-  useEffect(() => {
-    async function run() {
-      // Power on — stroke and glow materialise slowly
-      await controls.start({
-        filter: "blur(0px)",
-        WebkitTextStroke: "1px rgba(255,255,255,0.28)",
-        textShadow: "0 0 6px rgba(147,197,253,0.6), 0 0 18px rgba(49,110,224,0.55), 0 0 40px rgba(49,110,224,0.22)",
-        transition: { duration: 2.8, delay: 1.0, ease: [0.06, 0.8, 0.2, 1] },
-      });
-
-      // Puffco-style pulse — slow, deep, expanding heat glow
-      controls.start({
-        textShadow: [
-          "0 0 6px rgba(147,197,253,0.6), 0 0 18px rgba(49,110,224,0.55), 0 0 40px rgba(49,110,224,0.22)",
-          "0 0 10px rgba(147,197,253,0.95), 0 0 28px rgba(49,110,224,0.9), 0 0 60px rgba(49,110,224,0.45)",
-          "0 0 6px rgba(147,197,253,0.6), 0 0 18px rgba(49,110,224,0.55), 0 0 40px rgba(49,110,224,0.22)",
-        ],
-        transition: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
-      });
-    }
-    void run();
-  }, [controls]);
-
-  return (
-    <motion.h1
-      className="text-[clamp(2.2rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] select-none whitespace-nowrap"
-      style={{ color: "transparent", willChange: "text-shadow" }}
-      initial={{ filter: "blur(10px)", WebkitTextStroke: "1px rgba(255,255,255,0)", textShadow: "none" }}
-      animate={controls}
-    >
-      That Run
-    </motion.h1>
-  );
-}
-
-// ─── Page ───────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-
-  // Global scroll for orb fade — fades out right after hero on both mobile and desktop
-  const { scrollY } = useScroll();
-  const orbOpacity = useTransform(scrollY, (y) => {
-    const vh = typeof window !== "undefined" ? window.innerHeight : 800;
-    const start = vh * 0.75;
-    const end = vh * 1.1;
-    if (y <= start) return 1;
-    if (y >= end) return 0.1;
-    return 1 - 0.9 * ((y - start) / (end - start));
-  });
-
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden uppercase" style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen overflow-x-hidden"
+      style={{
+        fontFamily: "var(--font-inter), system-ui, sans-serif",
+        backgroundColor: "#F5F1EA",
+        color: "#3A3632",
+      }}
+    >
+      {/* Subtle paper texture overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+        }}
+      />
 
-      {/* ── Global glow orb — fixed so it follows scroll ─────────── */}
-      <motion.div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" style={{ opacity: orbOpacity }}>
-        <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[900px] w-[900px] rounded-full"
-          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
-          initial={{ opacity: 0.18 }}
-          animate={{ opacity: [0.18, 0.28, 0.18], scale: [1, 1.08, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] rounded-full"
-          style={{ background: "radial-gradient(circle, #93c5fd 0%, #316ee0 30%, transparent 70%)" }}
-          initial={{ opacity: 0.2 }}
-          animate={{ opacity: [0.2, 0.35, 0.2], scale: [1, 1.12, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-        />
-      </motion.div>
-
-      {/* ── Nav ─────────────────────────────────────────────────────── */}
+      {/* ── Nav ──────────────────────────────────────────────────── */}
       <motion.header
-        className="fixed top-0 z-50 w-full"
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+        className="fixed top-0 z-40 w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5, delay: 0.3 }}
       >
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#316ee0]">
-              <KeyRound className="h-3.5 w-3.5 text-white" />
+        <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-8 lg:px-12">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md" style={{ backgroundColor: "#8B7355" }}>
+              <span className="text-sm font-bold text-white" style={{ fontFamily: "var(--font-garamond)" }}>K</span>
             </div>
-            <span className="text-sm font-semibold tracking-wide">KeySherpa</span>
-          </div>
+            <span className="text-base tracking-wide" style={{ fontFamily: "var(--font-garamond)", color: "#2C2A26", letterSpacing: "0.08em" }}>
+              KeySherpa
+            </span>
+          </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Features</a>
-            <Link href="/pricing" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Pricing</Link>
-            <Link href="/login" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Sign in</Link>
-            <Link href="/signup"
-              className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+          <nav className="hidden items-center gap-10 md:flex">
+            <a href="#features" className="text-sm hover:opacity-70 transition-opacity duration-500" style={{ color: "#8B7355" }}>Features</a>
+            <Link href="/pricing" className="text-sm hover:opacity-70 transition-opacity duration-500" style={{ color: "#8B7355" }}>Pricing</Link>
+            <Link href="/login" className="text-sm hover:opacity-70 transition-opacity duration-500" style={{ color: "#8B7355" }}>Sign in</Link>
+            <Link href="/pricing#contact"
+              className="text-sm border-b transition-opacity duration-500 hover:opacity-70 pb-0.5"
+              style={{ color: "#2C2A26", borderColor: "#2C2A26" }}>
               Get started
             </Link>
           </nav>
 
-          <Link href="/signup" className="md:hidden rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-medium text-white">
+          <Link href="/pricing#contact" className="md:hidden text-sm border-b pb-0.5" style={{ color: "#2C2A26", borderColor: "#2C2A26" }}>
             Get started
           </Link>
         </div>
-
-        {/* Glass blur bar */}
-        <div className="absolute inset-0 -z-10 border-b border-white/[0.04] bg-black/60 backdrop-blur-xl" />
       </motion.header>
 
-      {/* ── Hero ────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      {/* ── Hero ─────────────────────────────────────────────────── */}
+      <section className="min-h-screen flex items-end pb-32 pt-40 sm:items-center sm:pt-20 sm:pb-20">
+        <div className="mx-auto max-w-6xl px-8 lg:px-12 w-full">
+          <div className="max-w-3xl" style={{ marginLeft: "5%" }}>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 2, delay: 0.5 }}
+              className="text-xs tracking-[0.25em] uppercase mb-8"
+              style={{ color: "#8B7355" }}
+            >
+              Self-guided tour automation
+            </motion.p>
 
-        {/* Grid background */}
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)",
-            backgroundSize: "72px 72px",
-          }}
-        />
-
-
-        {/* Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60 pointer-events-none" />
-
-        <motion.div style={{ y: heroY, opacity: heroOpacity }}
-          className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-
-          {/* Tag */}
-          <motion.p
-            initial={{ opacity: 0, letterSpacing: "0.5em" }}
-            animate={{ opacity: 1, letterSpacing: "0.3em" }}
-            transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
-            className="mb-6 sm:mb-8 hidden sm:block text-xs text-white/55 tracking-[0.3em]"
-          >
-            // Intelligent Tour Automation
-          </motion.p>
-
-          {/* Headline */}
-          <div className="overflow-hidden">
             <motion.h1
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
-              className="text-[clamp(2.2rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white whitespace-nowrap"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.4, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="text-[clamp(2.5rem,7vw,5.5rem)] leading-[1.05] mb-8"
+              style={{ fontFamily: "var(--font-garamond)", color: "#2C2A26", letterSpacing: "0.01em" }}
             >
-              Home Tours
+              Home tours that<br />
+              run themselves.
             </motion.h1>
-          </div>
-          {/* "that run" — powers on then flickers like a neon sign */}
-          <NeonLine />
-          <div className="overflow-hidden">
-            <motion.h1
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.9, delay: 0.16, ease: [0.25, 1, 0.5, 1] }}
-              className="text-[clamp(2.2rem,10vw,8rem)] font-extralight leading-[0.95] tracking-[0.04em] text-white whitespace-nowrap"
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="text-base sm:text-lg leading-[1.8] max-w-md mb-12"
+              style={{ color: "#6B705C" }}
             >
-              Themselves.
-            </motion.h1>
-          </div>
+              Smart locks, AI Q&A, and automated follow-ups &mdash;
+              so buyers can tour any time while your team focuses on closing.
+            </motion.p>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 1, 0.5, 1] }}
-            className="mx-auto mt-6 sm:mt-10 max-w-sm sm:max-w-xl text-sm sm:text-base leading-relaxed text-white/65 normal-case"
-            style={{ textTransform: "none" }}
-          >
-            Smart locks, AI Q&amp;A, and automated follow-ups —
-            so buyers can tour 24/7 while your team closes.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.65, ease: [0.25, 1, 0.5, 1] }}
-            className="mt-8 sm:mt-12 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
-          >
-            <Link href="/signup"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-[#316ee0] px-7 py-3 sm:px-8 sm:py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_rgba(49,110,224,0.4)] hover:shadow-[0_0_60px_rgba(49,110,224,0.6)] hover:bg-[#2558c8] transition-all duration-300"
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2, delay: 1.6 }}
+              className="flex flex-col sm:flex-row gap-6 items-start"
             >
-              Start for free
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-            <a href="#features"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-7 py-3 sm:px-8 sm:py-3.5 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
-            >
-              See how it works
-            </a>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.9 }}
-            className="mt-4 hidden sm:block font-mono text-xs text-white/40 tracking-widest"
-          >
-            SCHEDULE A DEMO · SEE PRICING
-          </motion.p>
-        </motion.div>
-
-        {/* Scroll indicator — hidden on mobile to prevent overlap */}
-        <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 1 }}
-        >
-          <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/40">Scroll</span>
-          <motion.div
-            className="h-8 w-px bg-gradient-to-b from-white/30 to-transparent"
-            animate={{ scaleY: [1, 0.3, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </motion.div>
-      </section>
-
-      {/* ── Live stats bar ─────────────────────────────────────────── */}
-      <FadeUp>
-        <div className="border-y border-white/[0.05] bg-white/[0.01]">
-          <div className="mx-auto max-w-7xl px-6 py-6">
-            <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-              {[
-                { label: "Tours automated daily", value: "2,400+" },
-                { label: "Avg. booking time", value: "< 90s" },
-                { label: "Lock brands supported", value: "150+" },
-                { label: "Conversion lift", value: "3.2×" },
-              ].map((s) => (
-                <div key={s.label} className="text-center">
-                  <p className="text-2xl font-light text-white tabular-nums">{s.value}</p>
-                  <p className="mt-1 font-mono text-xs text-white/50 uppercase tracking-widest">{s.label}</p>
-                </div>
-              ))}
-            </div>
+              <Link href="/pricing#contact"
+                className="text-sm border-b-2 pb-1 transition-opacity duration-500 hover:opacity-60"
+                style={{ color: "#2C2A26", borderColor: "#9C6B4F" }}>
+                Request a demo
+              </Link>
+              <a href="#features"
+                className="text-sm transition-opacity duration-500 hover:opacity-60"
+                style={{ color: "#8B7355" }}>
+                See how it works &darr;
+              </a>
+            </motion.div>
           </div>
         </div>
-      </FadeUp>
+      </section>
 
-      {/* ── Features ───────────────────────────────────────────────── */}
-      <section id="features" className="py-32 sm:py-40">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <FadeUp className="mb-20">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-4">// Capabilities</p>
-            <h2 className="text-3xl font-light leading-tight text-white sm:text-5xl lg:text-6xl max-w-2xl">
-              Everything the tour needs.
-              <span className="text-white/45"> Nothing it doesn't.</span>
+      {/* ── Organic divider ──────────────────────────────────────── */}
+      <div className="mx-auto max-w-4xl px-8">
+        <OrganicLine />
+      </div>
+
+      {/* ── Features ─────────────────────────────────────────────── */}
+      <section id="features" className="py-32 sm:py-44">
+        <div className="mx-auto max-w-6xl px-8 lg:px-12">
+          <Fade>
+            <p className="text-xs tracking-[0.25em] uppercase mb-6" style={{ color: "#8B7355" }}>
+              Capabilities
+            </p>
+            <h2
+              className="text-3xl sm:text-4xl lg:text-5xl leading-[1.15] max-w-xl mb-24"
+              style={{ fontFamily: "var(--font-garamond)", color: "#2C2A26" }}
+            >
+              Everything the tour needs.{" "}
+              <span style={{ color: "#A68A64" }}>Nothing it doesn&apos;t.</span>
             </h2>
-          </FadeUp>
+          </Fade>
 
-          <StaggerList className="grid grid-cols-1 divide-y divide-white/[0.05] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-3">
-            {FEATURES.map((f) => (
-              <motion.div key={f.tag} variants={item}
-                className="group relative py-10 sm:px-8 sm:py-10 border-white/[0.05] hover:bg-white/[0.02] transition-colors duration-300 sm:border-l first:border-l-0 lg:first:border-l-0 lg:[&:nth-child(4)]:border-l-0"
-              >
-                <p className="font-mono text-xs text-white/45 mb-4 tracking-widest">{f.tag}</p>
-                <h3 className="text-base font-semibold text-white mb-3 leading-snug">{f.title}</h3>
-                <p className="text-sm sm:text-base text-white/65 leading-relaxed">{f.description}</p>
-              </motion.div>
-            ))}
-          </StaggerList>
-        </div>
-      </section>
-
-      {/* ── How it works ───────────────────────────────────────────── */}
-      <section className="py-32 sm:py-40 relative overflow-hidden">
-        {/* Subtle glow */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[500px] w-[500px] opacity-[0.07] rounded-full"
-          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 70%)" }} />
-
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <FadeUp className="mb-20">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-4">// Process</p>
-            <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl">Up in under an hour.</h2>
-          </FadeUp>
-
-          <StaggerList className="max-w-3xl space-y-0 divide-y divide-white/[0.05]">
-            {STEPS.map((s) => (
-              <motion.div key={s.n} variants={item} className="group flex items-start gap-10 py-10">
-                <span className="font-mono text-5xl font-light text-white/20 group-hover:text-white/40 transition-colors duration-500 flex-shrink-0 leading-none mt-1">
-                  {s.n}
-                </span>
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">{s.title}</h3>
-                  <p className="text-sm sm:text-base text-white/65 leading-relaxed max-w-md">{s.body}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-20 lg:gap-x-24">
+            {FEATURES.map((f, i) => (
+              <Fade key={f.title} delay={i * 0.08}>
+                <div className={i % 2 === 1 ? "sm:mt-12" : ""}>
+                  <h3 className="text-lg font-medium mb-3" style={{ color: "#2C2A26", fontFamily: "var(--font-garamond)", letterSpacing: "0.02em" }}>
+                    {f.title}
+                  </h3>
+                  <p className="text-sm leading-[1.8]" style={{ color: "#6B705C" }}>{f.body}</p>
                 </div>
-              </motion.div>
+              </Fade>
             ))}
-          </StaggerList>
+          </div>
         </div>
       </section>
 
-      {/* ── Pricing ────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-32 sm:py-40 border-t border-white/[0.05]">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <FadeUp className="mb-20 text-center">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-4">// Pricing</p>
-            <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl">Plans that scale.</h2>
-            <p className="mt-4 text-white/55 text-base tracking-wide">From your first model home to hundreds of communities.</p>
-          </FadeUp>
+      {/* ── Organic divider ──────────────────────────────────────── */}
+      <div className="mx-auto max-w-3xl px-8" style={{ marginLeft: "15%" }}>
+        <OrganicLine />
+      </div>
 
-          <StaggerList className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3 items-stretch">
-            {PRICING.map((plan) => (
-              <motion.div key={plan.name} variants={item}
-                className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 cursor-default flex flex-col"
-                whileHover={{
-                  borderColor: "rgba(49,110,224,0.4)",
-                  backgroundColor: "rgba(49,110,224,0.05)",
-                  boxShadow: "0 0 60px rgba(49,110,224,0.18), 0 0 120px rgba(49,110,224,0.07)",
-                  transition: { duration: 0.4, ease: "easeOut" },
-                }}
+      {/* ── How it works ─────────────────────────────────────────── */}
+      <section className="py-32 sm:py-44">
+        <div className="mx-auto max-w-6xl px-8 lg:px-12">
+          <Fade>
+            <div style={{ marginLeft: "10%" }}>
+              <p className="text-xs tracking-[0.25em] uppercase mb-6" style={{ color: "#8B7355" }}>
+                Process
+              </p>
+              <h2
+                className="text-3xl sm:text-4xl lg:text-5xl leading-[1.15] mb-24"
+                style={{ fontFamily: "var(--font-garamond)", color: "#2C2A26" }}
               >
-                <div className="mb-8">
-                  <h3 className="text-2xl font-bold text-white mb-1">{plan.name}</h3>
-                  <p className="text-sm text-white/50 mb-4">{plan.description}</p>
-                  <p className="text-sm font-mono uppercase tracking-widest text-white/35">Custom pricing</p>
-                </div>
-
-                <ul className="space-y-3 flex-1">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-3 text-sm sm:text-base text-white/70">
-                      <Check className="h-3.5 w-3.5 flex-shrink-0 text-[#316ee0]" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link href={plan.href}
-                  className="mt-8 block w-full rounded-full py-3 text-center text-sm font-medium transition-all duration-300 border border-white/10 text-white/70 hover:text-white hover:border-[#316ee0]/50 hover:bg-[#316ee0]/10"
-                >
-                  {plan.cta}
-                </Link>
-              </motion.div>
-            ))}
-          </StaggerList>
-        </div>
-      </section>
-
-      {/* ── CTA ─────────────────────────────────────────────────────── */}
-      <section className="relative py-40 overflow-hidden border-t border-white/[0.05]">
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
-            backgroundSize: "72px 72px",
-          }}
-        />
-        <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full"
-          style={{ background: "radial-gradient(circle, #316ee0 0%, transparent 65%)" }}
-          animate={{ opacity: [0.14, 0.24, 0.14], scale: [1, 1.07, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none" />
-
-        <FadeUp className="relative z-10 mx-auto max-w-3xl px-6 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/20 mb-8">// Get started</p>
-          <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl leading-tight mb-6">
-            Ready to automate<br />your tours?
-          </h2>
-          <p className="text-white/55 mb-12 text-base leading-relaxed max-w-md mx-auto">
-            Join property managers and builders who've removed scheduling from their to-do list entirely.
-          </p>
-          <Link href="/signup"
-            className="group inline-flex items-center gap-2.5 rounded-full bg-[#316ee0] px-10 py-4 text-sm font-semibold text-white shadow-[0_0_40px_rgba(49,110,224,0.4)] hover:shadow-[0_0_70px_rgba(49,110,224,0.65)] hover:bg-[#2558c8] transition-all duration-300"
-          >
-            Start for free — no card required
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-        </FadeUp>
-      </section>
-
-      {/* ── Footer ──────────────────────────────────────────────────── */}
-      <footer className="border-t border-white/[0.05] py-10">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#316ee0]">
-                <KeyRound className="h-3 w-3 text-white" />
-              </div>
-              <span className="text-sm font-medium tracking-wide text-white/60">KeySherpa</span>
+                Up in under an hour.
+              </h2>
             </div>
-            <div className="flex items-center gap-6">
-              <Link href="/privacy" className="font-mono text-xs text-white/20 hover:text-white/40 transition-colors tracking-wide">Privacy</Link>
-              <Link href="/terms" className="font-mono text-xs text-white/20 hover:text-white/40 transition-colors tracking-wide">Terms</Link>
-              <p className="font-mono text-xs text-white/15 tracking-wide">© {new Date().getFullYear()} KeySherpa</p>
+          </Fade>
+
+          <div className="max-w-2xl" style={{ marginLeft: "15%" }}>
+            {STEPS.map((s, i) => (
+              <Fade key={s.title} delay={i * 0.1}>
+                <div className="flex items-start gap-8 mb-16 last:mb-0">
+                  <span
+                    className="text-4xl font-light flex-shrink-0 leading-none mt-1"
+                    style={{ fontFamily: "var(--font-garamond)", color: "#C4B9A8" }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="text-base font-medium mb-2" style={{ color: "#2C2A26", fontFamily: "var(--font-garamond)", letterSpacing: "0.02em" }}>
+                      {s.title}
+                    </h3>
+                    <p className="text-sm leading-[1.8]" style={{ color: "#6B705C" }}>{s.body}</p>
+                  </div>
+                </div>
+              </Fade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Organic divider ──────────────────────────────────────── */}
+      <div className="mx-auto max-w-4xl px-8" style={{ marginRight: "10%" }}>
+        <OrganicLine />
+      </div>
+
+      {/* ── Pricing ──────────────────────────────────────────────── */}
+      <section id="pricing" className="py-32 sm:py-44">
+        <div className="mx-auto max-w-6xl px-8 lg:px-12">
+          <Fade>
+            <p className="text-xs tracking-[0.25em] uppercase mb-6" style={{ color: "#8B7355" }}>
+              Plans
+            </p>
+            <h2
+              className="text-3xl sm:text-4xl lg:text-5xl leading-[1.15] max-w-lg mb-6"
+              style={{ fontFamily: "var(--font-garamond)", color: "#2C2A26" }}
+            >
+              Plans that grow with you.
+            </h2>
+            <p className="text-sm leading-[1.8] max-w-md mb-20" style={{ color: "#6B705C" }}>
+              From your first model home to hundreds of communities. Every plan includes our smart lock hub hardware and onboarding.
+            </p>
+          </Fade>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-8 lg:gap-12">
+            {PLANS.map((plan, i) => (
+              <Fade key={plan.name} delay={i * 0.1}>
+                <div className="flex flex-col">
+                  <h3
+                    className="text-2xl mb-2"
+                    style={{ fontFamily: "var(--font-garamond)", color: "#2C2A26" }}
+                  >
+                    {plan.name}
+                  </h3>
+                  <p className="text-xs leading-[1.8] mb-6" style={{ color: "#8B7355" }}>
+                    {plan.description}
+                  </p>
+
+                  <div className="mb-8" style={{ borderTop: "1px solid #D4C9B8" }} />
+
+                  <ul className="space-y-3 flex-1">
+                    {plan.features.map((f) => (
+                      <li key={f} className="flex items-start gap-3 text-sm leading-[1.7]" style={{ color: "#6B705C" }}>
+                        <span className="mt-1.5 h-1 w-1 rounded-full flex-shrink-0" style={{ backgroundColor: "#A68A64" }} />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link href="/pricing#contact"
+                    className="mt-10 text-sm border-b pb-0.5 self-start transition-opacity duration-500 hover:opacity-60"
+                    style={{ color: "#2C2A26", borderColor: "#9C6B4F" }}
+                  >
+                    {i === 2 ? "Contact sales" : "Get pricing"}
+                  </Link>
+                </div>
+              </Fade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Organic divider ──────────────────────────────────────── */}
+      <div className="mx-auto max-w-3xl px-8">
+        <OrganicLine />
+      </div>
+
+      {/* ── CTA ──────────────────────────────────────────────────── */}
+      <section className="py-40 sm:py-52">
+        <div className="mx-auto max-w-6xl px-8 lg:px-12">
+          <Fade>
+            <div className="max-w-lg" style={{ marginLeft: "8%" }}>
+              <h2
+                className="text-3xl sm:text-4xl lg:text-5xl leading-[1.15] mb-8"
+                style={{ fontFamily: "var(--font-garamond)", color: "#2C2A26" }}
+              >
+                Ready to let the<br />
+                homes speak for themselves?
+              </h2>
+              <p className="text-sm leading-[1.8] mb-12" style={{ color: "#6B705C" }}>
+                Join property managers and builders who removed scheduling from their to-do list entirely.
+              </p>
+              <Link href="/pricing#contact"
+                className="text-sm border-b-2 pb-1 transition-opacity duration-500 hover:opacity-60"
+                style={{ color: "#2C2A26", borderColor: "#9C6B4F" }}>
+                Request a demo
+              </Link>
+            </div>
+          </Fade>
+        </div>
+      </section>
+
+      {/* ── Footer ───────────────────────────────────────────────── */}
+      <footer className="py-12" style={{ borderTop: "1px solid #D4C9B8" }}>
+        <div className="mx-auto max-w-6xl px-8 lg:px-12">
+          <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-3">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md" style={{ backgroundColor: "#8B7355" }}>
+                <span className="text-xs font-bold text-white" style={{ fontFamily: "var(--font-garamond)" }}>K</span>
+              </div>
+              <span className="text-sm" style={{ fontFamily: "var(--font-garamond)", color: "#8B7355", letterSpacing: "0.08em" }}>
+                KeySherpa
+              </span>
+            </div>
+            <div className="flex items-center gap-8">
+              <Link href="/privacy" className="text-xs transition-opacity duration-500 hover:opacity-60" style={{ color: "#A68A64" }}>Privacy</Link>
+              <Link href="/terms" className="text-xs transition-opacity duration-500 hover:opacity-60" style={{ color: "#A68A64" }}>Terms</Link>
+              <p className="text-xs" style={{ color: "#C4B9A8" }}>&copy; {new Date().getFullYear()} KeySherpa</p>
             </div>
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
