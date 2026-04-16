@@ -232,7 +232,7 @@ export default function EditPropertyPage() {
 
         <Card>
           <CardHeader><CardTitle>Property Details</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="bedrooms">Bedrooms</Label>
               <Input id="bedrooms" name="bedrooms" type="number" min="0" value={form.bedrooms} onChange={handleChange} placeholder="3" />
@@ -286,7 +286,7 @@ export default function EditPropertyPage() {
                 })}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="availableFrom">Opens</Label>
               <Input id="availableFrom" name="availableFrom" type="time" value={form.availableFrom} onChange={handleChange} />

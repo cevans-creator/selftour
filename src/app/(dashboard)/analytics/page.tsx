@@ -69,7 +69,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-white/[0.03] border-white/[0.06]">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">

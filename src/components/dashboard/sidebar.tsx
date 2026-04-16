@@ -218,7 +218,7 @@ export function Sidebar({ orgName, orgSlug, userEmail, logoUrl }: SidebarProps) 
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative w-72 flex-shrink-0">
+          <div className="relative w-[min(85vw,288px)] flex-shrink-0">
             <SidebarContent
               orgName={orgName}
               orgSlug={orgSlug}
