@@ -125,6 +125,20 @@ export const orgMembers = pgTable("org_members", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const orgInvites = pgTable("org_invites", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  email: varchar("email", { length: 255 }).notNull(),
+  role: orgMemberRoleEnum("role").notNull().default("agent"),
+  token: varchar("token", { length: 64 }).notNull().unique(),
+  invitedBy: uuid("invited_by").notNull(),
+  acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const communities = pgTable("communities", {
   id: uuid("id").defaultRandom().primaryKey(),
   organizationId: uuid("organization_id")
@@ -304,6 +318,7 @@ export const messageTemplates = pgTable("message_templates", {
 
 export const organizationsRelations = relations(organizations, ({ many }) => ({
   members: many(orgMembers),
+  invites: many(orgInvites),
   communities: many(communities),
   properties: many(properties),
   visitors: many(visitors),
@@ -311,6 +326,13 @@ export const organizationsRelations = relations(organizations, ({ many }) => ({
   knowledgeEntries: many(aiKnowledgeEntries),
   messageTemplates: many(messageTemplates),
   hubs: many(hubs),
+}));
+
+export const orgInvitesRelations = relations(orgInvites, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [orgInvites.organizationId],
+    references: [organizations.id],
+  }),
 }));
 
 export const communitiesRelations = relations(communities, ({ one, many }) => ({
