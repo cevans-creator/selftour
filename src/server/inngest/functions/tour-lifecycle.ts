@@ -1,7 +1,7 @@
 import { inngest } from "../client";
 import { db } from "@/server/db/client";
-import { tours, tourEvents, visitors, properties, organizations } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { tours, tourEvents, visitors, properties, organizations, orgMembers, hubs } from "@/server/db/schema";
+import { eq, sql } from "drizzle-orm";
 import {
   createTourAccessCode,
   deleteTourAccessCode,
@@ -154,6 +154,59 @@ export const tourLifecycle = inngest.createFunction(
       await logTourEvent(tourId, "sms_sent", { trigger: "reminder_1h" });
     });
 
+    // ─── Step 3.5: 30min before — pre-tour hub online check ───────────────
+
+    const hubCheckAt = new Date(scheduledDate.getTime() - 30 * 60 * 1000);
+    await step.sleepUntil("sleep-until-hub-check", hubCheckAt);
+
+    await step.run("pre-tour-hub-check", async () => {
+      const [tourRow] = await db.select().from(tours).where(eq(tours.id, tourId)).limit(1);
+      if (!tourRow || tourRow.status === "cancelled") return;
+
+      // Look up the property's hub
+      const [property] = await db.select().from(properties).where(eq(properties.id, tourRow.propertyId)).limit(1);
+      if (!property || property.lockProvider !== "pi" || !property.seamDeviceId) return;
+
+      const hubId = property.seamDeviceId.split(":")[0];
+      if (!hubId) return;
+
+      const [hub] = await db.select().from(hubs).where(eq(hubs.id, hubId)).limit(1);
+      if (!hub) return;
+
+      const hubOnline = hub.lastSeenAt
+        ? Date.now() - hub.lastSeenAt.getTime() < 120_000 // 2-minute window
+        : false;
+
+      if (!hubOnline) {
+        console.warn(`[PRE-TOUR CHECK] Hub ${hubId} is OFFLINE for tour ${tourId} at ${propertyAddress}`);
+
+        await logTourEvent(tourId, "hub_offline", { hubId, lastSeenAt: hub.lastSeenAt?.toISOString() });
+
+        // Alert admin via email
+        const resend = getResendClient();
+        const adminEmail = await getOrgAdminEmail(tourRow.organizationId);
+        if (resend && adminEmail) {
+          await resend.emails.send({
+            from: EMAIL_FROM,
+            to: adminEmail,
+            subject: `⚠️ Hub offline — tour in 30 min at ${propertyAddress}`,
+            text: `Your KeySherpa hub at ${propertyAddress} appears OFFLINE.\n\nA tour is scheduled in 30 minutes (${formatTime(scheduledDate)}).\n\nIf the hub doesn't come back online, the visitor won't receive a door code.\n\nPlease check:\n- Is the hub plugged in and powered?\n- Does it have cellular signal?\n\nView hub status in your dashboard.`,
+          });
+        }
+
+        // Alert via SMS
+        try {
+          const [org] = await db.select().from(organizations).where(eq(organizations.id, tourRow.organizationId)).limit(1);
+          if (org?.twilioPhoneNumber) {
+            await sendSms(
+              org.twilioPhoneNumber,
+              `⚠️ KeySherpa: Hub OFFLINE at ${propertyAddress}. Tour in 30 min. Check hub power/signal immediately.`
+            );
+          }
+        } catch { /* best effort */ }
+      }
+    });
+
     // ─── Step 4: 15min before — provision access code ─────────────────────
 
     const accessCodeAt = new Date(
@@ -173,44 +226,87 @@ export const tourLifecycle = inngest.createFunction(
         const codeStartsAt = new Date(scheduledDate.getTime() - 5 * 60 * 1000);
         const codeEndsAt = new Date(endDate.getTime() + 5 * 60 * 1000);
 
-        accessCodeId = await createTourAccessCode(
-          seamDeviceId,
-          code,
-          codeStartsAt,
-          codeEndsAt
-        );
+        try {
+          accessCodeId = await createTourAccessCode(
+            seamDeviceId,
+            code,
+            codeStartsAt,
+            codeEndsAt
+          );
+        } catch (err) {
+          const errMsg = err instanceof Error ? err.message : String(err);
+          console.error("[ACCESS CODE] Failed to create access code:", errMsg);
+
+          // Log the failure as a tour event so it's visible in the dashboard
+          await logTourEvent(tourId, "access_code_failed", {
+            error: errMsg,
+            device_id: seamDeviceId,
+          });
+
+          // Alert the org admin via email
+          const resend = getResendClient();
+          if (resend) {
+            const tour = await getTourWithDetails(tourId);
+            const adminEmail = tour?.org
+              ? await getOrgAdminEmail(tour.org.id)
+              : null;
+            if (adminEmail) {
+              await resend.emails.send({
+                from: EMAIL_FROM,
+                to: adminEmail,
+                subject: `⚠️ Lock code failed — ${propertyAddress}`,
+                text: `The access code for ${propertyAddress} could not be created.\n\nTour: ${formatDate(scheduledDate)} at ${formatTime(scheduledDate)}\nVisitor: ${visitorFirstName} (${visitorPhone})\nError: ${errMsg}\n\nThe visitor will NOT receive a door code. You may need to manually provide access or check the hub.\n\nView tour: ${accessUrl}`,
+              });
+            }
+          }
+
+          // Alert admin via SMS too
+          try {
+            const tour = await getTourWithDetails(tourId);
+            const adminPhone = tour?.org?.twilioPhoneNumber;
+            if (adminPhone) {
+              await sendSms(
+                adminPhone,
+                `⚠️ KeySherpa: Lock code FAILED for ${propertyAddress} at ${formatTime(scheduledDate)}. Visitor ${visitorFirstName} will NOT get a code. Check hub status immediately.`
+              );
+            }
+          } catch { /* best effort */ }
+
+          // Don't throw — let the tour continue in a degraded state
+          // Visitor page will show an error instead of a code
+        }
       }
 
-      // Save access code to tour
+      // Save access code to tour (even if lock programming failed — code is saved for manual use)
       await db
         .update(tours)
         .set({
           accessCode: code,
           seamAccessCodeId: accessCodeId,
-          status: "access_sent",
+          status: accessCodeId ? "access_sent" : "scheduled", // stay scheduled if code creation failed
           updatedAt: new Date(),
         })
         .where(eq(tours.id, tourId));
 
-      // Send access code via SMS
-      try {
-        await sendSms(
-          visitorPhone,
-          `Your tour starts in 15 min! Door code: ${code}\n\n${propertyAddress}\nView instructions: ${accessUrl}\n\nText questions to this number.`
-        );
-      } catch (err) {
-        console.warn("[SMS] Skipping access code SMS:", err instanceof Error ? err.message : err);
-      }
-
-      await logTourEvent(tourId, "sms_sent", { trigger: "access_code_sent", code });
+      // Send access code via SMS (only if code was actually programmed on the lock)
       if (accessCodeId) {
+        try {
+          await sendSms(
+            visitorPhone,
+            `Your tour starts in 15 min! Door code: ${code}\n\n${propertyAddress}\nView instructions: ${accessUrl}\n\nText questions to this number.`
+          );
+        } catch (err) {
+          console.warn("[SMS] Skipping access code SMS:", err instanceof Error ? err.message : err);
+        }
+
+        await logTourEvent(tourId, "sms_sent", { trigger: "access_code_sent", code });
         await logTourEvent(tourId, "access_code_created", {
           access_code_id: accessCodeId,
           device_id: seamDeviceId,
         });
       }
 
-      return code;
+      return accessCodeId ? code : null;
     });
 
     // ─── Step 5: Tour start — update status ───────────────────────────────
@@ -443,4 +539,20 @@ async function logTourEvent(
     eventType,
     payload,
   });
+}
+
+async function getOrgAdminEmail(orgId: string): Promise<string | null> {
+  const [member] = await db
+    .select({ userId: orgMembers.userId })
+    .from(orgMembers)
+    .where(eq(orgMembers.organizationId, orgId))
+    .limit(1);
+  if (!member) return null;
+
+  // Query Supabase auth.users for the email (raw SQL since auth schema isn't in Drizzle)
+  const result = await db.execute(
+    sql`SELECT email FROM auth.users WHERE id = ${member.userId} LIMIT 1`
+  );
+  const rows = result as unknown as Array<{ email: string }>;
+  return rows[0]?.email ?? null;
 }

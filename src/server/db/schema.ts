@@ -63,6 +63,7 @@ export const tourEventTypeEnum = pgEnum("tour_event_type", [
   "door_locked",
   "access_code_created",
   "access_code_deleted",
+  "access_code_failed",
   "sms_sent",
   "email_sent",
   "ai_response",

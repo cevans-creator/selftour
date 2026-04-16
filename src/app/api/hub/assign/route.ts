@@ -17,14 +17,20 @@ export async function POST(req: NextRequest) {
     .limit(1);
   if (!membership) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { hubId, propertyId } = (await req.json()) as { hubId: string; propertyId: string };
-  if (!hubId || !propertyId) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+  const { hubId, propertyId } = (await req.json()) as { hubId: string; propertyId: string | null };
+  if (!hubId) return NextResponse.json({ error: "Missing hubId" }, { status: 400 });
 
   // Verify hub belongs to this org
   const [hub] = await db.select().from(hubs)
     .where(and(eq(hubs.id, hubId), eq(hubs.organizationId, membership.org.id)))
     .limit(1);
   if (!hub) return NextResponse.json({ error: "Hub not found" }, { status: 404 });
+
+  // Unassign — clear the hub's property link
+  if (!propertyId) {
+    await db.update(hubs).set({ propertyId: null, updatedAt: new Date() }).where(eq(hubs.id, hubId));
+    return NextResponse.json({ success: true, unassigned: true });
+  }
 
   // Verify property belongs to this org
   const [property] = await db.select().from(properties)
@@ -35,7 +41,7 @@ export async function POST(req: NextRequest) {
   // Assign hub to property
   await db.update(hubs).set({ propertyId, updatedAt: new Date() }).where(eq(hubs.id, hubId));
 
-  // Update property lock provider to pi (device ID will be set after pairing)
+  // Update property lock provider to pi
   await db.update(properties).set({
     lockProvider: "pi",
     updatedAt: new Date(),

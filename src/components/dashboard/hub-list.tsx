@@ -12,8 +12,6 @@ import {
   WifiOff,
   Trash2,
   Link as LinkIcon,
-  Radio,
-  Unlink,
 } from "lucide-react";
 
 interface Hub {
@@ -49,9 +47,7 @@ export function HubList({ hubs, properties }: HubListProps) {
   const [claimSuccess, setClaimSuccess] = useState("");
   const [assigning, setAssigning] = useState<string | null>(null);
   const [assignPropertyId, setAssignPropertyId] = useState("");
-  const [pairing, setPairing] = useState<string | null>(null);
-  const [pairResult, setPairResult] = useState<{ nodeId: number } | null>(null);
-  const [unpairing, setUnpairing] = useState<string | null>(null);
+  const [reassigning, setReassigning] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
 
   const handleClaim = async () => {
@@ -107,48 +103,25 @@ export function HubList({ hubs, properties }: HubListProps) {
     }
   };
 
-  const handlePairLock = async (hubId: string) => {
-    setPairing(hubId);
-    setPairResult(null);
+  const handleUnassign = async (hubId: string) => {
+    if (!confirm("Unassign this hub from its property?")) return;
+    setAssigning(hubId);
     try {
-      const res = await fetch("/api/hub/pair", {
+      const res = await fetch("/api/hub/assign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hubId }),
+        body: JSON.stringify({ hubId, propertyId: null }),
       });
-      const data = await res.json();
-      if (res.ok && data.nodeId) {
-        setPairResult({ nodeId: data.nodeId });
-        router.refresh();
-      } else {
-        alert(data.error || "Pairing failed or timed out. Make sure the lock is in pairing mode.");
-      }
-    } catch {
-      alert("Pairing request failed");
-    } finally {
-      setPairing(null);
-    }
-  };
-
-  const handleUnpairLock = async (hubId: string) => {
-    if (!confirm("Unpair the lock from this hub? The lock will need to be paired again to be used.")) return;
-    setUnpairing(hubId);
-    try {
-      const res = await fetch("/api/hub/unpair", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hubId }),
-      });
-      const data = await res.json();
       if (res.ok) {
         router.refresh();
       } else {
-        alert(data.error || "Failed to unpair. Put the lock in pairing/exclusion mode and try again.");
+        const data = await res.json();
+        alert(data.error || "Failed to unassign");
       }
     } catch {
-      alert("Unpair request failed");
+      alert("Failed to unassign hub");
     } finally {
-      setUnpairing(null);
+      setAssigning(null);
     }
   };
 
@@ -305,8 +278,8 @@ export function HubList({ hubs, properties }: HubListProps) {
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2 mt-4 pt-4 border-t border-white/[0.06]">
-                  {!hub.propertyId ? (
+                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-white/[0.06]">
+                  {!hub.propertyId || reassigning === hub.id ? (
                     <div className="flex gap-2 flex-1">
                       <select
                         value={assignPropertyId}
@@ -320,36 +293,45 @@ export function HubList({ hubs, properties }: HubListProps) {
                       </select>
                       <Button
                         size="sm"
-                        onClick={() => handleAssign(hub.id)}
+                        onClick={() => { handleAssign(hub.id); setReassigning(null); }}
                         disabled={!assignPropertyId || assigning === hub.id}
                         className="bg-[#316ee0] hover:bg-[#2860c9] text-white text-xs"
                       >
                         <LinkIcon className="h-3 w-3 mr-1" />
                         Assign
                       </Button>
+                      {reassigning === hub.id && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setReassigning(null)}
+                          className="text-white/40 text-xs"
+                        >
+                          Cancel
+                        </Button>
+                      )}
                     </div>
-                  ) : hub.lockPaired ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleUnpairLock(hub.id)}
-                      disabled={unpairing === hub.id || !hub.online}
-                      className="border-white/10 text-white/60 hover:text-white text-xs"
-                    >
-                      <Unlink className="h-3 w-3 mr-1" />
-                      {unpairing === hub.id ? "Unpairing..." : "Unpair Lock"}
-                    </Button>
                   ) : (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handlePairLock(hub.id)}
-                      disabled={pairing === hub.id || !hub.online}
-                      className="border-white/10 text-white/60 hover:text-white text-xs"
-                    >
-                      <Radio className="h-3 w-3 mr-1" />
-                      {pairing === hub.id ? "Pairing... (put lock in pair mode)" : "Pair Lock"}
-                    </Button>
+                    <div className="flex gap-2 flex-wrap">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => { setReassigning(hub.id); setAssignPropertyId(""); }}
+                        className="border-white/10 text-white/60 hover:text-white text-xs"
+                      >
+                        <LinkIcon className="h-3 w-3 mr-1" />
+                        Change Property
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleUnassign(hub.id)}
+                        disabled={assigning === hub.id}
+                        className="text-white/40 hover:text-white text-xs"
+                      >
+                        Unassign
+                      </Button>
+                    </div>
                   )}
                   <Button
                     size="sm"
@@ -362,12 +344,6 @@ export function HubList({ hubs, properties }: HubListProps) {
                   </Button>
                 </div>
 
-                {/* Pair result */}
-                {pairResult && (
-                  <div className="mt-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs text-emerald-400">
-                    Lock paired as Node {pairResult.nodeId}. Device ID: {hub.id}:{pairResult.nodeId}
-                  </div>
-                )}
               </CardContent>
             </Card>
           ))}

@@ -9,7 +9,7 @@ set -euo pipefail
 
 # ─── Configuration ────────────────────────────────────────────────────────────
 API_BASE="https://www.keysherpa.io"
-PROVISION_API_KEY="24147f7a35d87492180e9b67906f837ff314ffe3229705e1bcfd7ee491fd9cc6"
+PROVISION_API_KEY="${PROVISION_API_KEY:?Set PROVISION_API_KEY env var before running}"
 TAILSCALE_AUTH_KEY=""           # Optional: set to a reusable Tailscale auth key
 # ──────────────────────────────────────────────────────────────────────────────
 

@@ -171,6 +171,26 @@ export default function AccessPage() {
               </div>
             </div>
           </div>
+        ) : tour.status === "scheduled" && tour.accessCode ? (
+          <div className="rounded-2xl bg-amber-50 border border-amber-200 p-5">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-amber-100 flex items-center justify-center mt-0.5">
+                <Home className="h-5 w-5 text-amber-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="text-[15px] font-semibold text-amber-900">We&apos;re having trouble with the smart lock</h2>
+                <p className="mt-1 text-[13px] text-amber-700 leading-relaxed">
+                  We couldn&apos;t program your door code automatically. The property manager has been notified and will contact you shortly with access instructions.
+                </p>
+                {org.twilioPhoneNumber && (
+                  <p className="mt-2 text-[13px] text-amber-700">
+                    Need help now? Text or call{" "}
+                    <a href={`tel:${org.twilioPhoneNumber}`} className="font-semibold underline">{org.twilioPhoneNumber}</a>
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         ) : hasTourCode && tour.accessCode ? (
           <div className="rounded-2xl bg-white shadow-sm border border-black/[0.04] p-5">
             <AccessCodeDisplay
