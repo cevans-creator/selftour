@@ -326,6 +326,17 @@ export const tourLifecycle = inngest.createFunction(
       }
 
       await logTourEvent(tourId, "status_changed", { status: "tour_started" });
+
+      // Notify team — tour is starting
+      try {
+        const tour = await getTourWithDetails(tourId);
+        if (tour?.org?.twilioPhoneNumber) {
+          await sendSms(
+            tour.org.twilioPhoneNumber,
+            `Tour starting now at ${propertyAddress}. Visitor: ${visitorFirstName} (${visitorPhone}).`
+          );
+        }
+      } catch { /* best effort */ }
     });
 
     // ─── Step 6: 15min after start — check for no-show ────────────────────
@@ -349,6 +360,17 @@ export const tourLifecycle = inngest.createFunction(
         await logTourEvent(tourId, "no_show_detected", {
           threshold_minutes: NO_SHOW_THRESHOLD_MINUTES,
         });
+
+        // Notify team — no-show
+        try {
+          const tour = await getTourWithDetails(tourId);
+          if (tour?.org?.twilioPhoneNumber) {
+            await sendSms(
+              tour.org.twilioPhoneNumber,
+              `No-show: ${visitorFirstName} did not unlock the door at ${propertyAddress}. Tour was scheduled for ${formatTime(scheduledDate)}.`
+            );
+          }
+        } catch { /* best effort */ }
       }
     });
 
@@ -395,6 +417,51 @@ export const tourLifecycle = inngest.createFunction(
         .where(eq(tours.id, tourId));
 
       await logTourEvent(tourId, "status_changed", { status: "completed" });
+
+      // Notify team — tour completed
+      try {
+        const tour = await getTourWithDetails(tourId);
+        if (tour?.org?.twilioPhoneNumber) {
+          await sendSms(
+            tour.org.twilioPhoneNumber,
+            `Tour completed at ${propertyAddress}. Visitor: ${visitorFirstName}. Access code has been deleted.`
+          );
+        }
+
+        // Fire CRM webhook if configured
+        if (tour?.org?.crmWebhookUrl) {
+          await fetch(tour.org.crmWebhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event: "tour.completed",
+              tour: {
+                id: tourId,
+                scheduledAt,
+                endsAt,
+                propertyAddress,
+                status: "completed",
+                source: tour.tour.source ?? null,
+              },
+              visitor: {
+                firstName: tour.visitor.firstName,
+                lastName: tour.visitor.lastName,
+                email: tour.visitor.email,
+                phone: tour.visitor.phone,
+              },
+              property: {
+                name: tour.property.name,
+                address: tour.property.address,
+                city: tour.property.city,
+                state: tour.property.state,
+                zip: tour.property.zip,
+              },
+              organization: tour.org.name,
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch((err) => console.warn("[CRM Webhook] Failed:", err));
+        }
+      } catch { /* best effort */ }
     });
 
     // ─── Step 9: Immediately — thank you message ───────────────────────────

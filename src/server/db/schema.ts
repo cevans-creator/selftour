@@ -19,6 +19,9 @@ export const planTierEnum = pgEnum("plan_tier", [
   "starter",
   "growth",
   "enterprise",
+  "rookie",
+  "pro",
+  "elite",
 ]);
 
 export const orgMemberRoleEnum = pgEnum("org_member_role", [
@@ -45,6 +48,7 @@ export const propertyStatusEnum = pgEnum("property_status", [
 
 export const idVerificationMethodEnum = pgEnum("id_verification_method", [
   "stripe_identity",
+  "stripe_card",
   "manual",
   "none",
 ]);
@@ -106,11 +110,12 @@ export const organizations = pgTable("organizations", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   logoUrl: text("logo_url"),
   primaryColor: varchar("primary_color", { length: 7 }).notNull().default("#2563eb"),
-  planTier: planTierEnum("plan_tier").notNull().default("free"),
+  planTier: planTierEnum("plan_tier").notNull().default("rookie"),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
   twilioPhoneNumber: varchar("twilio_phone_number", { length: 20 }),
   resendDomain: varchar("resend_domain", { length: 255 }),
+  crmWebhookUrl: varchar("crm_webhook_url", { length: 500 }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -255,6 +260,7 @@ export const tours = pgTable("tours", {
   endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
   seamAccessCodeId: varchar("seam_access_code_id", { length: 255 }), // generic lock code ID (prefixed: "seam:..." or "pi:...")
   accessCode: varchar("access_code", { length: 10 }),
+  source: varchar("source", { length: 100 }), // where the visitor came from (website, zillow, embed, direct, etc.)
   cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
   cancelReason: text("cancel_reason"),
   notes: text("notes"),

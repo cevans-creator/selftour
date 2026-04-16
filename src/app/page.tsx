@@ -316,7 +316,7 @@ export default function LandingPage() {
             transition={{ duration: 1, delay: 0.9 }}
             className="mt-4 hidden sm:block font-mono text-xs text-white/40 tracking-widest"
           >
-            NO CREDIT CARD · FREE PLAN AVAILABLE
+            SCHEDULE A DEMO · SEE PRICING
           </motion.p>
         </motion.div>
 

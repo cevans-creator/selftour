@@ -91,15 +91,23 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
   };
 
   const planLabel: Record<string, string> = {
-    free: "Free Plan",
+    rookie: "Rookie",
+    pro: "Pro",
+    elite: "Elite",
+    free: "Free",
     starter: "Starter",
     growth: "Growth",
+    enterprise: "Enterprise",
   };
 
   const planLimits: Record<string, string> = {
-    free: "1 property · 20 tours/month · 1 team member",
+    rookie: "10 properties · 200 tours/month · 5 team members",
+    pro: "50 properties · 1,000 tours/month · 15 team members",
+    elite: "Unlimited properties · Unlimited tours · Unlimited team members",
+    free: "2 properties · 20 tours/month · 1 team member",
     starter: "10 properties · 100 tours/month · 3 team members",
     growth: "50 properties · 500 tours/month · 10 team members",
+    enterprise: "Unlimited",
   };
 
   return (

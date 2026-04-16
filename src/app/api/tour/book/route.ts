@@ -25,6 +25,7 @@ interface BookingBody {
   visitorEmail: string;
   visitorPhone: string;
   stripeIdentitySessionId?: string;
+  source?: string; // where the visitor came from (website, embed, zillow, direct, etc.)
 }
 
 export async function POST(req: NextRequest) {
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
       visitorEmail,
       visitorPhone,
       stripeIdentitySessionId,
+      source,
     } = body;
 
     // Look up org
@@ -141,6 +143,7 @@ export async function POST(req: NextRequest) {
         scheduledAt: scheduledDate,
         endsAt,
         status: "scheduled",
+        source: source ?? null,
       })
       .returning();
 

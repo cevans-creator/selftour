@@ -81,6 +81,8 @@ export default function RegisterPage() {
           visitorEmail: form.email,
           visitorPhone: form.phone,
           stripeIdentitySessionId: stripeSessionId ?? undefined,
+          source: new URLSearchParams(window.location.search).get("utm_source")
+            ?? (window.location !== window.parent?.location ? "embed" : "website"),
         }),
       });
 

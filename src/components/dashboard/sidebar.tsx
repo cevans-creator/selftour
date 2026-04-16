@@ -18,6 +18,7 @@ import {
   Menu,
   X,
   Router,
+  BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createBrowserClient } from "@supabase/ssr";
@@ -34,6 +35,7 @@ const ICON_MAP = {
   Plug,
   Settings,
   Router,
+  BarChart3,
 };
 
 const NAV_ITEMS = [
@@ -44,6 +46,7 @@ const NAV_ITEMS = [
   { label: "Messaging", href: "/messaging", icon: "MessageSquare" },
   { label: "AI Knowledge", href: "/ai-knowledge", icon: "Brain" },
   { label: "Hubs", href: "/hubs", icon: "Router" },
+  { label: "Analytics", href: "/analytics", icon: "BarChart3" },
   { label: "Team", href: "/members", icon: "Users" },
   { label: "Integrations", href: "/integrations", icon: "Plug" },
   { label: "Settings", href: "/settings", icon: "Settings" },

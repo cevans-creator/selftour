@@ -44,17 +44,26 @@ export const PLAN_LIMITS: Record<
   string,
   { properties: number; toursPerMonth: number; teamMembers: number }
 > = {
+  // Legacy tiers (kept for backward compatibility)
   free: { properties: 2, toursPerMonth: 20, teamMembers: 1 },
   starter: { properties: 10, toursPerMonth: 100, teamMembers: 3 },
   growth: { properties: 50, toursPerMonth: 500, teamMembers: 10 },
   enterprise: { properties: Infinity, toursPerMonth: Infinity, teamMembers: Infinity },
+  // Current tiers
+  rookie: { properties: 10, toursPerMonth: 200, teamMembers: 5 },
+  pro: { properties: 50, toursPerMonth: 1000, teamMembers: 15 },
+  elite: { properties: Infinity, toursPerMonth: Infinity, teamMembers: Infinity },
 };
 
-export const PLAN_PRICES: Record<string, { monthly: number; annual: number }> = {
-  free: { monthly: 0, annual: 0 },
-  starter: { monthly: 9900, annual: 8900 }, // cents
-  growth: { monthly: 29900, annual: 24900 },
-  enterprise: { monthly: 0, annual: 0 }, // contact sales
+export const PLAN_LABELS: Record<string, string> = {
+  rookie: "Rookie",
+  pro: "Pro",
+  elite: "Elite",
+  // Legacy
+  free: "Free",
+  starter: "Starter",
+  growth: "Growth",
+  enterprise: "Enterprise",
 };
 
 // ─── AI ───────────────────────────────────────────────────────────────────────
