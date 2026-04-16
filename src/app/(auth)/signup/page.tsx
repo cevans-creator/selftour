@@ -109,7 +109,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12" style={{ backgroundColor: "#F5F1EA" }}>
+    <div className="theme-light flex min-h-screen flex-col items-center justify-center px-4 py-12" style={{ backgroundColor: "#F5F1EA" }}>
       <Link href="/" className="mb-8">
         <LogoFull height={36} color="#2C2A26" accentColor="#A0522D" />
       </Link>

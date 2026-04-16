@@ -33,6 +33,28 @@
 }
 
 @layer base {
+  .theme-light {
+    --background: 38 30% 94%;
+    --foreground: 24 8% 21%;
+    --card: 0 0% 100%;
+    --card-foreground: 24 8% 21%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 8% 21%;
+    --primary: 16 62% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 38 20% 88%;
+    --secondary-foreground: 24 8% 21%;
+    --muted: 38 20% 88%;
+    --muted-foreground: 85 8% 40%;
+    --accent: 16 62% 40%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 33 18% 80%;
+    --input: 33 18% 80%;
+    --ring: 16 62% 40%;
+  }
+
   * {
     @apply border-border;
   }

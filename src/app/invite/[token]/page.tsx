@@ -54,7 +54,7 @@ export default function InvitePage() {
   }, [token, router, supabase.auth]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "#F5F1EA" }}>
+    <div className="theme-light min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "#F5F1EA" }}>
       <div className="w-full max-w-sm text-center space-y-6">
         <div className="flex justify-center">
           <LogoFull height={36} color="#2C2A26" accentColor="#A0522D" />
