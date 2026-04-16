@@ -280,7 +280,7 @@ export function HubList({ hubs, properties }: HubListProps) {
                 {/* Actions */}
                 <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-white/[0.06]">
                   {!hub.propertyId || reassigning === hub.id ? (
-                    <div className="flex gap-2 flex-1">
+                    <div className="flex flex-col sm:flex-row gap-2 flex-1">
                       <select
                         value={assignPropertyId}
                         onChange={(e) => setAssignPropertyId(e.target.value)}

@@ -117,7 +117,7 @@ export function PropertyImageUploader({
               )}
               <button
                 type="button"
-                className="absolute right-1.5 top-1.5 hidden rounded-full bg-black/60 p-1 text-white hover:bg-black/80 group-hover:flex"
+                className="absolute right-1.5 top-1.5 hidden rounded-full bg-black/60 p-2 text-white hover:bg-black/80 group-hover:flex"
                 onClick={() => void handleDelete(url)}
                 disabled={deletingUrl === url}
               >

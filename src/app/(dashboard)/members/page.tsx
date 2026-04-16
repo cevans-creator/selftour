@@ -171,7 +171,7 @@ export default function MembersPage() {
                   value={inviteEmail}
                   onChange={(e) => { setInviteEmail(e.target.value); setError(""); }}
                   placeholder="teammate@company.com"
-                  className="mt-1 w-full rounded-lg bg-white/[0.06] border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-[#316ee0]"
+                  className="mt-1 w-full rounded-lg bg-white/[0.06] border border-white/10 px-3 py-2 text-base sm:text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-[#316ee0]"
                   onKeyDown={(e) => e.key === "Enter" && handleInvite()}
                   autoFocus
                 />

@@ -132,7 +132,7 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
             {/* Logo upload */}
             <div className="space-y-2">
               <Label>Organization Logo</Label>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div
                   className="relative flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] overflow-hidden cursor-pointer group"
                   onClick={() => logoInputRef.current?.click()}
