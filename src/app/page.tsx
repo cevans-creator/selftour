@@ -176,7 +176,7 @@ export default function LandingPage() {
 
       {/* Blueprint grid — faint, across whole page */}
       <div className="fixed inset-0 pointer-events-none z-[1]"
-        style={{ backgroundImage: "linear-gradient(rgba(160,82,45,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(160,82,45,0.06) 1px, transparent 1px)", backgroundSize: "64px 64px" }} />
+        style={{ backgroundImage: "linear-gradient(rgba(160,82,45,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(160,82,45,0.12) 1px, transparent 1px)", backgroundSize: "64px 64px" }} />
 
       {/* ── Nav ──────────────────────────────────────────────── */}
       <header className="fixed top-0 z-40 w-full backdrop-blur-md" style={{ backgroundColor: `${C.bg}e6`, borderBottom: `1px solid ${C.border}` }}>
