@@ -241,32 +241,6 @@ export default function NewPropertyPage() {
           </CardContent>
         </Card>
 
-        {/* Smart Lock */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Smart Lock</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="seamDeviceId">Seam Device ID</Label>
-              <Input
-                id="seamDeviceId"
-                name="seamDeviceId"
-                placeholder="device_xxxxxxxx"
-                value={form.seamDeviceId}
-                onChange={handleChange}
-              />
-              <p className="text-xs text-muted-foreground">
-                Connect a smart lock in the{" "}
-                <Link href="/integrations" className="text-primary hover:underline">
-                  Integrations
-                </Link>{" "}
-                page, then paste the device ID here.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
         <div className="flex justify-end gap-3">
           <Button variant="outline" asChild>
             <Link href="/properties">Cancel</Link>
