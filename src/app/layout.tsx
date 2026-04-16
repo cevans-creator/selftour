@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
-import { Montserrat, EB_Garamond, Inter } from "next/font/google";
+import { Montserrat, Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -9,15 +9,21 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-const garamond = EB_Garamond({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-garamond",
+  variable: "--font-fraunces",
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -36,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${garamond.variable} ${inter.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${fraunces.variable} ${inter.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         {children}
         <Toaster richColors position="top-right" />
