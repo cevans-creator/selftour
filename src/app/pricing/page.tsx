@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { KeyRound, Check, ArrowRight } from "lucide-react";
+import { PricingContactForm } from "@/components/pricing-contact-form";
 
 export const metadata = {
   title: "Pricing | KeySherpa",
@@ -221,52 +222,7 @@ export default function PricingPage() {
             <p className="mt-3 text-gray-500">
               Tell us about your operation and we&apos;ll put together a plan that fits. Most teams are up and running within a week.
             </p>
-            <form
-              className="mt-10 text-left space-y-4"
-              action="https://formspree.io/f/placeholder"
-              method="POST"
-            >
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                  <input name="firstName" required className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                  <input name="lastName" required className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Work Email</label>
-                <input name="email" type="email" required className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-                <input name="company" required className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Number of Properties</label>
-                <select name="properties" required className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
-                  <option value="">Select range...</option>
-                  <option value="1-5">1 - 5</option>
-                  <option value="6-20">6 - 20</option>
-                  <option value="21-50">21 - 50</option>
-                  <option value="51-100">51 - 100</option>
-                  <option value="100+">100+</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Anything else?</label>
-                <textarea name="message" rows={3} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="Tell us about your current tour setup, goals, or questions..." />
-              </div>
-              <button
-                type="submit"
-                className="w-full rounded-lg bg-violet-600 py-3 text-sm font-semibold text-white hover:bg-violet-700 transition-colors"
-              >
-                Request Pricing
-              </button>
-              <p className="text-xs text-center text-gray-400">We typically respond within 1 business day.</p>
-            </form>
+            <PricingContactForm />
           </div>
         </section>
       </main>

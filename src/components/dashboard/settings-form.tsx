@@ -17,6 +17,7 @@ interface SettingsFormProps {
     primaryColor: string;
     twilioPhoneNumber: string;
     resendDomain: string;
+    crmWebhookUrl: string;
     planTier: string;
     slug: string;
     logoUrl: string | null;
@@ -32,6 +33,7 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
     primaryColor: org.primaryColor,
     twilioPhoneNumber: org.twilioPhoneNumber,
     resendDomain: org.resendDomain,
+    crmWebhookUrl: org.crmWebhookUrl,
   });
   const [isSaving, setIsSaving] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(org.logoUrl);
@@ -234,6 +236,19 @@ export function SettingsForm({ org, currentUserEmail, currentUserRole, teamCount
                 onChange={(e) => setForm((p) => ({ ...p, resendDomain: e.target.value }))}
                 placeholder="yourdomain.com"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="crmWebhookUrl">CRM Webhook URL</Label>
+              <Input
+                id="crmWebhookUrl"
+                value={form.crmWebhookUrl}
+                onChange={(e) => setForm((p) => ({ ...p, crmWebhookUrl: e.target.value }))}
+                placeholder="https://hooks.zapier.com/... or HubSpot/Salesforce webhook URL"
+              />
+              <p className="text-xs text-muted-foreground">
+                When a tour completes, we&apos;ll POST visitor + tour data to this URL. Works with Zapier, HubSpot, Salesforce, or any webhook endpoint.
+              </p>
             </div>
 
             <Button type="submit" isLoading={isSaving} disabled={currentUserRole === "agent"}>

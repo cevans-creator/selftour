@@ -43,6 +43,7 @@ export default async function SettingsPage() {
         primaryColor: org.primaryColor,
         twilioPhoneNumber: org.twilioPhoneNumber ?? "",
         resendDomain: org.resendDomain ?? "",
+        crmWebhookUrl: org.crmWebhookUrl ?? "",
         planTier: org.planTier,
         slug: org.slug,
         logoUrl: org.logoUrl ?? null,

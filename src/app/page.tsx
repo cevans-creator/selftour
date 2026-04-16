@@ -49,33 +49,33 @@ const STEPS = [
 
 const PRICING = [
   {
-    name: "Free",
-    price: "$0",
-    period: "forever",
-    description: "Perfect for trying it out",
-    features: ["1 active property", "20 tours / month", "1 team member", "Basic SMS automation", "AI assistant"],
-    cta: "Start Free",
-    href: "/signup",
+    name: "Rookie",
+    price: null,
+    period: null,
+    description: "For small teams getting started",
+    features: ["Up to 10 properties", "200 tours / month", "5 team members", "Smart lock hub included", "Email + SMS automation", "AI visitor assistant", "Tour reporting"],
+    cta: "Get Pricing",
+    href: "/pricing#contact",
     highlight: false,
   },
   {
-    name: "Starter",
-    price: "$999",
-    period: "per month",
-    description: "For small teams",
-    features: ["10 active properties", "100 tours / month", "3 team members", "Full SMS + email automation", "AI knowledge base", "Identity verification", "Analytics"],
-    cta: "Start Free Trial",
-    href: "/signup",
+    name: "Pro",
+    price: null,
+    period: null,
+    description: "For growing companies",
+    features: ["Up to 50 properties", "1,000 tours / month", "15 team members", "Everything in Rookie", "Advanced analytics", "Lead source tracking", "CRM integration", "Priority support"],
+    cta: "Get Pricing",
+    href: "/pricing#contact",
     highlight: true,
   },
   {
-    name: "Growth",
-    price: "$2,999",
-    period: "per month",
-    description: "For growing portfolios",
-    features: ["50 active properties", "500 tours / month", "10 team members", "Everything in Starter", "White-label branding", "Priority support", "Custom integrations"],
-    cta: "Start Free Trial",
-    href: "/signup",
+    name: "Elite",
+    price: null,
+    period: null,
+    description: "For enterprise builders",
+    features: ["Unlimited properties", "Unlimited tours", "Unlimited team members", "Everything in Pro", "White-label branding", "Credit card verification", "Custom integrations / API", "Dedicated account manager"],
+    cta: "Contact Sales",
+    href: "/pricing#contact",
     highlight: false,
   },
 ];
@@ -209,7 +209,7 @@ export default function LandingPage() {
 
           <nav className="hidden items-center gap-8 md:flex">
             <a href="#features" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Features</a>
-            <a href="#pricing" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Pricing</a>
+            <Link href="/pricing" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Pricing</Link>
             <Link href="/login" className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">Sign in</Link>
             <Link href="/signup"
               className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-200">
@@ -415,8 +415,8 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <FadeUp className="mb-20 text-center">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-4">// Pricing</p>
-            <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl">Simple. Transparent.</h2>
-            <p className="mt-4 text-white/55 text-base tracking-wide">Start free. Upgrade when you're ready.</p>
+            <h2 className="text-3xl font-light text-white sm:text-5xl lg:text-6xl">Plans that scale.</h2>
+            <p className="mt-4 text-white/55 text-base tracking-wide">From your first model home to hundreds of communities.</p>
           </FadeUp>
 
           <StaggerList className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3">
@@ -447,10 +447,14 @@ export default function LandingPage() {
                 <div className="mb-8">
                   <p className="font-mono text-xs uppercase tracking-widest text-white/55 mb-1">{plan.name}</p>
                   <p className="text-sm text-white/55 mb-6">{plan.description}</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-light text-white">{plan.price}</span>
-                    <span className="text-xs text-white/50 font-mono">/{plan.period}</span>
-                  </div>
+                  {plan.price ? (
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-light text-white">{plan.price}</span>
+                      <span className="text-xs text-white/50 font-mono">/{plan.period}</span>
+                    </div>
+                  ) : (
+                    <p className="text-lg font-light text-white/70">Custom pricing</p>
+                  )}
                 </div>
 
                 <ul className="space-y-3 mb-8">

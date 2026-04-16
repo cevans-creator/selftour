@@ -10,6 +10,7 @@ const schema = z.object({
   primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
   twilioPhoneNumber: z.string().max(20).optional().nullable(),
   resendDomain: z.string().max(255).optional().nullable(),
+  crmWebhookUrl: z.string().max(500).optional().nullable(),
 });
 
 export async function PATCH(req: NextRequest) {
@@ -49,6 +50,7 @@ export async function PATCH(req: NextRequest) {
       ...(parsed.data.primaryColor ? { primaryColor: parsed.data.primaryColor } : {}),
       twilioPhoneNumber: parsed.data.twilioPhoneNumber ?? null,
       resendDomain: parsed.data.resendDomain ?? null,
+      crmWebhookUrl: parsed.data.crmWebhookUrl ?? null,
       updatedAt: new Date(),
     })
     .where(eq(organizations.id, membership.orgId));
