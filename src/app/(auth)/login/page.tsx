@@ -17,6 +17,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const redirect = searchParams?.get("redirect") ?? "/dashboard";
+
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -38,7 +41,7 @@ export default function LoginPage() {
       }
 
       toast.success("Welcome back!");
-      router.push("/dashboard");
+      router.push(redirect.startsWith("/") ? redirect : "/dashboard");
       router.refresh();
     } finally {
       setIsLoading(false);
@@ -97,7 +100,7 @@ export default function LoginPage() {
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="font-medium text-violet-600 hover:underline">
+              <Link href={redirect !== "/dashboard" ? `/signup?redirect=${encodeURIComponent(redirect)}` : "/signup"} className="font-medium text-violet-600 hover:underline">
                 Create one free
               </Link>
             </p>

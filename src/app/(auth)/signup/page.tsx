@@ -30,6 +30,10 @@ export default function SignupPage() {
     password: "",
   });
 
+  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const redirect = searchParams?.get("redirect") ?? "";
+  const isInviteFlow = redirect.startsWith("/invite/");
+
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -66,6 +70,14 @@ export default function SignupPage() {
 
       if (!authData.user) {
         toast.error("Failed to create account. Please try again.");
+        return;
+      }
+
+      if (isInviteFlow) {
+        // Skip org creation — the invite acceptance page will add them to the existing org
+        toast.success("Account created! Accepting your invite...");
+        router.push(redirect);
+        router.refresh();
         return;
       }
 
@@ -106,9 +118,9 @@ export default function SignupPage() {
 
       <Card className="w-full max-w-md shadow-sm">
         <CardHeader>
-          <CardTitle className="text-xl">Create your account</CardTitle>
+          <CardTitle className="text-xl">{isInviteFlow ? "Create your account to join the team" : "Create your account"}</CardTitle>
           <CardDescription>
-            Start your free plan — no credit card required.
+            {isInviteFlow ? "Sign up to accept your team invitation." : "Get started with KeySherpa."}
           </CardDescription>
         </CardHeader>
 
@@ -139,25 +151,27 @@ export default function SignupPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="orgName">Company / Organization name</Label>
-              <Input
-                id="orgName"
-                name="orgName"
-                placeholder="Sunrise Homes"
-                value={form.orgName}
-                onChange={handleChange}
-                required
-              />
-              {form.orgName && (
-                <p className="text-xs text-muted-foreground">
-                  Your tour URL:{" "}
-                  <span className="font-mono text-foreground">
-                    /tour/{slugify(form.orgName)}
-                  </span>
-                </p>
-              )}
-            </div>
+            {!isInviteFlow && (
+              <div className="space-y-2">
+                <Label htmlFor="orgName">Company / Organization name</Label>
+                <Input
+                  id="orgName"
+                  name="orgName"
+                  placeholder="Sunrise Homes"
+                  value={form.orgName}
+                  onChange={handleChange}
+                  required
+                />
+                {form.orgName && (
+                  <p className="text-xs text-muted-foreground">
+                    Your tour URL:{" "}
+                    <span className="font-mono text-foreground">
+                      /tour/{slugify(form.orgName)}
+                    </span>
+                  </p>
+                )}
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="email">Work email</Label>
