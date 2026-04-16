@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { ArrowRight, Lock, Smartphone, BarChart3, Shield, MessageCircle, Palette } from "lucide-react";
+import { LogoFull } from "@/components/logo";
 
 // ─── Colors ───────────────────────────────────────────────────────────────
 
@@ -181,11 +182,8 @@ export default function LandingPage() {
       {/* ── Nav ──────────────────────────────────────────────── */}
       <header className="fixed top-0 z-40 w-full backdrop-blur-md" style={{ backgroundColor: `${C.bg}e6`, borderBottom: `1px solid ${C.border}` }}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: C.accent }}>
-              <span className="text-xs font-bold text-white" style={{ fontFamily: "var(--font-fraunces)" }}>K</span>
-            </div>
-            <span className="text-sm font-semibold tracking-wide" style={{ color: C.text }}>KeySherpa</span>
+          <Link href="/">
+            <LogoFull height={30} color={C.text} accentColor={C.accent} />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -466,12 +464,7 @@ export default function LandingPage() {
       {/* ── Footer ───────────────────────────────────────────── */}
       <footer className="py-10" style={{ borderTop: `1px solid ${C.border}` }}>
         <div className="mx-auto max-w-6xl px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md" style={{ backgroundColor: C.accent }}>
-              <span className="text-[10px] font-bold text-white" style={{ fontFamily: "var(--font-fraunces)" }}>K</span>
-            </div>
-            <span className="text-sm font-medium" style={{ color: C.textMuted }}>KeySherpa</span>
-          </div>
+          <LogoFull height={24} color={C.textMuted} accentColor={C.accent} />
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="text-xs hover:opacity-70 transition-opacity" style={{ color: C.textMuted }}>Privacy</Link>
             <Link href="/terms" className="text-xs hover:opacity-70 transition-opacity" style={{ color: C.textMuted }}>Terms</Link>
