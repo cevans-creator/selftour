@@ -419,19 +419,10 @@ export default function LandingPage() {
             <p className="mt-4 text-white/55 text-base tracking-wide">From your first model home to hundreds of communities.</p>
           </FadeUp>
 
-          <StaggerList className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3">
+          <StaggerList className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-3 items-stretch">
             {PRICING.map((plan) => (
               <motion.div key={plan.name} variants={item}
-                className="relative rounded-2xl border p-8 cursor-default"
-                initial={plan.highlight ? {
-                  borderColor: "rgba(49,110,224,0.4)",
-                  backgroundColor: "rgba(49,110,224,0.05)",
-                  boxShadow: "0 0 60px rgba(49,110,224,0.12)",
-                } : {
-                  borderColor: "rgba(255,255,255,0.06)",
-                  backgroundColor: "rgba(255,255,255,0.02)",
-                  boxShadow: "0 0 0px rgba(49,110,224,0)",
-                }}
+                className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 cursor-default flex flex-col"
                 whileHover={{
                   borderColor: "rgba(49,110,224,0.4)",
                   backgroundColor: "rgba(49,110,224,0.05)",
@@ -439,25 +430,13 @@ export default function LandingPage() {
                   transition: { duration: 0.4, ease: "easeOut" },
                 }}
               >
-                <div className="absolute -top-px left-1/2 -translate-x-1/2 h-px w-32 bg-gradient-to-r from-transparent via-[#316ee0] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                {plan.highlight && (
-                  <div className="absolute -top-px left-1/2 -translate-x-1/2 h-px w-32 bg-gradient-to-r from-transparent via-[#316ee0] to-transparent" />
-                )}
-
                 <div className="mb-8">
-                  <p className="font-mono text-xs uppercase tracking-widest text-white/55 mb-1">{plan.name}</p>
-                  <p className="text-sm text-white/55 mb-6">{plan.description}</p>
-                  {plan.price ? (
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-light text-white">{plan.price}</span>
-                      <span className="text-xs text-white/50 font-mono">/{plan.period}</span>
-                    </div>
-                  ) : (
-                    <p className="text-lg font-light text-white/70">Custom pricing</p>
-                  )}
+                  <h3 className="text-2xl font-bold text-white mb-1">{plan.name}</h3>
+                  <p className="text-sm text-white/50 mb-4">{plan.description}</p>
+                  <p className="text-sm font-mono uppercase tracking-widest text-white/35">Custom pricing</p>
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 flex-1">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-center gap-3 text-sm sm:text-base text-white/70">
                       <Check className="h-3.5 w-3.5 flex-shrink-0 text-[#316ee0]" />
@@ -467,10 +446,7 @@ export default function LandingPage() {
                 </ul>
 
                 <Link href={plan.href}
-                  className={`block w-full rounded-full py-3 text-center text-sm font-medium transition-all duration-300 ${plan.highlight
-                    ? "bg-[#316ee0] text-white hover:bg-[#2558c8] shadow-[0_0_20px_rgba(49,110,224,0.3)] hover:shadow-[0_0_30px_rgba(49,110,224,0.5)]"
-                    : "border border-white/10 text-white/70 hover:text-white hover:border-white/20 hover:bg-white/[0.04]"
-                    }`}
+                  className="mt-8 block w-full rounded-full py-3 text-center text-sm font-medium transition-all duration-300 border border-white/10 text-white/70 hover:text-white hover:border-[#316ee0]/50 hover:bg-[#316ee0]/10"
                 >
                   {plan.cta}
                 </Link>
