@@ -1,7 +1,17 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { LogoFull } from "@/components/logo";
 
-export default function CrmLayout({ children }: { children: React.ReactNode }) {
+export default async function CrmLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user?.email) redirect("/login");
+
+  const admins = (process.env.PLATFORM_ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase());
+  if (!admins.includes(user.email.toLowerCase())) redirect("/dashboard");
+
   return (
     <div className="min-h-screen bg-[#0a0a09] text-white">
       <header className="border-b border-white/[0.06] px-6 py-3 flex items-center justify-between">
