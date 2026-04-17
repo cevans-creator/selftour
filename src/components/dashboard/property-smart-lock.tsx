@@ -81,6 +81,9 @@ export function PropertySmartLock({ propertyId }: PropertySmartLockProps) {
       const data = await res.json();
       if (res.ok) {
         toast.success(`Lock paired! (Node ${data.nodeId})`);
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "lock_paired", { event_category: "locks" });
+        }
         await load();
       } else {
         toast.error(data.error || "Pairing failed", { description: data.hint, duration: 10000 });

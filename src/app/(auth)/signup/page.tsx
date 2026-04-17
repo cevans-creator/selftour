@@ -101,6 +101,9 @@ export default function SignupPage() {
       }
 
       toast.success("Account created! Welcome to KeySherpa.");
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "sign_up", { method: "email" });
+      }
       router.push("/dashboard");
       router.refresh();
     } finally {

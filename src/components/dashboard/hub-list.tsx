@@ -64,6 +64,9 @@ export function HubList({ hubs, properties }: HubListProps) {
       const data = await res.json();
       if (res.ok) {
         setClaimSuccess(`Hub "${data.hubName}" added successfully!`);
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "hub_claimed", { event_category: "hubs" });
+        }
         setTimeout(() => {
           setShowClaim(false);
           setClaimCode("");
