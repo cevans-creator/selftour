@@ -4,8 +4,14 @@ import { LogoFull } from "@/components/logo";
 import { PricingContactForm } from "@/components/pricing-contact-form";
 
 export const metadata = {
-  title: "Pricing | KeySherpa",
-  description: "Self-guided tour platform pricing for home builders and real estate teams.",
+  title: "Pricing — Plans for Every Builder",
+  description: "KeySherpa pricing for homebuilders. Rookie, Pro, and Elite plans. Smart lock hub hardware included. No setup fees. Get custom pricing for your communities.",
+  alternates: { canonical: "https://www.keysherpa.io/pricing" },
+  openGraph: {
+    title: "KeySherpa Pricing — Plans for Every Builder",
+    description: "Smart lock hub hardware included. No setup fees. Rookie, Pro, and Elite plans that scale with your communities.",
+    url: "https://www.keysherpa.io/pricing",
+  },
 };
 
 const C = {

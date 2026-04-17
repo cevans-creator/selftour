@@ -29,11 +29,57 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "KeySherpa",
+    default: "KeySherpa — Self-Guided Tour Software for Homebuilders",
     template: "%s | KeySherpa",
   },
-  description: "Self-guided home tours powered by smart locks and AI",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  description: "KeySherpa automates self-guided home tours for homebuilders. Smart lock hubs, AI visitor Q&A, automated access codes, and full tour analytics — so buyers can tour 24/7.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://www.keysherpa.io"),
+  keywords: [
+    "self-guided tours", "self-guided home tours", "homebuilder tour software",
+    "self-tour technology", "smart lock tours", "model home tours",
+    "home tour automation", "new construction tours", "tour scheduling software",
+    "UTour alternative", "self-tour platform", "homebuilder SaaS",
+    "Z-Wave smart lock", "AI tour assistant", "self-guided touring",
+  ],
+  authors: [{ name: "KeySherpa" }],
+  creator: "KeySherpa",
+  publisher: "KeySherpa",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://www.keysherpa.io",
+    siteName: "KeySherpa",
+    title: "KeySherpa — Self-Guided Tour Software for Homebuilders",
+    description: "Smart lock hubs, AI visitor Q&A, automated access codes, and tour analytics. Buyers tour 24/7 while your sales team focuses on closing.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "KeySherpa — Self-Guided Tour Software for Homebuilders",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KeySherpa — Self-Guided Tour Software for Homebuilders",
+    description: "Smart lock hubs, AI visitor Q&A, automated access codes, and tour analytics. Buyers tour 24/7.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://www.keysherpa.io",
+  },
 };
 
 export const viewport = {

@@ -171,6 +171,35 @@ export default function LandingPage() {
   return (
     <div style={{ fontFamily: "var(--font-inter), system-ui, sans-serif", backgroundColor: C.bg, color: C.text }} className="overflow-x-hidden">
 
+      {/* JSON-LD Structured Data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "KeySherpa",
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        description: "Self-guided tour software for homebuilders. Smart lock hubs, AI visitor Q&A, automated access codes, and tour analytics.",
+        url: "https://www.keysherpa.io",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Custom pricing — contact for quote" },
+        provider: {
+          "@type": "Organization",
+          name: "KeySherpa",
+          url: "https://www.keysherpa.io",
+          sameAs: [],
+        },
+        featureList: [
+          "Smart lock automation with Z-Wave hubs",
+          "AI-powered visitor Q&A via SMS",
+          "Automated access code management",
+          "Pre and post-tour email and SMS campaigns",
+          "Photo ID and credit card visitor verification",
+          "Real-time tour analytics and reporting",
+          "CRM webhook integration",
+          "White-label branding",
+          "Website embed widget",
+        ],
+      })}} />
+
       {/* Paper texture */}
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.025]"
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />

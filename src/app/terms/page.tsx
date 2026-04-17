@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { LogoFull } from "@/components/logo";
 
+export const metadata = {
+  title: "Terms & Conditions",
+  description: "KeySherpa terms and conditions for self-guided home tour services.",
+  alternates: { canonical: "https://www.keysherpa.io/terms" },
+};
+
 export default function TermsPage() {
   const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "KeySherpa";
   const email = "support@keysherpa.io";

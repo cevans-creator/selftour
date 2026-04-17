@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { LogoFull } from "@/components/logo";
 
+export const metadata = {
+  title: "Privacy Policy",
+  description: "KeySherpa privacy policy — how we collect, use, and protect visitor and customer data.",
+  alternates: { canonical: "https://www.keysherpa.io/privacy" },
+};
+
 export default function PrivacyPage() {
   const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "KeySherpa";
   const email = "support@keysherpa.io";
