@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
-import { crmNotes, orgMembers } from "@/server/db/schema";
+import { crmNotes } from "@/server/db/schema";
 import { eq, desc } from "drizzle-orm";
 
 async function requirePlatformAdmin() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const platformOrgId = process.env.PLATFORM_ORG_ID;
-  if (!platformOrgId) return null;
-  const [m] = await db.select().from(orgMembers).where(eq(orgMembers.userId, user.id)).limit(1);
-  if (!m || m.organizationId !== platformOrgId || !["owner", "admin"].includes(m.role)) return null;
+  if (!user?.email) return null;
+  const admins = (process.env.PLATFORM_ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase());
+  if (!admins.includes(user.email.toLowerCase())) return null;
   return user;
 }
 

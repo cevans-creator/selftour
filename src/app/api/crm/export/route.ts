@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { db } from "@/server/db/client";
-import { crmContacts, orgMembers } from "@/server/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { crmContacts } from "@/server/db/schema";
+import { desc } from "drizzle-orm";
 
 export async function GET(_req: NextRequest) {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
-  const platformOrgId = process.env.PLATFORM_ORG_ID;
-  const [m] = await db.select().from(orgMembers).where(eq(orgMembers.userId, user.id)).limit(1);
-  if (!m || !platformOrgId || m.organizationId !== platformOrgId || !["owner", "admin"].includes(m.role)) return new NextResponse("Unauthorized", { status: 401 });
+  const admins = (process.env.PLATFORM_ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase());
+  if (!user.email || !admins.includes(user.email.toLowerCase())) return new NextResponse("Unauthorized", { status: 401 });
 
   const contacts = await db.select().from(crmContacts).orderBy(desc(crmContacts.createdAt));
 
