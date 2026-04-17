@@ -47,7 +47,6 @@ const NAV_ITEMS = [
   { label: "AI Knowledge", href: "/ai-knowledge", icon: "Brain" },
   { label: "Hubs", href: "/hubs", icon: "Router" },
   { label: "Analytics", href: "/analytics", icon: "BarChart3" },
-  { label: "Sales CRM", href: "/crm", icon: "Users" },
   { label: "Team", href: "/members", icon: "Users" },
   { label: "Integrations", href: "/integrations", icon: "Plug" },
   { label: "Settings", href: "/settings", icon: "Settings" },

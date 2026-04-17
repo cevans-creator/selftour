@@ -4,18 +4,20 @@ import { db } from "@/server/db/client";
 import { crmNotes, orgMembers } from "@/server/db/schema";
 import { eq, desc } from "drizzle-orm";
 
-async function requireAdmin() {
+async function requirePlatformAdmin() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
+  const platformOrgId = process.env.PLATFORM_ORG_ID;
+  if (!platformOrgId) return null;
   const [m] = await db.select().from(orgMembers).where(eq(orgMembers.userId, user.id)).limit(1);
-  if (!m || !["owner", "admin"].includes(m.role)) return null;
+  if (!m || m.organizationId !== platformOrgId || !["owner", "admin"].includes(m.role)) return null;
   return user;
 }
 
 // GET — list notes for a contact
 export async function GET(req: NextRequest) {
-  const user = await requireAdmin();
+  const user = await requirePlatformAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const contactId = req.nextUrl.searchParams.get("contactId");
@@ -32,7 +34,7 @@ export async function GET(req: NextRequest) {
 
 // POST — add a note
 export async function POST(req: NextRequest) {
-  const user = await requireAdmin();
+  const user = await requirePlatformAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { contactId, content } = await req.json();

@@ -9,8 +9,9 @@ export async function GET(_req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
+  const platformOrgId = process.env.PLATFORM_ORG_ID;
   const [m] = await db.select().from(orgMembers).where(eq(orgMembers.userId, user.id)).limit(1);
-  if (!m || !["owner", "admin"].includes(m.role)) return new NextResponse("Unauthorized", { status: 401 });
+  if (!m || !platformOrgId || m.organizationId !== platformOrgId || !["owner", "admin"].includes(m.role)) return new NextResponse("Unauthorized", { status: 401 });
 
   const contacts = await db.select().from(crmContacts).orderBy(desc(crmContacts.createdAt));
 
