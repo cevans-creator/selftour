@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db/client";
-import { organizations, orgMembers } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { organizations, orgMembers, crmContacts } from "@/server/db/schema";
+import { eq, sql } from "drizzle-orm";
 import { getResendClient, EMAIL_FROM } from "@/server/email/client";
 import { WelcomeBuilderEmail } from "@/server/email/templates/welcome-builder";
 import React from "react";
@@ -74,6 +74,21 @@ export async function POST(req: NextRequest) {
     } catch (emailErr) {
       console.warn("[Setup] Failed to send welcome email:", emailErr);
     }
+
+    // Auto-move matching CRM contact to Closed Won
+    try {
+      const result = await db.execute(
+        sql`SELECT email FROM auth.users WHERE id = ${userId} LIMIT 1`
+      );
+      const rows = result as unknown as Array<{ email: string }>;
+      const userEmail = rows[0]?.email;
+      if (userEmail) {
+        await db
+          .update(crmContacts)
+          .set({ stage: "closed_won", closedAt: new Date(), updatedAt: new Date() })
+          .where(eq(crmContacts.email, userEmail.toLowerCase()));
+      }
+    } catch { /* best effort */ }
 
     return NextResponse.json({ orgId: org.id, orgSlug: finalSlug });
   } catch (err) {
