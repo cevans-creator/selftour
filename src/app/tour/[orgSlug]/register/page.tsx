@@ -94,6 +94,15 @@ export default function RegisterPage() {
 
       const { tourId } = (await res.json()) as { tourId: string };
       sessionStorage.removeItem("selectedSlot");
+
+      // Track tour booking in Google Analytics
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "tour_booked", {
+          event_category: "tours",
+          event_label: orgSlug,
+        });
+      }
+
       router.push(`/tour/${orgSlug}/confirm?tourId=${tourId}`);
     } finally {
       setIsLoading(false);

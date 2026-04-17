@@ -31,6 +31,14 @@ export function PricingContactForm() {
       });
       if (res.ok) {
         setSubmitted(true);
+        // Track conversion in Google Analytics
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "generate_lead", {
+            event_category: "pricing",
+            event_label: form.company,
+            value: form.properties,
+          });
+        }
       } else {
         const data = await res.json();
         setError(data.error || "Failed to send. Please try again.");
