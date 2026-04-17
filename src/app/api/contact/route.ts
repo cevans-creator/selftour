@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getResendClient, EMAIL_FROM } from "@/server/email/client";
+import { db } from "@/server/db/client";
+import { crmContacts } from "@/server/db/schema";
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,6 +39,19 @@ export async function POST(req: NextRequest) {
       subject: "Thanks for your interest in KeySherpa",
       text: `Hi ${firstName},\n\nThanks for reaching out! We received your pricing inquiry and will get back to you within 1 business day.\n\nIn the meantime, feel free to reply to this email with any questions.\n\n— The KeySherpa Team`,
     });
+
+    // Auto-create CRM lead
+    try {
+      await db.insert(crmContacts).values({
+        companyName: company,
+        contactName: `${firstName} ${lastName}`,
+        email,
+        phone: null,
+        propertyCount: properties,
+        source: "pricing_form",
+        stage: "new_lead",
+      });
+    } catch { /* best effort — don't fail the form submission */ }
 
     return NextResponse.json({ success: true });
   } catch (err) {

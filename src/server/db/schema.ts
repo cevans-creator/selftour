@@ -95,6 +95,16 @@ export const messageChannelEnum = pgEnum("message_channel", ["sms", "email"]);
 
 export const lockProviderEnum = pgEnum("lock_provider", ["seam", "pi"]);
 
+export const crmStageEnum = pgEnum("crm_stage", [
+  "new_lead",
+  "demo_scheduled",
+  "demo_completed",
+  "proposal_sent",
+  "negotiating",
+  "closed_won",
+  "closed_lost",
+]);
+
 export const hubCommandStatusEnum = pgEnum("hub_command_status", [
   "pending",
   "executing",
@@ -319,6 +329,45 @@ export const messageTemplates = pgTable("message_templates", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// ─── CRM (KeySherpa sales pipeline) ──────────────────────────────────────────
+
+export const crmContacts = pgTable("crm_contacts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  companyName: varchar("company_name", { length: 255 }).notNull(),
+  contactName: varchar("contact_name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }),
+  propertyCount: varchar("property_count", { length: 20 }),
+  stage: crmStageEnum("stage").notNull().default("new_lead"),
+  source: varchar("source", { length: 100 }), // pricing_form, manual, referral, etc.
+  value: integer("value"), // estimated deal value in cents
+  nextFollowUp: timestamp("next_follow_up", { withTimezone: true }),
+  closedAt: timestamp("closed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const crmNotes = pgTable("crm_notes", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  contactId: uuid("contact_id")
+    .notNull()
+    .references(() => crmContacts.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  createdBy: varchar("created_by", { length: 255 }), // email of who wrote the note
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const crmContactsRelations = relations(crmContacts, ({ many }) => ({
+  notes: many(crmNotes),
+}));
+
+export const crmNotesRelations = relations(crmNotes, ({ one }) => ({
+  contact: one(crmContacts, {
+    fields: [crmNotes.contactId],
+    references: [crmContacts.id],
+  }),
+}));
 
 // ─── Relations ────────────────────────────────────────────────────────────────
 
