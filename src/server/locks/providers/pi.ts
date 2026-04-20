@@ -46,7 +46,9 @@ async function issueCommand(
 function parseDeviceId(deviceId: string): { hubId: string; nodeId: number } {
   const [hubId, nodeStr] = deviceId.split(":");
   if (!hubId || !nodeStr) throw new Error(`Invalid Pi deviceId format: ${deviceId}`);
-  return { hubId, nodeId: parseInt(nodeStr, 10) };
+  const nodeId = parseInt(nodeStr, 10);
+  if (isNaN(nodeId)) throw new Error(`Invalid nodeId in deviceId: ${deviceId}`);
+  return { hubId, nodeId };
 }
 
 export const piProvider: LockProvider = {
@@ -127,15 +129,17 @@ export const piProvider: LockProvider = {
       .from(hubs)
       .leftJoin(properties, eq(hubs.propertyId, properties.id));
 
-    return rows.map((r) => ({
-      deviceId: r.property?.seamDeviceId ?? `${r.hub.id}:unknown`,
-      name: r.hub.name,
-      type: "pi_zwave",
-      connected: r.hub.lastSeenAt
-        ? Date.now() - r.hub.lastSeenAt.getTime() < 5 * 60 * 1000
-        : false,
-      locked: null,
-      batteryLevel: null,
-    }));
+    return rows
+      .filter((r) => r.property?.seamDeviceId && r.property.seamDeviceId.includes(":"))
+      .map((r) => ({
+        deviceId: r.property!.seamDeviceId!,
+        name: r.hub.name,
+        type: "pi_zwave",
+        connected: r.hub.lastSeenAt
+          ? Date.now() - r.hub.lastSeenAt.getTime() < 5 * 60 * 1000
+          : false,
+        locked: null,
+        batteryLevel: null,
+      }));
   },
 };
