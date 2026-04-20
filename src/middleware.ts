@@ -57,8 +57,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect logged-in users away from auth pages
+  // Skip redirect if "no_org" param is set (user has no org membership yet)
   if ((pathname === "/login" || pathname === "/signup") && user) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    const hasNoOrg = request.nextUrl.searchParams.get("no_org");
+    if (!hasNoOrg) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
   }
 
   return supabaseResponse;

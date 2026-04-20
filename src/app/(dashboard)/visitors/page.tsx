@@ -29,7 +29,7 @@ export default async function VisitorsPage() {
     .where(eq(orgMembers.userId, user.id))
     .limit(1);
 
-  if (!membership) redirect("/login");
+  if (!membership) redirect("/login?no_org=1");
   const org = membership.org;
 
   const rows = await db

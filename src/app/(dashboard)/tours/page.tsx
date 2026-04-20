@@ -24,7 +24,7 @@ export default async function ToursPage() {
     .where(eq(orgMembers.userId, user.id))
     .limit(1);
 
-  if (!membership) redirect("/login");
+  if (!membership) redirect("/login?no_org=1");
   const org = membership.org;
 
   const now = new Date();

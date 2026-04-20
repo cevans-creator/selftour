@@ -16,7 +16,7 @@ export default async function HubsPage() {
     .innerJoin(organizations, eq(orgMembers.organizationId, organizations.id))
     .where(eq(orgMembers.userId, user.id))
     .limit(1);
-  if (!membership) redirect("/login");
+  if (!membership) redirect("/login?no_org=1");
 
   const org = membership.org;
 
